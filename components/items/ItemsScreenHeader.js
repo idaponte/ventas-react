@@ -1,8 +1,8 @@
 import { useState } from "react";
-import DropDownPicker from "react-native-dropdown-picker";
 import { globalStyles } from "../../styles/globals";
 import { SearchInput } from "./SearchInput";
-import { View } from "react-native";
+import { Text, View, TouchableOpacity } from "react-native";
+import { RubroSelectModal } from "../modals/RubroSelectModal";
 
 export const ItemsScreenHeader = () => {
     const [open, setOpen] = useState(false);
@@ -12,23 +12,31 @@ export const ItemsScreenHeader = () => {
         { label: 'Banana', value: 'banana' }
     ]);
 
-    return (
-        <View style={{
-            gap: 10,
-            paddingHorizontal: 20,
-            marginBottom: 20
-        }}>
-            <DropDownPicker
-                open={open}
-                value={value}
-                items={items}
-                setOpen={setOpen}
-                setValue={setValue}
-                setItems={setItems}
-                style={globalStyles.input}
-            />
+    const [modalVisible, setModalVisible] = useState(false);
 
-            <SearchInput />
-        </View>
+    return (
+        <>
+            <View style={{
+                gap: 10,
+                marginBottom: 20
+            }}>
+                <TouchableOpacity style={{
+                    ...globalStyles.input,
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    backgroundColor: '#fff',
+                    ...globalStyles.inputBorder
+                }}
+                    onPress={() => setModalVisible(true)}
+                >
+                    <Text>Seleccione un rubro</Text>
+                </TouchableOpacity>
+
+                <SearchInput />
+            </View>
+
+            <RubroSelectModal isVisible={modalVisible} setIsVisible={setModalVisible} />
+        </>
     )
 }

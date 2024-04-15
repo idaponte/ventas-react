@@ -1,6 +1,8 @@
 import { BottomSheet, Button, Icon, ListItem } from "@rneui/themed";
 import { useState } from "react";
 import { View, TextInput, StyleSheet, TouchableOpacity } from "react-native";
+import { globalColors, globalStyles } from "../../styles/globals";
+import { SearchResultsModal } from "../modals/SearchResultsModal";
 
 export const SearchInput = () => {
     const [text, setText] = useState('');
@@ -20,7 +22,10 @@ export const SearchInput = () => {
         <>
             <View style={styles.searchInputContainer}>
                 <TextInput
-                    style={styles.input}
+                    style={{
+                        ...styles.input,
+                        ...globalStyles.inputBorder
+                    }}
                     value={text}
                     onChangeText={setText}
                     placeholder="Buscar"
@@ -28,7 +33,7 @@ export const SearchInput = () => {
                 />
 
                 <TouchableOpacity style={{
-                    backgroundColor: 'blue',
+                    backgroundColor: globalColors.primary[500],
                     padding: 10,
                     borderRadius: 7
                 }} onPress={() => setIsVisible(true)}>
@@ -37,19 +42,8 @@ export const SearchInput = () => {
                 </TouchableOpacity>
             </View >
 
-            <BottomSheet modalProps={{}} isVisible={isVisible}>
-                {list.map((l, i) => (
-                    <ListItem
-                        key={i}
-                        containerStyle={l.containerStyle}
-                        onPress={l.onPress}
-                    >
-                        <ListItem.Content>
-                            <ListItem.Title style={l.titleStyle}>{l.title}</ListItem.Title>
-                        </ListItem.Content>
-                    </ListItem>
-                ))}
-            </BottomSheet>
+            <SearchResultsModal isVisible={isVisible} setIsVisible={setIsVisible} />
+
         </>
     )
 }

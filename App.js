@@ -17,7 +17,7 @@ function App() {
     <SafeAreaProvider>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{
-          headerShown: false
+          headerShown: true
         }}
           initialRouteName='Formulario'
         >

@@ -1,13 +1,16 @@
-import React from 'react'
 import { ScrollView, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export const Layout = ({ children }) => {
-    const insets = useSafeAreaInsets();
 
     return (
-        <View style={{ paddingTop: insets.top, paddingBottom: insets.bottom, flex: 1 }}>
-            {children}
-        </View>
+        <ScrollView
+            showsHorizontalScrollIndicator={false}
+            endFillColor="#000"
+            overScrollMode="never"
+        >
+            <View style={{ flex: 1, padding: 20 }}>
+                {children}
+            </View>
+        </ScrollView>
     )
 }
