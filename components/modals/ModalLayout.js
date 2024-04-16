@@ -1,4 +1,4 @@
-import { Modal, StyleSheet, View } from 'react-native'
+import { Modal, ScrollView, StyleSheet, View } from 'react-native'
 
 export const ModalLayout = ({
     children,
@@ -18,6 +18,26 @@ export const ModalLayout = ({
         </Modal>
     )
 }
+
+const ModalContent = ({ children }) => {
+    return (
+        <View style={{
+            backgroundColor: 'white',
+            height: '70%',
+            width: '85%',
+            borderRadius: 20,
+            padding: 20,
+        }}>
+            <ScrollView>
+                {children}
+            </ScrollView>
+        </View>
+
+    )
+}
+
+ModalLayout.Content = ModalContent
+
 
 const styles = StyleSheet.create({
     modalOverlay: {

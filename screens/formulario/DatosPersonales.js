@@ -2,6 +2,8 @@ import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native"
 
 import { useState } from "react";
 import { Layout } from "../../components/ui/Layout";
+import { Button } from "@rneui/themed";
+import CustomAlert from "../../components/CustomAlert";
 
 const MyInput = ({ label, value, onChange }) => {
     return (
@@ -47,9 +49,26 @@ const DatosPersonales = () => {
         })
     }
 
+    const [visible, setVisible] = useState(false)
+
     return (
         <Layout>
             <View style={styles.form}>
+
+                <Button onPress={() => setVisible(true)}>Mostrar alerta</Button>
+                <CustomAlert visible={visible} onRequestClose={() => setVisible(false)}>
+                    <CustomAlert.Header>Alerta</CustomAlert.Header>
+
+                    <CustomAlert.Body>
+                        <CustomAlert.Input onChangeText={target => console.log(target.value)} />
+                    </CustomAlert.Body>
+
+                    <CustomAlert.Footer>
+                        <CustomAlert.Button onPress={() => setVisible(false)}>Cerrar</CustomAlert.Button>
+                    </CustomAlert.Footer>
+
+                </CustomAlert>
+
                 <MyInput label="Nombre" value={personalData.nombre} onChange={text => handleChange('nombre', text)} />
                 <MyInput label="Apellido" value={personalData.apellido} onChange={text => handleChange('apellido', text)} />
                 <InputGroup>

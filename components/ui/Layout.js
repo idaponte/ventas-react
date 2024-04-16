@@ -7,6 +7,7 @@ export const Layout = ({ children }) => {
             showsHorizontalScrollIndicator={false}
             endFillColor="#000"
             overScrollMode="never"
+            style={{ backgroundColor: '#fff' }}
         >
             <View style={{ flex: 1, padding: 20 }}>
                 {children}

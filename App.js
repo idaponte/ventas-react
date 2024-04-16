@@ -7,6 +7,7 @@ import Presupuestos from './screens/Presupuestos';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { globalColors } from './styles/globals';
 
 const Stack = createNativeStackNavigator();
 
@@ -17,13 +18,15 @@ function App() {
     <SafeAreaProvider>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{
-          headerShown: true
+          headerShown: true,
+          statusBarColor: 'transparent',
+          headerStyle: { backgroundColor: globalColors.primary[700] },
+          headerTitleStyle: { color: 'white' },
         }}
-          initialRouteName='Formulario'
         >
-          <Stack.Screen name="Formulario" component={Formulario} />
-          <Stack.Screen name="Agenda" component={Agenda} />
           <Stack.Screen name="Presupuestos" component={Presupuestos} />
+          <Stack.Screen name="Agenda" component={Agenda} />
+          <Stack.Screen name="Formulario" component={Formulario} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
@@ -31,3 +34,7 @@ function App() {
 }
 
 export default App;
+
+
+
+

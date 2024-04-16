@@ -1,7 +1,8 @@
 
-import React, { useState } from 'react'
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { useState } from 'react'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { FlatListModal } from './modals/FlatListModal'
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export const Dropdown = ({
     label = '',
@@ -21,6 +22,11 @@ export const Dropdown = ({
                     onPress={() => setVisible(true)}
                 >
                     <Text>{value.length ? value : defaultValue}</Text>
+
+                    <View style={{ position: 'absolute', right: 20 }}>
+                        <Icon name='chevron-down' size={10} color='darkgrey' />
+                    </View>
+
                 </TouchableOpacity>
             </View>
 

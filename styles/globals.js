@@ -2,18 +2,17 @@ import { StyleSheet } from "react-native";
 
 export const globalColors = {
     primary: {
-
-        '50': '#eff7ff',
-        '100': '#daebff',
-        '200': '#bddeff',
-        '300': '#90c9ff',
-        '400': '#5babff',
-        '500': '#3589fc',
-        '600': '#1f69f1',
-        '700': '#1752db',
-        '800': '#1a44b3',
-        '900': '#1b3c8d',
-        '950': '#152756',
+        '50': '#edf8ff',
+        '100': '#d6eeff',
+        '200': '#b6e2ff',
+        '300': '#84d2ff',
+        '400': '#4ab7ff',
+        '500': '#2094ff',
+        '600': '#0874ff',
+        '700': '#025ffa',
+        '800': '#094ac4',
+        '900': '#0e429a',
+        '950': '#0e295d',
     },
     danger: '#ff0000',
     success: '#23a303',
@@ -73,7 +72,6 @@ export const globalStyles = StyleSheet.create({
         borderColor: '#a8a8a8',
         display: 'flex',
         flexDirection: 'row',
-        alignItems: 'center',
         backgroundColor: '#fff'
     },
     text: {
@@ -86,5 +84,12 @@ export const globalStyles = StyleSheet.create({
         borderColor: 'grey',
         borderWidth: 1,
         borderRadius: 7,
-    }
+    },
+    shadow: {
+        shadowColor: 'black',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
 })

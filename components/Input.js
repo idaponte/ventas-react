@@ -13,7 +13,7 @@ export const Input = ({
 }) => {
     return (
         <View style={styles.inputContainer}>
-            {label.length && <Text style={styles.label}>{label}</Text>}
+            {/* {label.length && <Text style={styles.label}>{label}</Text>} */}
             <TextInput
                 style={styles.input}
                 placeholder={placeholder}
@@ -49,7 +49,6 @@ const styles = StyleSheet.create({
         borderColor: '#a8a8a8',
         display: 'flex',
         flexDirection: 'row',
-        alignItems: 'center',
         backgroundColor: '#fff'
     },
 })
