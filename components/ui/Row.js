@@ -1,8 +1,8 @@
 import { View } from "react-native"
 
-export const Row = ({ children }) => {
+export const Row = ({ children, style = {} }) => {
     return (
-        <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+        <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', ...style }}>
             {children}
         </View>
     )

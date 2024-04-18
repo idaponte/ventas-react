@@ -13,7 +13,12 @@ export const Input = ({
 }) => {
     return (
         <View style={styles.inputContainer}>
-            {/* {label.length && <Text style={styles.label}>{label}</Text>} */}
+            <Text style={{
+                ...styles.label,
+                display: label.length ? 'flex' : 'none',
+            }}>
+                {label}
+            </Text>
             <TextInput
                 style={styles.input}
                 placeholder={placeholder}

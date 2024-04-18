@@ -6,32 +6,68 @@ import { globalColors } from '../styles/globals';
 
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
-import { Drawer as DrawerContent } from '../components/ui';
+import { Drawer as DrawerContent, Row, Button, IconButton } from '../components/ui';
+import { DataProvider } from '../contexts/DataProvider';
+import PresupProvider, { PresupContext } from '../contexts/PresupProvider';
+import Icon from 'react-native-vector-icons/FontAwesome5';
+import { useContext } from 'react';
 
 const Drawer = createDrawerNavigator();
 
 
-const DrawerNavigator = () => {
+const AppState = ({ children }) => {
     return (
-        <Drawer.Navigator
-            initialRouteName="Formulario"
-            screenOptions={{
-                headerShown: true,
-                statusBarColor: 'transparent',
-                headerStyle: { backgroundColor: globalColors.primary[700] },
-                headerTitleStyle: { color: 'white' },
-            }}
-            drawerContent={(props) => {
-                return (
-                    <DrawerContent {...props} />
-                )
-            }}
+        <DataProvider>
+            <PresupProvider>
+                {children}
+            </PresupProvider>
+        </DataProvider>
+    )
+}
 
-        >
-            <Drawer.Screen name="Formulario" component={Formulario} />
-            <Drawer.Screen name="Agenda" component={Agenda} />
-            <Drawer.Screen name="Presupuestos" component={Presupuestos} />
-        </Drawer.Navigator>
+const DrawerNavigator = () => {
+
+    const { presupuesto } = useContext(PresupContext);
+
+    const showPresupuesto = () => {
+        console.log(presupuesto)
+    }
+
+
+    return (
+        <AppState>
+
+            <Drawer.Navigator
+
+                initialRouteName="Formulario"
+                screenOptions={{
+                    headerShown: true,
+                    statusBarColor: 'transparent',
+                    headerStyle: { backgroundColor: globalColors.primary[700] },
+                    headerTitleStyle: { color: 'white' },
+                    headerRight: () => {
+                        return (
+                            <Row style={{ gap: 20, marginRight: 20 }}>
+                                <IconButton icon="plus" style={{ backgroundColor: 'transparent' }} size={24} color="white" onPress={showPresupuesto} />
+                                <IconButton icon="bug" style={{ backgroundColor: 'transparent' }} size={24} color="white" onPress={showPresupuesto} />
+                            </Row>
+                        )
+                    }
+
+                }}
+                drawerContent={(props) => {
+                    return (
+                        <DrawerContent {...props} />
+                    )
+                }}
+
+            >
+                <Drawer.Screen name="Formulario" component={Formulario} />
+                <Drawer.Screen name="Agenda" component={Agenda} />
+                <Drawer.Screen name="Presupuestos" component={Presupuestos} />
+            </Drawer.Navigator>
+        </AppState>
+
     )
 }
 

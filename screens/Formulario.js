@@ -28,7 +28,9 @@ const Formulario = () => {
                     fontSize: 12,
                     fontWeight: 'bold',
                 },
-            }}
+
+            }
+            }
 
         >
             <Tab.Screen name="Contacto" component={DatosPersonales} />

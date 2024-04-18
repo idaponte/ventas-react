@@ -1,19 +1,22 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { globalStyles } from "../../styles/globals";
 import { SearchInput } from "./SearchInput";
 import { Text, View, TouchableOpacity } from "react-native";
 import { RubroSelectModal } from "../modals/RubroSelectModal";
 import { Dropdown } from "../Dropdown";
+import { DataContext } from "../../contexts/DataProvider";
 
 export const ItemsScreenHeader = () => {
-    const [open, setOpen] = useState(false);
-    const [value, setValue] = useState(null);
-    const [items, setItems] = useState([
-        { label: 'Apple', value: 'apple' },
-        { label: 'Banana', value: 'banana' }
-    ]);
+    const { rubros } = useContext(DataContext);
 
-    const [modalVisible, setModalVisible] = useState(false);
+    const [items, setItems] = useState(
+        rubros.map(rubro => {
+            return {
+                label: rubro.name,
+                value: rubro.rubro_id
+            }
+        }) || []
+    );
 
     return (
         <>
@@ -21,7 +24,7 @@ export const ItemsScreenHeader = () => {
                 gap: 10,
                 marginBottom: 20
             }}>
-                <Dropdown defaultValue="Seleccione un rubro" />
+                <Dropdown data={items} defaultValue="Seleccione un rubro" />
                 <SearchInput />
             </View>
 

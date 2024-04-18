@@ -1,14 +1,21 @@
 import { createContext, useState } from "react"
 import { Fetch } from "../services/fetch"
 import { hashPsw } from "../utils/hashPsw"
+import { showToast } from "../utils/showToast"
+import { saveToSecureStorage } from "../utils/secureStorage"
 
 export const AuthContext = createContext({
     login: () => { },
     logout: () => { },
-    user: null
+    user: null,
+    isLogged: false
 })
 
 const AuthProvider = ({ children }) => {
+
+    const [user, setUser] = useState(null)
+    const [isLogged, setIsLogged] = useState(false)
+
 
     const login = async () => {
         try {
@@ -21,8 +28,14 @@ const AuthProvider = ({ children }) => {
 
 
 
+            setUser(resp.data)
+            setIsLogged(true)
+
+
+
         } catch (error) {
-            console.error(error)
+            console.error('error', error.message)
+            showToast(error.message)
         }
     }
 
@@ -30,12 +43,16 @@ const AuthProvider = ({ children }) => {
         try {
             const resp = await Fetch.get('api/logout')
 
+            if (resp.status !== 200) throw new Error('Error al cerrar sesión')
+
+            setUser(null)
+            setIsLogged(false)
+
+
         } catch (error) {
             console.error(error)
         }
     }
-
-    const [user, setUser] = useState(null)
 
 
 
@@ -43,7 +60,8 @@ const AuthProvider = ({ children }) => {
         <AuthContext.Provider value={{
             login,
             logout,
-            user
+            user,
+            isLogged
         }}>
             {children}
         </AuthContext.Provider>

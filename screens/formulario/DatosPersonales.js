@@ -1,9 +1,8 @@
-import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native"
+import { StyleSheet, Text, TextInput, View } from "react-native"
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Layout } from "../../components/ui/Layout";
-import { Button } from "@rneui/themed";
-import CustomAlert from "../../components/CustomAlert";
+import { PresupContext } from "../../contexts/PresupProvider";
 
 const MyInput = ({ label, value, onChange, placeholder = '' }) => {
     return (
@@ -23,81 +22,81 @@ const InputGroup = ({ children }) => {
 }
 
 const DatosPersonales = () => {
-    const [personalData, setPersonalData] = useState({
-        nombre: '',
-        apellido: '',
-        ciudad: '',
-        cp: '',
-        calle: '',
-        nro: '',
-        entre: '',
-        piso: '',
-        oficina: '',
-        celPre: '',
-        celCar: '',
-        celNro: '',
-        telPre: '',
-        telCar: '',
-        telNro: '',
-        email: ''
-    });
+    const {
+        presupuesto,
+        setPresupuesto,
+    } = useContext(PresupContext);
 
-    const handleChange = (key, value) => {
-        setPersonalData({
-            ...personalData,
-            [key]: value
+    const handleCustomerChange = (key, value) => {
+        setPresupuesto({
+            ...presupuesto,
+            customer: {
+                ...presupuesto.customer,
+                [key]: value
+            }
         })
     }
 
-    const [visible, setVisible] = useState(false)
+
+    const handleDomicilioData = (key, value) => {
+        setPresupuesto({
+            ...presupuesto,
+            customer: {
+                ...presupuesto.customer,
+                domicilio: {
+                    ...presupuesto.customer.domicilio,
+                    [key]: value
+                }
+            }
+        })
+    }
+
+    const handleContactoData = (key, value) => {
+        setPresupuesto({
+            ...presupuesto,
+            customer: {
+                ...presupuesto.customer,
+                contacto: {
+                    ...presupuesto.customer.contacto,
+                    [key]: value
+                }
+            }
+        })
+    }
+
 
     return (
         <Layout>
             <View style={styles.form}>
-
-                <Button onPress={() => setVisible(true)}>Mostrar alerta</Button>
-                <CustomAlert visible={visible} onRequestClose={() => setVisible(false)}>
-                    <CustomAlert.Header>Alerta</CustomAlert.Header>
-
-                    <CustomAlert.Body>
-                        <CustomAlert.Input onChangeText={target => console.log(target.value)} />
-                    </CustomAlert.Body>
-
-                    <CustomAlert.Footer>
-                        <CustomAlert.Button onPress={() => setVisible(false)}>Cerrar</CustomAlert.Button>
-                    </CustomAlert.Footer>
-
-                </CustomAlert>
-
-                <MyInput label="Nombre" value={personalData.nombre} onChange={text => handleChange('nombre', text)} />
-                <MyInput label="Apellido" value={personalData.apellido} onChange={text => handleChange('apellido', text)} />
+                <MyInput label="Nombre" value={presupuesto.name} onChange={text => handleCustomerChange('name', text)} />
+                <MyInput label="Apellido" value={presupuesto.ape} onChange={text => handleCustomerChange('ape', text)} />
                 <InputGroup>
-                    <MyInput label="Ciudad" value={personalData.ciudad} onChange={text => handleChange('ciudad', text)} />
-                    <MyInput label="Código postal" value={personalData.cp} onChange={text => handleChange('cp', text)} />
+                    <MyInput label="Ciudad" value={presupuesto.customer.domicilio.ciudad} onChange={text => handleDomicilioData('ciudad', text)} />
+                    <MyInput label="Código postal" value={presupuesto.customer.domicilio.cp} onChange={text => handleDomicilioData('cp', text)} />
                 </InputGroup>
                 <InputGroup>
-                    <MyInput label="Calle" value={personalData.calle} onChange={text => handleChange('calle', text)} />
-                    <MyInput label="Nro" value={personalData.nro} onChange={text => handleChange('nro', text)} />
+                    <MyInput label="Calle" value={presupuesto.customer.domicilio.calle} onChange={text => handleDomicilioData('calle', text)} />
+                    <MyInput label="Nro" value={presupuesto.customer.domicilio.nro} onChange={text => handleDomicilioData('nro', text)} />
                 </InputGroup>
-                <MyInput label="Entre" value={personalData.entre} onChange={text => handleChange('entre', text)} />
+                <MyInput label="Entre" value={presupuesto.customer.domicilio.entre} onChange={text => handleDomicilioData('entre', text)} />
 
                 <InputGroup>
-                    <MyInput label="Piso" value={personalData.piso} onChange={text => handleChange('piso', text)} />
-                    <MyInput label="Oficina" value={personalData.oficina} onChange={text => handleChange('oficina', text)} />
+                    <MyInput label="Piso" value={presupuesto.customer.domicilio.piso} onChange={text => handleDomicilioData('piso', text)} />
+                    <MyInput label="Oficina" value={presupuesto.customer.domicilio.oficina} onChange={text => handleDomicilioData('ofi', text)} />
                 </InputGroup>
 
                 <InputGroup>
-                    <MyInput label="Cel. pre." value={personalData.celPre} onChange={text => handleChange('celPre', text)} />
-                    <MyInput label="Cel. car." value={personalData.celCar} onChange={text => handleChange('celCar', text)} />
-                    <MyInput label="Cel. nro." value={personalData.celNro} onChange={text => handleChange('celNro', text)} />
+                    <MyInput label="Cel. pre." value={presupuesto.customer.contacto.cel_pre} onChange={text => handleContactoData('cel_pre', text)} />
+                    <MyInput label="Cel. car." value={presupuesto.customer.contacto.cel_car} onChange={text => handleContactoData('cel_car', text)} />
+                    <MyInput label="Cel. nro." value={presupuesto.customer.contacto.cel_nbr} onChange={text => handleContactoData('cel_nbr', text)} />
                 </InputGroup>
 
                 <InputGroup>
-                    <MyInput label="Tel. pre." value={personalData.telPre} onChange={text => handleChange('telPre', text)} />
-                    <MyInput label="Tel. car." value={personalData.telCar} onChange={text => handleChange('telCar', text)} />
-                    <MyInput label="Tel. nro." value={personalData.telNro} onChange={text => handleChange('telNro', text)} />
+                    <MyInput label="Tel. pre." value={presupuesto.customer.contacto.tel_pre} onChange={text => handleContactoData('tel_pre', text)} />
+                    <MyInput label="Tel. car." value={presupuesto.customer.contacto.tel_car} onChange={text => handleContactoData('tel_car', text)} />
+                    <MyInput label="Tel. nro." value={presupuesto.customer.contacto.tel_nbr} onChange={text => handleContactoData('tel_nbr', text)} />
                 </InputGroup>
-                <MyInput label="Email" value={personalData.email} onChange={text => handleChange('email', text)} />
+                <MyInput label="Email" value={presupuesto.customer.contacto.email} onChange={text => handleContactoData('email', text)} />
             </View>
         </Layout>
     )

@@ -8,7 +8,6 @@ const Login = () => {
 
     const getSaludo = () => {
         const hora = new Date().getHours() - 3
-        console.log(hora)
         if (hora < 12) {
             return 'Buenos días'
         } else if (hora < 18) {

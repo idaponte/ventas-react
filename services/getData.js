@@ -1,11 +1,12 @@
+import { Fetch } from "./fetch"
 
 
 export const getData = async () => {
     const endpoints = [
+        'rubros',
         'bonifs',
         'meses',
         'tipoinstalaciones',
-        'rubros',
         'dolar',
         'precios',
     ]
@@ -13,10 +14,13 @@ export const getData = async () => {
     const data = await Promise.all(
         endpoints.map(async endpoint => {
             const response = await Fetch.get('api/' + endpoint)
-            return { [endpoint]: response }
+            return { [endpoint]: response['data'] }
         })
     )
 
-    console.log(data)
+    const finalData = data.reduce((acc, item) => {
+        return { ...acc, ...item }
+    }, {})
 
+    return finalData
 }

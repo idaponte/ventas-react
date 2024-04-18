@@ -10,11 +10,28 @@ export const FlatListModal = ({
     return (
         <ModalLayout isVisible={isVisible} setIsVisible={setIsVisible}>
             <View style={styles.modalContent}>
-                <FlatList data={data} renderItem={({ key, item }) => (
-                    <TouchableOpacity style={{ padding: 10 }}>
-                        <Text>{item.label}</Text>
-                    </TouchableOpacity>
-                )} />
+                <FlatList data={data} renderItem={({ item, index }) => {
+                    return (
+                        <TouchableOpacity
+                            key={index}
+                            onPress={() => {
+                                setIsVisible(false)
+                            }}
+                            style={{
+                                padding: 10,
+                                backgroundColor: index % 2 === 0 ? 'lightgrey' : 'white'
+                            }}
+
+                        >
+                            <Text
+                                style={{
+                                    fontSize: 16,
+                                    textTransform: 'uppercase'
+                                }}
+                            >{item.label}</Text>
+                        </TouchableOpacity>
+                    )
+                }} />
             </View>
         </ModalLayout>
     )

@@ -18,7 +18,7 @@ export const Dropdown = ({
             <View style={styles.inputContainer}>
                 <Text style={{
                     ...styles.label,
-                    display: label.length ? 'flex' : 'none'
+                    display: label.length ? 'flex' : 'none',
                 }}>
                     {label}
                 </Text>

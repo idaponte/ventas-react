@@ -1,4 +1,6 @@
 import { Modal, ScrollView, StyleSheet, View } from 'react-native'
+import { IconButton } from '../ui'
+import { Button } from '@rneui/base'
 
 export const ModalLayout = ({
     children,
