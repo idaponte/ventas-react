@@ -40,21 +40,6 @@ const PresupuestosBox = ({
 const Presupuestos = () => {
     return (
         <Layout>
-            <ShadowView>
-                <View style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    width: '100%',
-                    alignItems: 'center',
-                    paddingHorizontal: 20,
-                    marginBottom: 30,
-                }}>
-                    <Text style={{ flex: 3, fontWeight: '600' }}>Nombre</Text>
-                    <Text style={{ flex: 3, fontWeight: '600' }}>Dom.</Text>
-                    <Text style={{ flex: 2, fontWeight: '600' }}>Estado</Text>
-                </View>
-            </ShadowView>
-
             <PresupuestosBox title='En nube'>
                 <CustomPresupuestoItem nombre="Ignacio da Ponte" domicilio="Calle falsa 123" estado='Facturado' />
             </PresupuestosBox>

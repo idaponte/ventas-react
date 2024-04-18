@@ -3,6 +3,7 @@ import { globalStyles } from "../../styles/globals";
 import { SearchInput } from "./SearchInput";
 import { Text, View, TouchableOpacity } from "react-native";
 import { RubroSelectModal } from "../modals/RubroSelectModal";
+import { Dropdown } from "../Dropdown";
 
 export const ItemsScreenHeader = () => {
     const [open, setOpen] = useState(false);
@@ -20,23 +21,10 @@ export const ItemsScreenHeader = () => {
                 gap: 10,
                 marginBottom: 20
             }}>
-                <TouchableOpacity style={{
-                    ...globalStyles.input,
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    backgroundColor: '#fff',
-                    ...globalStyles.inputBorder
-                }}
-                    onPress={() => setModalVisible(true)}
-                >
-                    <Text>Seleccione un rubro</Text>
-                </TouchableOpacity>
-
+                <Dropdown defaultValue="Seleccione un rubro" />
                 <SearchInput />
             </View>
 
-            <RubroSelectModal isVisible={modalVisible} setIsVisible={setModalVisible} />
         </>
     )
 }

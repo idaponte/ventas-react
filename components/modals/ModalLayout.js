@@ -23,12 +23,12 @@ const ModalContent = ({ children }) => {
     return (
         <View style={{
             backgroundColor: 'white',
-            height: '70%',
+            maxHeight: '70%',
             width: '85%',
             borderRadius: 20,
             padding: 20,
         }}>
-            <ScrollView>
+            <ScrollView showsVerticalScrollIndicator={false} >
                 {children}
             </ScrollView>
         </View>

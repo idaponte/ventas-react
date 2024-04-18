@@ -1,6 +1,11 @@
 import { useState } from 'react'
-import { Text, TouchableOpacity } from 'react-native'
+import { Text, TouchableOpacity, View } from 'react-native'
 import { ModalLayout } from '../modals/ModalLayout'
+import { RowBetween } from '../ui/Row'
+import { Column, ColumnBetween } from '../ui/Column'
+import { TextPrimary, TextSuccess } from '../ui/Text'
+import { Button } from '../ui/Button'
+import { useNavigation } from '@react-navigation/native'
 
 export const CustomPresupuestoItem = ({
     domicilio,
@@ -8,7 +13,7 @@ export const CustomPresupuestoItem = ({
     estado,
 }) => {
     const [show, setShow] = useState(false)
-
+    const navigation = useNavigation()
 
     return (
         <>
@@ -40,12 +45,41 @@ export const CustomPresupuestoItem = ({
 
             <ModalLayout isVisible={show} setIsVisible={setShow}>
                 <ModalLayout.Content>
-                    <Text style={{
-                        fontSize: 24,
-                        marginBottom: 20,
-                    }}>
-                        Presupuesto
-                    </Text>
+                    <ColumnBetween>
+                        <Column>
+                            <RowBetween>
+                                <Text style={{
+                                    fontSize: 24,
+                                    marginBottom: 20,
+                                }}>
+                                    Limpred S.A.
+                                </Text>
+
+                                <Text style={{
+                                    fontSize: 18,
+                                    marginBottom: 20,
+                                }}>
+                                    ID: 123456
+                                </Text>
+                            </RowBetween>
+
+                            <TextSuccess weight='bold'>
+                                Facturado - 28/12/2021
+                            </TextSuccess>
+
+                            <TextPrimary style={{ marginTop: 20 }} weight='bold'>
+                                Domicilio
+                            </TextPrimary>
+
+                            <TextPrimary>
+                                {domicilio}
+                            </TextPrimary>
+                        </Column>
+
+                        <Button style={{ marginTop: 20 }} title='Ver' onPress={() => navigation.navigate('Formulario')} />
+                        <Button style={{ marginTop: 20, backgroundColor: 'grey' }} title='Cerrar' onPress={() => setShow(false)} />
+                    </ColumnBetween>
+
                 </ModalLayout.Content>
             </ModalLayout>
 

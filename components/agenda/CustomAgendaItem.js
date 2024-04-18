@@ -6,6 +6,7 @@ import { Input } from '../Input'
 import { IconButton } from '../ui/IconButton'
 import { globalStyles } from '../../styles/globals'
 import { Button } from '../ui/Button'
+import { useNavigation } from '@react-navigation/native'
 
 const PersonaInfo = ({ title, info }) => {
     return (
@@ -31,7 +32,7 @@ export const CustomAgendaItem = ({
     nombre,
 }) => {
     const [show, setShow] = useState(false)
-
+    const navigation = useNavigation()
 
     return (
         <>
@@ -79,7 +80,7 @@ export const CustomAgendaItem = ({
                     {/* Chat box */}
                     <View style={{
                         ...globalStyles.input,
-                        marginBottom: 20,
+                        marginVertical: 10,
                         height: 200,
                         overflow: 'scroll',
                         flexDirection: 'column',
@@ -96,7 +97,6 @@ export const CustomAgendaItem = ({
                         justifyContent: 'space-between',
                     }}>
                         <Input
-                            placeholder="Escribe un mensaje"
                             value=""
                             onChange={() => { }}
                             multiline={true}
@@ -104,7 +104,7 @@ export const CustomAgendaItem = ({
                         />
 
                         <IconButton
-                            icon="send"
+                            icon="arrow-up"
                             onPress={() => { }}
                             size={15}
                             color={'white'}
@@ -118,7 +118,7 @@ export const CustomAgendaItem = ({
 
                     <Button
                         title="Iniciar presupuesto"
-                        onPress={() => setShow(false)}
+                        onPress={() => navigation.navigate('Formulario')}
                         style={{
                             marginTop: 20
                         }}

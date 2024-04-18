@@ -1,17 +1,38 @@
+import { useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import { Layout } from "../components/ui/Layout"
 import { ShadowView } from "../components/ui/ShadowView"
 import { Button } from "../components/ui/Button"
-import DatePicker from "react-native-date-picker"
-import { useState } from "react"
 import { Divider } from "@rneui/themed"
 import { CustomAgendaItem } from "../components/agenda/CustomAgendaItem"
+import { getHumanDate } from "../utils/getHumanDate"
 
+import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 
 const Agenda = () => {
-    const [open, setOpen] = useState(false)
-    const [date, setDate] = useState(new Date())
+    const [date, setDate] = useState(new Date(1598051730000));
 
+    const onChange = (event, selectedDate) => {
+        const currentDate = selectedDate;
+        setDate(currentDate);
+    };
+
+    const showMode = (currentMode) => {
+        DateTimePickerAndroid.open({
+            value: date,
+            onChange,
+            mode: currentMode,
+            is24Hour: true,
+        });
+    };
+
+    const showDatepicker = () => {
+        showMode('date');
+    };
+
+    const showTimepicker = () => {
+        showMode('time');
+    };
     return (
         <>
             <Layout>
@@ -27,8 +48,8 @@ const Agenda = () => {
                         <Text>Fecha</Text>
 
                         <Button
-                            onPress={() => setOpen(true)}
-                            title={date.toDateString()}
+                            onPress={() => showDatepicker()}
+                            title={getHumanDate(date)}
                         />
                     </View>
                 </ShadowView>
@@ -52,7 +73,7 @@ const Agenda = () => {
             </Layout>
 
 
-            <DatePicker
+            {/* <DatePicker
                 modal
                 open={open}
                 date={date}
@@ -63,7 +84,7 @@ const Agenda = () => {
                 onCancel={() => {
                     setOpen(false)
                 }}
-            />
+            /> */}
         </>
     )
 }

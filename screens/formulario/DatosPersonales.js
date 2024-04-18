@@ -5,11 +5,11 @@ import { Layout } from "../../components/ui/Layout";
 import { Button } from "@rneui/themed";
 import CustomAlert from "../../components/CustomAlert";
 
-const MyInput = ({ label, value, onChange }) => {
+const MyInput = ({ label, value, onChange, placeholder = '' }) => {
     return (
         <View style={styles.inputContainer}>
             <Text style={styles.label}>{label}</Text>
-            <TextInput cursorColor='#000' style={styles.input} value={value} onChangeText={onChange} />
+            <TextInput cursorColor='#000' style={styles.input} placeholder={placeholder} value={value} onChangeText={onChange} />
         </View>
     )
 }
@@ -73,7 +73,7 @@ const DatosPersonales = () => {
                 <MyInput label="Apellido" value={personalData.apellido} onChange={text => handleChange('apellido', text)} />
                 <InputGroup>
                     <MyInput label="Ciudad" value={personalData.ciudad} onChange={text => handleChange('ciudad', text)} />
-                    <MyInput label="CP" value={personalData.cp} onChange={text => handleChange('cp', text)} />
+                    <MyInput label="Código postal" value={personalData.cp} onChange={text => handleChange('cp', text)} />
                 </InputGroup>
                 <InputGroup>
                     <MyInput label="Calle" value={personalData.calle} onChange={text => handleChange('calle', text)} />
