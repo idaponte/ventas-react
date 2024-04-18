@@ -9,6 +9,8 @@ Vistas a clonar:
 - [ ] Swiper
 
 
+- [ ] Mantener los datos de sesion en el local storage
+
 
 
 ## Vista: Presupuesto
