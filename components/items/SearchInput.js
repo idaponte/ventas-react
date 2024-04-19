@@ -1,22 +1,18 @@
 import { BottomSheet, Button, Icon, ListItem } from "@rneui/themed";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { View, TextInput, StyleSheet, TouchableOpacity } from "react-native";
 import { globalColors, globalStyles } from "../../styles/globals";
 import { SearchResultsModal } from "../modals/SearchResultsModal";
+import { DataContext } from "../../contexts/DataProvider";
+import { showToast } from "../../utils/showToast";
 
 export const SearchInput = () => {
+    const { precios, searchPrecios } = useContext(DataContext);
+
+    const [data, setData] = useState([])
+
     const [text, setText] = useState('');
     const [isVisible, setIsVisible] = useState(false);
-    const list = [
-        { title: 'List Item 1' },
-        { title: 'List Item 2' },
-        {
-            title: 'Cancel',
-            containerStyle: { backgroundColor: 'red' },
-            titleStyle: { color: 'white' },
-            onPress: () => setIsVisible(false),
-        },
-    ];
 
     return (
         <>
@@ -36,14 +32,27 @@ export const SearchInput = () => {
                     backgroundColor: globalColors.primary[500],
                     padding: 10,
                     borderRadius: 7
-                }} onPress={() => setIsVisible(true)}>
+                }} onPress={() => {
+                    if (!text) {
+                        showToast('Ingrese un término de búsqueda')
+                        return
+                    }
+                    const results = searchPrecios(text)
+
+                    if (results.length === 0) {
+                        showToast('No hay resultados')
+                        return
+                    }
+
+                    setData(results)
+                    setIsVisible(true)
+                }}>
 
                     <Icon name="search" color="white" />
                 </TouchableOpacity>
             </View >
 
-            <SearchResultsModal isVisible={isVisible} setIsVisible={setIsVisible} />
-
+            <SearchResultsModal data={data} isVisible={isVisible} setIsVisible={setIsVisible} />
         </>
     )
 }

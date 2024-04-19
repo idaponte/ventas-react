@@ -2,6 +2,8 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import { Layout } from '../../components/ui/Layout'
 import { globalColors, globalStyles } from '../../styles/globals'
 import { Divider } from '@rneui/base'
+import { useContext } from 'react'
+import { DataContext } from '../../contexts/DataProvider'
 
 const ResumenPresupuestoCard = ({
     title,
@@ -41,13 +43,15 @@ const ResumenPresupuestoCard = ({
 }
 
 const ResumenPresupuesto = () => {
+    const { dolar } = useContext(DataContext)
+
     return (
         <Layout>
             <View style={{ display: 'flex', gap: 15, justifyContent: 'center' }}>
 
                 <ResumenPresupuestoCard
                     title='Presupuesto aceptado'
-                    dolar='884'
+                    dolar={Number(dolar.cotiz).toFixed(0)}
                     equipos='0.00'
                     equiposUSD='0.00'
                     instalacion='0.00'
@@ -56,7 +60,7 @@ const ResumenPresupuesto = () => {
 
                 <ResumenPresupuestoCard
                     title='Presupuesto sugerido'
-                    dolar='884'
+                    dolar={Number(dolar.cotiz).toFixed(0)}
                     equipos='0.20'
                     equiposUSD='0.00'
                     instalacion='0.00'

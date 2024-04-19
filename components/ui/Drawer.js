@@ -67,7 +67,7 @@ export const Drawer = (props) => {
                     title='Sincronizar'
                     style={{ marginHorizontal: 20 }}
                     onPress={async () => {
-                        await Alert.prompt('Ingrese su contraseña', '', [
+                        Alert.prompt('Ingrese su contraseña', '', [
                             {
                                 text: 'Cancelar',
                                 onPress: () => console.log('Cancel Pressed'),

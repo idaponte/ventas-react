@@ -1,25 +1,29 @@
 
-import { Modal, ScrollView, Text, View, StyleSheet, TextInput, FlatList, TouchableOpacity } from "react-native"
-import { Button, Divider } from "@rneui/themed";
+import { Text, View, StyleSheet, FlatList, TouchableOpacity } from "react-native"
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { globalColors } from "../../styles/globals";
 import { ModalLayout } from "./ModalLayout";
+import { useContext } from "react";
+import { PresupContext } from "../../contexts/PresupProvider";
+import { DataContext } from "../../contexts/DataProvider";
 
-export const SearchResultsModal = ({ isVisible, setIsVisible }) => {
+export const SearchResultsModal = ({ isVisible, setIsVisible, data }) => {
+    const { addItem } = useContext(PresupContext)
+    const { getPrecioById } = useContext(DataContext)
 
-    const data = [
-        { key: 'Devin' },
-        { key: 'Dan' },
-        { key: 'Dominic' },
-        { key: 'Jackson' },
-        { key: 'James' },
-        { key: 'Joel' },
-        { key: 'John' },
-        { key: 'Jillian' },
-        { key: 'Jimmy' },
-        { key: 'Julie' },
+    const adaptedData = data.map(item => {
+        return {
+            label: item.name,
+            value: item.generic_id
+        }
+    })
 
-    ]
+
+    const handleItemPress = (item) => {
+        const precio = getPrecioById(item.value)
+
+        addItem(precio)
+        setIsVisible(false)
+    }
 
     return (
         <ModalLayout isVisible={isVisible} setIsVisible={setIsVisible}>
@@ -27,14 +31,14 @@ export const SearchResultsModal = ({ isVisible, setIsVisible }) => {
                 {
                     data.length
                         ? (<FlatList
-                            data={data}
+                            data={adaptedData}
                             renderItem={({ item, index }) => (
-                                <TouchableOpacity onPress={() => setIsVisible(false)}>
+                                <TouchableOpacity onPress={() => handleItemPress(item)}>
                                     <Text style={{
                                         ...styles.item,
                                         backgroundColor: index % 2 == 0 ? '#f3f3f3' : '#fff'
 
-                                    }}>{item.key}</Text>
+                                    }}>{item.label}</Text>
                                 </TouchableOpacity>
                             )}
                         />)

@@ -62,8 +62,6 @@ export class Fetch {
                 ...options
             });
 
-            // show cooikes
-            console.log('cookies:', response.headers.get('set-cookie'));
             const extranetCookie = response.headers.get('set-cookie').split(';')[0];
             await SecureStorage.setData('extranet', extranetCookie);
 

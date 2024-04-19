@@ -10,6 +10,10 @@ Vistas a clonar:
 
 
 - [ ] Mantener los datos de sesion en el local storage
+- [ ] Guardar todos los datos fetcheados en localstorage y trabajar con ellos en lugar de hacer fetch
+- [ ] Buscar alguna constante de expo que me permita saber si estoy en modo desarrollo o produccion
+- [ ] Terminar input del login
+- [ ] Terminar boton de sincronizar
 
 
 

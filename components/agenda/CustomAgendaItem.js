@@ -1,12 +1,10 @@
-import { Text, TextInput, TouchableOpacity, View } from 'react-native'
-import { ModalLayout } from '../modals/ModalLayout'
 import { useState } from 'react'
-import { Divider } from '@rneui/themed'
-import { Input } from '../Input'
-import { IconButton } from '../ui/IconButton'
-import { globalStyles } from '../../styles/globals'
-import { Button } from '../ui/Button'
+import { Text, TouchableOpacity, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
+import { Divider } from '@rneui/themed'
+import { ModalLayout } from '../modals/ModalLayout'
+import { globalStyles } from '../../styles/globals'
+import { Button, Input, IconButton } from '../ui'
 
 const PersonaInfo = ({ title, info }) => {
     return (

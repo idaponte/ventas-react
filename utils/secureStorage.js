@@ -4,8 +4,6 @@ export class SecureStorage {
 
     static setData = async (key, value) => {
         try {
-            console.log('Setting data:', key, value)
-
             await SecureStore.setItemAsync(key, value);
         } catch (error) {
             console.error(error.message);

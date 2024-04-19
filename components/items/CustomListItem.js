@@ -1,6 +1,14 @@
 import { Text, TouchableOpacity } from "react-native"
 
-export const CustomListItem = ({ itemName, itemQty, itemAcep, onPress }) => {
+export const CustomListItem = ({ item, onPress }) => {
+    const priceFormatter = new Intl.NumberFormat('es-AR', {
+        style: 'currency',
+        currency: 'ARS',
+        minimumFractionDigits: 2
+    })
+
+    const formatPrice = (price = 0) => priceFormatter.format(price)
+
     return (
         <TouchableOpacity style={{
             display: 'flex',
@@ -21,9 +29,9 @@ export const CustomListItem = ({ itemName, itemQty, itemAcep, onPress }) => {
         }}
             onPress={onPress}
         >
-            <Text style={{ flex: 3 }}>{itemName}</Text>
-            <Text style={{ flex: 1 }}>{itemQty}</Text>
-            <Text style={{ flex: 1 }}>{itemAcep}</Text>
+            <Text style={{ flex: 3 }}>{item.name}</Text>
+            <Text style={{ flex: 1 }}>{item.qty}</Text>
+            <Text style={{ flex: 1 }}>{`${formatPrice(item.qty * Number(item.precio))}`}</Text>
         </TouchableOpacity>
     )
 }

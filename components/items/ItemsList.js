@@ -1,31 +1,28 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ScrollView, Text, View, StyleSheet } from "react-native"
 import { CustomListHeader } from "./CustomListHeader"
 import { CustomListItem } from "./CustomListItem"
 import { Divider } from "@rneui/base";
 import { ItemDetailsModal } from "../modals/ItemDetailsModal";
+import { PresupContext } from "../../contexts/PresupProvider";
+import { DataContext } from "../../contexts/DataProvider";
 
 
 
 
 export const ItemsList = () => {
+    const { presupuesto, addComunicador } = useContext(PresupContext)
+    const { getPrecioById } = useContext(DataContext)
+
     const [modal1Visible, setIsVisible] = useState(false);
+    const [selectedItem, setSelectedItem] = useState({})
 
-    const list = [
-        { title: 'List Item 1' },
-        { title: 'List Item 2' },
-        {
-            title: 'Cancel',
-            containerStyle: { backgroundColor: 'red' },
-            titleStyle: { color: 'white' },
-            onPress: () => setIsVisible(false),
-        },
-    ];
-
-    const [cant, setCant] = useState({
-        sugerido: 0,
-        aceptado: 0
-    });
+    useEffect(() => {
+        // TODO: solucionar que viene undefined
+        const comunicador = getPrecioById(24)
+        console.log(comunicador)
+        addComunicador(comunicador)
+    }, [])
 
     return (
         <>
@@ -39,10 +36,14 @@ export const ItemsList = () => {
 
                 <CustomListHeader />
 
-
-                <CustomListItem itemName="Comunicador inalámbrico" itemQty="3" itemAcep="$45,13" onPress={() => setIsVisible(!modal1Visible)} />
-                <CustomListItem itemName="Comunicador inalámbrico" itemQty="3" itemAcep="$45,13" onPress={() => setIsVisible(!modal1Visible)} />
-                <CustomListItem itemName="Comunicador inalámbrico" itemQty="3" itemAcep="$45,13" onPress={() => setIsVisible(!modal1Visible)} />
+                {
+                    presupuesto.items.map((item, index) => (
+                        <CustomListItem key={index} item={item} onPress={() => {
+                            setSelectedItem(item)
+                            setIsVisible(true)
+                        }} />
+                    ))
+                }
 
                 <View style={{
                     ...styles.footerListItem, backgroundColor: '#c7c7c7'
@@ -66,7 +67,7 @@ export const ItemsList = () => {
             </View>
 
 
-            <ItemDetailsModal isVisible={modal1Visible} setIsVisible={setIsVisible} />
+            <ItemDetailsModal item={selectedItem} isVisible={modal1Visible} setIsVisible={setIsVisible} />
         </>
     )
 }

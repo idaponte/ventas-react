@@ -1,5 +1,5 @@
 
-import React from 'react'
+import React, { useState } from 'react'
 import { StyleSheet, Text, TextInput, View } from 'react-native'
 
 export const Input = ({
@@ -11,6 +11,8 @@ export const Input = ({
     numberOfLines = 1,
     keyboardType = 'default',
 }) => {
+    const [focused, setFocused] = useState(false)
+
     return (
         <View style={styles.inputContainer}>
             <Text style={{
@@ -20,13 +22,20 @@ export const Input = ({
                 {label}
             </Text>
             <TextInput
-                style={styles.input}
+                style={{
+                    ...styles.input,
+                    borderColor: focused ? '#000' : '#a8a8a8',
+                }}
+                cursorColor='black'
+                onFocus={() => setFocused(true)}
+                onBlur={() => setFocused(false)}
                 placeholder={placeholder}
                 value={value}
                 onChangeText={onChange}
                 multiline={multiline}
                 numberOfLines={numberOfLines}
                 keyboardType={keyboardType}
+                textAlignVertical={multiline ? 'top' : 'center'}
             />
         </View>
     )
@@ -43,17 +52,22 @@ const styles = StyleSheet.create({
         alignItems: 'start',
     },
     label: {
-        fontSize: 18,
+        fontSize: 14,
         marginBottom: 5
     },
     input: {
-        maxWidth: '100%',
-        borderRadius: 7,
-        padding: 15,
-        borderWidth: 1,
+        alignItems: 'flex-start',
+        backgroundColor: '#fff',
         borderColor: '#a8a8a8',
+        borderRadius: 7,
+        borderWidth: 1,
         display: 'flex',
         flexDirection: 'row',
-        backgroundColor: '#fff'
+        justifyContent: 'flex-start',
+        maxWidth: '100%',
+        padding: 15,
     },
+    inputFocused: {
+        borderColor: '#000',
+    }
 })

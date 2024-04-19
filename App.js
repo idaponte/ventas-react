@@ -7,6 +7,7 @@ import AuthProvider, { AuthContext } from './contexts/AuthProvider';
 import AuthNavigator from './navigators/AuthNavigator';
 import DrawerNavigator from './navigators/DrawerNavigator';
 import { useContext, useEffect } from 'react';
+import MiAppState from './navigators/DrawerNavigator';
 
 const Stack = createNativeStackNavigator();
 
@@ -19,7 +20,7 @@ const Router = () => {
 
         {
           isLogged ? (
-            <Stack.Screen name="DrawerNavigator" component={DrawerNavigator} />
+            <Stack.Screen name="DrawerNavigator" component={MiAppState} />
           ) : (
             <Stack.Screen name="AuthNavigator" component={AuthNavigator} />
           )

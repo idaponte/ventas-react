@@ -10,16 +10,16 @@ import { Drawer as DrawerContent, Row, Button, IconButton } from '../components/
 import { DataProvider } from '../contexts/DataProvider';
 import PresupProvider, { PresupContext } from '../contexts/PresupProvider';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 
 const Drawer = createDrawerNavigator();
 
 
-const AppState = ({ children }) => {
+const MiAppState = ({ children }) => {
     return (
         <DataProvider>
             <PresupProvider>
-                {children}
+                <DrawerNavigator />
             </PresupProvider>
         </DataProvider>
     )
@@ -33,42 +33,37 @@ const DrawerNavigator = () => {
         console.log(presupuesto)
     }
 
-
     return (
-        <AppState>
+        <Drawer.Navigator
 
-            <Drawer.Navigator
-
-                initialRouteName="Formulario"
-                screenOptions={{
-                    headerShown: true,
-                    statusBarColor: 'transparent',
-                    headerStyle: { backgroundColor: globalColors.primary[700] },
-                    headerTitleStyle: { color: 'white' },
-                    headerRight: () => {
-                        return (
-                            <Row style={{ gap: 20, marginRight: 20 }}>
-                                <IconButton icon="plus" style={{ backgroundColor: 'transparent' }} size={24} color="white" onPress={showPresupuesto} />
-                                <IconButton icon="bug" style={{ backgroundColor: 'transparent' }} size={24} color="white" onPress={showPresupuesto} />
-                            </Row>
-                        )
-                    }
-
-                }}
-                drawerContent={(props) => {
+            initialRouteName="Formulario"
+            screenOptions={{
+                headerShown: true,
+                statusBarColor: 'transparent',
+                headerStyle: { backgroundColor: globalColors.primary[700] },
+                headerTitleStyle: { color: 'white' },
+                headerRight: () => {
                     return (
-                        <DrawerContent {...props} />
+                        <Row style={{ gap: 20, marginRight: 20 }}>
+                            <IconButton icon="plus" style={{ backgroundColor: 'transparent' }} size={24} color="white" onPress={showPresupuesto} />
+                            <IconButton icon="bug" style={{ backgroundColor: 'transparent' }} size={24} color="white" onPress={showPresupuesto} />
+                        </Row>
                     )
-                }}
+                }
 
-            >
-                <Drawer.Screen name="Formulario" component={Formulario} />
-                <Drawer.Screen name="Agenda" component={Agenda} />
-                <Drawer.Screen name="Presupuestos" component={Presupuestos} />
-            </Drawer.Navigator>
-        </AppState>
+            }}
+            drawerContent={(props) => {
+                return (
+                    <DrawerContent {...props} />
+                )
+            }}
 
+        >
+            <Drawer.Screen name="Formulario" component={Formulario} />
+            <Drawer.Screen name="Agenda" component={Agenda} />
+            <Drawer.Screen name="Presupuestos" component={Presupuestos} />
+        </Drawer.Navigator>
     )
 }
 
-export default DrawerNavigator
+export default MiAppState;

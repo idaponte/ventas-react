@@ -1,7 +1,7 @@
 
 import { useState } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { FlatListModal } from './modals/FlatListModal'
+import { FlatListModal } from '../modals/FlatListModal'
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 export const Dropdown = ({
@@ -26,7 +26,7 @@ export const Dropdown = ({
                     style={styles.input}
                     onPress={() => setVisible(true)}
                 >
-                    <Text>{value.length ? value : defaultValue}</Text>
+                    <Text style={{ textTransform: 'uppercase' }}>{value.length ? value : defaultValue}</Text>
 
                     <View style={{ position: 'absolute', right: 20 }}>
                         <Icon name='chevron-down' size={10} color='darkgrey' />
@@ -35,7 +35,7 @@ export const Dropdown = ({
                 </TouchableOpacity>
             </View>
 
-            <FlatListModal isVisible={visible} setIsVisible={setVisible} data={data} />
+            <FlatListModal isVisible={visible} setIsVisible={setVisible} data={data} onChange={onChange} />
         </>
     )
 }
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
         alignItems: 'start',
     },
     label: {
-        fontSize: 18,
+        fontSize: 14,
         marginBottom: 5
     },
     input: {

@@ -5,7 +5,8 @@ import { ModalLayout } from './ModalLayout'
 export const FlatListModal = ({
     isVisible,
     setIsVisible,
-    data
+    data,
+    onChange = () => { }
 }) => {
     return (
         <ModalLayout isVisible={isVisible} setIsVisible={setIsVisible}>
@@ -15,6 +16,7 @@ export const FlatListModal = ({
                         <TouchableOpacity
                             key={index}
                             onPress={() => {
+                                onChange(item)
                                 setIsVisible(false)
                             }}
                             style={{
