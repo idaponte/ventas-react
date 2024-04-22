@@ -1,28 +1,22 @@
-import { useContext, useEffect, useState } from "react";
-import { ScrollView, Text, View, StyleSheet } from "react-native"
+import { useContext, useState } from "react";
+import { Text, View, StyleSheet } from "react-native"
 import { CustomListHeader } from "./CustomListHeader"
 import { CustomListItem } from "./CustomListItem"
 import { Divider } from "@rneui/base";
 import { ItemDetailsModal } from "../modals/ItemDetailsModal";
 import { PresupContext } from "../../contexts/PresupProvider";
-import { DataContext } from "../../contexts/DataProvider";
 
 
 
 
 export const ItemsList = () => {
-    const { presupuesto, addComunicador } = useContext(PresupContext)
-    const { getPrecioById } = useContext(DataContext)
+    const { presupuesto } = useContext(PresupContext)
 
     const [modal1Visible, setIsVisible] = useState(false);
     const [selectedItem, setSelectedItem] = useState({})
 
-    useEffect(() => {
-        // TODO: solucionar que viene undefined
-        const comunicador = getPrecioById(24)
-        console.log(comunicador)
-        addComunicador(comunicador)
-    }, [])
+
+
 
     return (
         <>

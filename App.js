@@ -8,11 +8,17 @@ import AuthNavigator from './navigators/AuthNavigator';
 import DrawerNavigator from './navigators/DrawerNavigator';
 import { useContext, useEffect } from 'react';
 import MiAppState from './navigators/DrawerNavigator';
+import { ModalLayout } from './components/modals/ModalLayout';
+import { ActivityIndicator, Text } from 'react-native';
 
 const Stack = createNativeStackNavigator();
 
 const Router = () => {
-  const { isLogged } = useContext(AuthContext);
+  const { isLogged, loading } = useContext(AuthContext);
+
+  if (loading) return <ModalLayout>
+    <ActivityIndicator size="large" color="#0000ff" />
+  </ModalLayout>
 
   return (
     <NavigationContainer>

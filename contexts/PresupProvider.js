@@ -1,5 +1,6 @@
-import { createContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 import { presupMockup } from '../utils/presupMockup'
+import { DataContext } from './DataProvider'
 
 export const PresupContext = createContext({
     presupuesto: {},
@@ -80,6 +81,36 @@ const PresupProvider = ({ children }) => {
             items: []
         })
     }
+
+    const { preciosById, tipoInstalacion, tipoPago, bonifs, meses, tipoAbono } = useContext(DataContext)
+
+    useEffect(() => {
+        const comunicador = preciosById[24]
+        if (!comunicador) return
+        addComunicador(comunicador)
+
+        if (bonifs.length === 0) return
+        if (meses.length === 0) return
+        if (tipoPago.length === 0) return
+
+        const instaIdResidencial = tipoAbono.find(tipo => tipo.label.trim().toLowerCase() === 'residencial')?.value || 0
+
+        setPresupuesto({
+            ...presupuesto,
+            oper: {
+                ...presupuesto.oper,
+                categoria: tipoInstalacion[0].value,
+                tipoPago: tipoPago[0].value,
+                insta_id: instaIdResidencial
+            },
+            abono: {
+                ...presupuesto.abono,
+                bonifAbono: bonifs[0].value,
+                bonifMeses: meses[0].value
+            }
+        })
+
+    }, [tipoPago, meses, bonifs])
 
     return (
         <PresupContext.Provider value={{

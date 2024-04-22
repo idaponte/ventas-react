@@ -1,10 +1,16 @@
-import { Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient';
 import { globalColors } from '../../styles/globals';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../../contexts/AuthProvider';
 
 const Login = () => {
+    const { login } = useContext(AuthContext)
+
+    const [user, setUser] = useState({
+        username: 'ebaioni',
+        password: '123'
+    })
 
     const getSaludo = () => {
         const hora = new Date().getHours() - 3
@@ -17,8 +23,13 @@ const Login = () => {
         }
     }
 
-    const { login } = useContext(AuthContext)
 
+    const handleChange = (key, value) => {
+        setUser({
+            ...user,
+            [key]: value
+        })
+    }
 
     return (
         <LinearGradient
@@ -35,10 +46,10 @@ const Login = () => {
                 <Text style={{ color: 'white', fontSize: 20 }}>{getSaludo()}</Text>
             </View>
 
-            <View style={{ backgroundColor: 'white', width: '100%', height: '70%', borderTopLeftRadius: 30, borderTopRightRadius: 30, bottom: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 150 }}>
-                <TextInput style={{ width: '80%', padding: 15, borderRadius: 10, backgroundColor: '#f0f0f0', marginBottom: 20 }} placeholder="Usuario" />
-                <TextInput style={{ width: '80%', padding: 15, borderRadius: 10, backgroundColor: '#f0f0f0', marginBottom: 40 }} placeholder="Contraseña" secureTextEntry />
-                <TouchableOpacity style={{ width: '80%', padding: 15, borderRadius: 10, backgroundColor: globalColors.primary[700], alignItems: 'center' }} onPress={login}>
+            <View style={styles.inputContainer}>
+                <TextInput style={styles.input} placeholder="Usuario" onChange={(value) => handleChange('username', value)} value={user.username} />
+                <TextInput style={styles.input} placeholder="Contraseña" onChange={(value) => handleChange('password', value)} value={user.password} secureTextEntry />
+                <TouchableOpacity style={styles.button} onPress={() => login(user)}>
                     <Text style={{ color: 'white', fontSize: 20 }}>Iniciar sesión</Text>
                 </TouchableOpacity>
             </View>
@@ -46,4 +57,9 @@ const Login = () => {
     )
 }
 
+const styles = StyleSheet.create({
+    inputContainer: { backgroundColor: 'white', width: '100%', height: '70%', borderTopLeftRadius: 30, borderTopRightRadius: 30, bottom: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 150 },
+    input: { width: '80%', padding: 15, borderRadius: 10, backgroundColor: '#f0f0f0', marginBottom: 20 },
+    button: { width: '80%', padding: 15, borderRadius: 10, backgroundColor: globalColors.primary[700], alignItems: 'center' },
+})
 export default Login

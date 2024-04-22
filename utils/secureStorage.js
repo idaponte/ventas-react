@@ -19,4 +19,13 @@ export class SecureStorage {
             throw new Error(error.message);
         }
     }
+
+    static removeData = async (key) => {
+        try {
+            await SecureStore.deleteItemAsync(key);
+        } catch (error) {
+            console.error(error.message);
+            throw new Error(error.message);
+        }
+    }
 }
