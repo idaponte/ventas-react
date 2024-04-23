@@ -45,6 +45,8 @@ export const ItemsScreenHeader = () => {
 
             const items = getPreciosById([24, 1, 8, 9, 10, 11]);
 
+            console.log(items)
+
             for (let item of items) {
                 addItem(item)
             }

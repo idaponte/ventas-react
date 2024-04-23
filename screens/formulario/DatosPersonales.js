@@ -20,13 +20,13 @@ const DatosPersonales = () => {
     } = useContext(PresupContext);
 
     const handleCustomerChange = (key, value) => {
-        setPresupuesto({
-            ...presupuesto,
+        setPresupuesto(oldPresup => ({
+            ...oldPresup,
             customer: {
-                ...presupuesto.customer,
+                ...oldPresup.customer,
                 [key]: value
             }
-        })
+        }))
     }
 
 
@@ -60,8 +60,8 @@ const DatosPersonales = () => {
     return (
         <Layout>
             <View style={styles.form}>
-                <Input label="Nombre (*)" value={presupuesto.name} onChange={text => handleCustomerChange('name', text)} />
-                <Input label="Apellido (*)" value={presupuesto.ape} onChange={text => handleCustomerChange('ape', text)} />
+                <Input label="Nombre (*)" value={presupuesto.customer.name} onChange={text => handleCustomerChange('name', text)} />
+                <Input label="Apellido (*)" value={presupuesto.customer.ape} onChange={text => handleCustomerChange('ape', text)} />
                 <InputGroup>
                     <Input label="Ciudad (*)" value={presupuesto.customer.domicilio.ciudad} onChange={text => handleDomicilioData('ciudad', text)} />
                     <Input label="Código postal (*)" value={presupuesto.customer.domicilio.cp} onChange={text => handleDomicilioData('cp', text)} />

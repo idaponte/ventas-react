@@ -5,15 +5,18 @@ import { CustomListItem } from "./CustomListItem"
 import { Divider } from "@rneui/base";
 import { ItemDetailsModal } from "../modals/ItemDetailsModal";
 import { PresupContext } from "../../contexts/PresupProvider";
+import { DataContext } from "../../contexts/DataProvider";
+import { formatPrice } from "../../utils/currencyFormatter";
 
 
 
 
 export const ItemsList = () => {
-    const { presupuesto } = useContext(PresupContext)
+    const { presupuesto, totalPrecioMateriales, totalEquipos, totalInsta } = useContext(PresupContext)
+    const { precioMateriales } = useContext(DataContext)
 
     const [modal1Visible, setIsVisible] = useState(false);
-    const [selectedItem, setSelectedItem] = useState({})
+    const [selectedItem, setSelectedItem] = useState(null)
 
 
 
@@ -33,7 +36,7 @@ export const ItemsList = () => {
                 {
                     presupuesto.items.map((item, index) => (
                         <CustomListItem key={index} item={item} onPress={() => {
-                            setSelectedItem(item)
+                            setSelectedItem(index)
                             setIsVisible(true)
                         }} />
                     ))
@@ -43,7 +46,7 @@ export const ItemsList = () => {
                     ...styles.footerListItem, backgroundColor: '#c7c7c7'
                 }}>
                     <Text>Materiales</Text>
-                    <Text>$ 0.0</Text>
+                    <Text>{totalPrecioMateriales}</Text>
                 </View>
 
 
@@ -51,17 +54,17 @@ export const ItemsList = () => {
 
                 <View style={styles.footerListItem}>
                     <Text>Subtotal</Text>
-                    <Text>US$ 0.0</Text>
+                    <Text>{totalEquipos}</Text>
                 </View>
 
                 <View style={styles.footerListItem}>
                     <Text>Subtotal Insta.</Text>
-                    <Text>AR$ 0.0</Text>
+                    <Text>{totalInsta}</Text>
                 </View>
             </View>
 
 
-            <ItemDetailsModal item={selectedItem} isVisible={modal1Visible} setIsVisible={setIsVisible} />
+            <ItemDetailsModal itemIndex={selectedItem} isVisible={modal1Visible} setIsVisible={setIsVisible} />
         </>
     )
 }

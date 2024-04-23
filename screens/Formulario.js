@@ -33,8 +33,8 @@ const Formulario = () => {
             }
 
         >
-            <Tab.Screen name="Contacto" component={DatosPersonales} />
             <Tab.Screen name="Items" component={Items} />
+            <Tab.Screen name="Contacto" component={DatosPersonales} />
             <Tab.Screen name="Abono" component={AbonoForm} />
             <Tab.Screen name="Valores" component={ResumenPresupuesto} />
         </Tab.Navigator>

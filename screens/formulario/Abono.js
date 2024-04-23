@@ -48,13 +48,13 @@ const AbonoForm = () => {
     }
 
     const updateOper = (key, value) => {
-        setPresupuesto({
-            ...presupuesto,
+        setPresupuesto(oldPresup => ({
+            ...oldPresup,
             oper: {
-                ...presupuesto.oper,
+                ...oldPresup.oper,
                 [key]: value
             }
-        })
+        }))
     }
 
     const getTipoPagoLabel = tipoPago.find(tipo => tipo.value === presupuesto.oper.tipoPago)?.label || ''
@@ -62,6 +62,7 @@ const AbonoForm = () => {
 
     const setBonifInstalacion = (value) => {
         // TODO: validar que no sea mayor a 100, ni negativo
+        console.log(value25)
 
         const valueNbr = Number(value)
 
@@ -69,13 +70,13 @@ const AbonoForm = () => {
             return
         }
 
-        setPresupuesto({
-            ...presupuesto,
+        setPresupuesto(oldPresup => ({
+            ...oldPresup,
             abono: {
-                ...presupuesto.abono,
+                ...oldPresup.abono,
                 bonifpPercAux: valueNbr
             }
-        })
+        }))
 
     }
 
@@ -88,8 +89,8 @@ const AbonoForm = () => {
         <Layout>
             <View style={{ display: 'flex', gap: 20 }}>
 
-                <Dropdown label='Tipo de abono' value={getTipoAbonoLabel(presupuesto.oper.insta_id)} data={tipoAbono} />
-                <Dropdown label='Tipo de instalación' value={presupuesto.oper.categoria} data={tipoInstalacion} />
+                <Dropdown label='Tipo de abono' value={getTipoAbonoLabel(presupuesto.oper.insta_id)} onChange={(item) => updateOper('insta_id', item.value)} data={tipoAbono} />
+                <Dropdown label='Tipo de instalación' value={presupuesto.oper.categoria} onChange={(item) => updateOper('categoria', item.value)} data={tipoInstalacion} />
                 <Input keyboardType='numeric' onChange={setBonifInstalacion} value={presupuesto.abono.bonifpPercAux?.toString() || ''} label='Bonif. instalación (%)' />
                 <Dropdown label='Bonificación de abono' onChange={(item) => updateAbono('bonifAbono', item.value)} value={getBonifLabel(presupuesto.abono.bonifAbono)} data={bonifs} />
                 <Dropdown label='Meses de bonificación' onChange={(item) => updateAbono('bonifMeses', item.value)} value={getMesesLabel(presupuesto.abono.bonifMeses)} data={meses} />

@@ -1,13 +1,8 @@
 import { Text, TouchableOpacity } from "react-native"
+import { formatPrice } from "../../utils/currencyFormatter"
 
 export const CustomListItem = ({ item, onPress }) => {
-    const priceFormatter = new Intl.NumberFormat('es-AR', {
-        style: 'currency',
-        currency: 'ARS',
-        minimumFractionDigits: 2
-    })
 
-    const formatPrice = (price = 0) => priceFormatter.format(price)
 
     return (
         <TouchableOpacity style={{

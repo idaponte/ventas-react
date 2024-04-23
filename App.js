@@ -10,16 +10,14 @@ import { useContext, useEffect } from 'react';
 import MiAppState from './navigators/DrawerNavigator';
 import { ModalLayout } from './components/modals/ModalLayout';
 import { ActivityIndicator, Text } from 'react-native';
+import LoadingScreen from './screens/LoadingScreen';
 
 const Stack = createNativeStackNavigator();
 
 const Router = () => {
   const { isLogged, loading } = useContext(AuthContext);
 
-  if (loading) return <ModalLayout>
-    <ActivityIndicator size="large" color="#0000ff" />
-  </ModalLayout>
-
+  if (loading) return <LoadingScreen />
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>

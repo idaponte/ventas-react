@@ -1,11 +1,13 @@
 import { Modal, ScrollView, Text, View, StyleSheet, TextInput } from "react-native"
-import { Button, Divider } from "@rneui/themed";
+import { Button as RNButton, Divider } from "@rneui/themed";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { globalColors } from "../../styles/globals";
 import { useContext, useEffect, useState } from "react";
 import { ModalLayout } from "./ModalLayout";
 import { PresupContext } from "../../contexts/PresupProvider";
 import { Input } from "../ui/Input";
+import { Button } from "../ui/Button";
+import { DataContext } from "../../contexts/DataProvider";
 
 const Counter = ({ title, cant, setCant, base = 0 }) => {
 
@@ -18,37 +20,89 @@ const Counter = ({ title, cant, setCant, base = 0 }) => {
         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
             <Text style={{ fontSize: 18 }}>{title}</Text>
             <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Button color='lightgrey' size='md' onPress={() => handleCant(cant - 1)}><Icon name="minus" /></Button>
+                <RNButton color='lightgrey' size='md' onPress={() => handleCant(cant - 1)}><Icon name="minus" /></RNButton>
                 <Text style={{ marginHorizontal: 20, fontSize: 18 }} >{cant}</Text>
-                <Button color='lightgrey' size='md' onPress={() => handleCant(cant + 1)}><Icon name="plus" /></Button>
+                <RNButton color='lightgrey' size='md' onPress={() => handleCant(cant + 1)}><Icon name="plus" /></RNButton>
             </View>
         </View>
     )
 }
 
-export const ItemDetailsModal = ({ isVisible, setIsVisible, item }) => {
-    const { presupuesto, setPresupuesto } = useContext(PresupContext)
+export const ItemDetailsModal = ({ isVisible, setIsVisible, itemIndex }) => {
+    const { presupuesto, setPresupuesto, } = useContext(PresupContext)
+    const item = presupuesto.items[itemIndex]
 
-    const [sugerido, setSugerido] = useState(item?.sqty || 0)
-    const [aceptado, setAceptado] = useState(item?.qty || 0)
+    const handleItemCant = (cant, type) => {
+        // TODO: si el tipo de abono no es inalambrico y el item que se está aumentando es un comunicador se muestra un mensaje de error
+        // revisar si no conviene unificar el metodo de aumentar cantidad con addItem que crea un item y lo agrega
 
+        const newItems = presupuesto.items.map(i => {
+            if (i.generic_id === item?.generic_id) {
+                return {
+                    ...i,
+                    [type]: cant
+                }
+            }
+            return i
+        })
 
+        setPresupuesto(oldPresup => ({
+            ...oldPresup,
+            items: newItems
+        }))
+    }
+
+    const handleSugerido = (cant) => {
+        const newItems = presupuesto.items.map(i => {
+            if (i.generic_id === item?.generic_id) {
+                return {
+                    ...i,
+                    sqty: cant
+                }
+            }
+            return i
+        })
+
+        setPresupuesto(oldPresup => ({
+            ...oldPresup,
+            items: newItems
+        }))
+    }
+
+    const handleAceptado = (cant) => {
+        // esItemComunicador(item.generic_id)
+
+        const newItems = presupuesto.items.map(i => {
+            if (i.generic_id === item?.generic_id) {
+                return {
+                    ...i,
+                    qty: cant
+                }
+            }
+            return i
+        })
+
+        setPresupuesto(oldPresup => ({
+            ...oldPresup,
+            items: newItems
+        }))
+    }
 
 
     const handleDelete = () => {
-        const newItems = presupuesto.items.filter(i => i.generic_id !== item.generic_id)
+        const newItems = presupuesto.items.filter(i => i.generic_id !== item?.generic_id)
 
-        setPresupuesto({
-            ...presupuesto,
+        setPresupuesto(oldPresup => ({
+            ...oldPresup,
             items: newItems
-        })
+        }))
 
         setIsVisible(!isVisible)
     }
 
     const handleComentarios = (value = '') => {
         const newItems = presupuesto.items.map(i => {
-            if (i.generic_id === item.generic_id) {
+            if (i.generic_id === item?.generic_id) {
                 return {
                     ...i,
                     observ: value
@@ -57,10 +111,10 @@ export const ItemDetailsModal = ({ isVisible, setIsVisible, item }) => {
             return i
         })
 
-        setPresupuesto({
-            ...presupuesto,
+        setPresupuesto(oldPresup => ({
+            ...oldPresup,
             items: newItems
-        })
+        }))
     }
 
 
@@ -70,32 +124,31 @@ export const ItemDetailsModal = ({ isVisible, setIsVisible, item }) => {
                 <ScrollView>
 
                     <View style={{ marginBottom: 20, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Text style={{ fontSize: 18 }}>{item.name} ({item.generic_id})</Text>
-                        <Button color={globalColors.danger} size='sm' onPress={handleDelete}><Icon color='white' name="trash" /></Button>
+                        <Text style={{ fontSize: 18 }}>{item?.name} ({item?.generic_id})</Text>
                     </View>
 
                     <View style={{ display: 'flex', flexDirection: 'column' }}>
                         <Counter
                             title='Sugerido'
-                            cant={sugerido}
-                            setCant={cant => setSugerido(cant)}
+                            cant={item?.sqty}
+                            setCant={handleSugerido}
                         />
 
                         <Counter
                             title='Aceptado'
-                            cant={aceptado}
-                            setCant={cant => setAceptado(cant)}
+                            cant={item?.qty}
+                            setCant={handleAceptado}
                         />
                     </View>
 
                     <View style={{ display: 'flex', }}>
                         <Text style={{ fontSize: 18, marginBottom: 5 }}>Comentarios (*)</Text>
-                        <Input multiline={true} numberOfLines={4} onChange={handleComentarios} />
+                        <Input multiline={true} numberOfLines={4} value={item?.observ} onChange={handleComentarios} />
                     </View>
 
                     <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 }}>
                         <Text style={{ fontSize: 18 }}>Precio</Text>
-                        <Text style={styles.price}>$ 45,13</Text>
+                        <Text style={styles.price}>${item?.precio}</Text>
                     </View>
 
                     <Divider style={{ marginVertical: 20 }} />
@@ -121,7 +174,7 @@ export const ItemDetailsModal = ({ isVisible, setIsVisible, item }) => {
                         <Text style={styles.price}>$ 45,13</Text>
                     </View>
 
-
+                    <Button title="Eliminar" onPress={handleDelete} color={globalColors.danger} style={{ marginTop: 40 }} />
                 </ScrollView>
             </View>
 

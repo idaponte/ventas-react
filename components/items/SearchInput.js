@@ -37,6 +37,7 @@ export const SearchInput = () => {
                         showToast('Ingrese un término de búsqueda')
                         return
                     }
+
                     const results = searchPrecios(text)
 
                     if (results.length === 0) {

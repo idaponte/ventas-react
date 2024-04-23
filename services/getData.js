@@ -2,6 +2,8 @@ import { Fetch } from "./fetch"
 
 
 export const getData = async () => {
+    console.log('getData')
+
     const endpoints = [
         'rubros',
         'bonifs',
