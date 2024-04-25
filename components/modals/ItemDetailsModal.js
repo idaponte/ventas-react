@@ -8,6 +8,7 @@ import { PresupContext } from "../../contexts/PresupProvider";
 import { Input } from "../ui/Input";
 import { Button } from "../ui/Button";
 import { DataContext } from "../../contexts/DataProvider";
+import { showToast } from "../../utils/showToast";
 
 const Counter = ({ title, cant, setCant, base = 0 }) => {
 
@@ -20,7 +21,7 @@ const Counter = ({ title, cant, setCant, base = 0 }) => {
         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
             <Text style={{ fontSize: 18 }}>{title}</Text>
             <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                <RNButton color='lightgrey' size='md' onPress={() => handleCant(cant - 1)}><Icon name="minus" /></RNButton>
+                <RNButton color='lightgrey' size='md' disabled={cant === 0} onPress={() => handleCant(cant - 1)}><Icon name="minus" /></RNButton>
                 <Text style={{ marginHorizontal: 20, fontSize: 18 }} >{cant}</Text>
                 <RNButton color='lightgrey' size='md' onPress={() => handleCant(cant + 1)}><Icon name="plus" /></RNButton>
             </View>
@@ -29,10 +30,20 @@ const Counter = ({ title, cant, setCant, base = 0 }) => {
 }
 
 export const ItemDetailsModal = ({ isVisible, setIsVisible, itemIndex }) => {
-    const { presupuesto, setPresupuesto, } = useContext(PresupContext)
+    const { presupuesto, setPresupuesto, esAbonoInalambrico } = useContext(PresupContext)
+    const { esItemComunicador } = useContext(DataContext)
     const item = presupuesto.items[itemIndex]
 
     const handleItemCant = (cant, type) => {
+        console.log({
+            esAbonoInalambrico,
+            esItemComunicador: esItemComunicador(item.generic_id),
+        })
+
+        if (!esAbonoInalambrico && esItemComunicador(item.generic_id)) {
+            showToast('Seleccione un abono inalambrico')
+            return
+        }
         // TODO: si el tipo de abono no es inalambrico y el item que se está aumentando es un comunicador se muestra un mensaje de error
         // revisar si no conviene unificar el metodo de aumentar cantidad con addItem que crea un item y lo agrega
 
@@ -131,13 +142,13 @@ export const ItemDetailsModal = ({ isVisible, setIsVisible, itemIndex }) => {
                         <Counter
                             title='Sugerido'
                             cant={item?.sqty}
-                            setCant={handleSugerido}
+                            setCant={(cant) => handleItemCant(cant, 'sqty')}
                         />
 
                         <Counter
                             title='Aceptado'
                             cant={item?.qty}
-                            setCant={handleAceptado}
+                            setCant={(cant) => handleItemCant(cant, 'qty')}
                         />
                     </View>
 

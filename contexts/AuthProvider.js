@@ -5,7 +5,7 @@ import { showToast } from "../utils/showToast"
 import { SecureStorage, saveToSecureStorage } from "../utils/secureStorage"
 
 export const AuthContext = createContext({
-    login: () => { },
+    login: async () => { },
     logout: () => { },
     loading: true,
     user: null,
@@ -43,6 +43,11 @@ const AuthProvider = ({ children }) => {
 
     const login = async ({ username, password }) => {
 
+        console.log({
+            'username': username,
+            'password': hashPsw(password),
+        })
+
         try {
             const resp = await Fetch.post('api/login', {
                 'username': username,
@@ -50,6 +55,8 @@ const AuthProvider = ({ children }) => {
                 'uuid': 'device.uuid',
                 'version': 'prueba'
             })
+
+            console.log(resp)
 
             setUser(resp.data)
             await SecureStorage.setData('user', JSON.stringify(resp.data))

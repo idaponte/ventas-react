@@ -4,12 +4,27 @@ import { Alert, Linking, Text, View } from 'react-native';
 import { Button } from './Button';
 import { Column } from './Column';
 import { globalColors } from '../../styles/globals';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../contexts/AuthProvider';
+import CustomAlert from '../CustomAlert';
 
 export const Drawer = (props) => {
 
-    const { logout } = useContext(AuthContext)
+    const { logout, login, user } = useContext(AuthContext)
+
+    const [visible, setVisible] = useState(false)
+    const [message, setMessage] = useState('')
+
+    const handleAccept = async () => {
+        setVisible(false)
+        await login({ username: user.username, password: message })
+    }
+
+    const handleCancel = () => {
+        setMessage('')
+        setVisible(false)
+    }
+
 
     return (
         <DrawerContentScrollView {...props} >
@@ -66,25 +81,9 @@ export const Drawer = (props) => {
                     variant='outlined'
                     title='Sincronizar'
                     style={{ marginHorizontal: 20 }}
-                    onPress={async () => {
-                        Alert.prompt('Ingrese su contraseña', '', [
-                            {
-                                text: 'Cancelar',
-                                onPress: () => console.log('Cancel Pressed'),
-                                style: 'cancel',
-                            },
-                            {
-                                text: 'OK',
-                                onPress: password => {
-                                    console.log('OK Pressed', password);
-                                    if (password === '1234') {
-                                        Alert.alert('Sincronización exitosa', 'Los datos se han sincronizado correctamente')
-                                    } else {
-                                        Alert.alert('Error', 'La contraseña es incorrecta')
-                                    }
-                                }
-                            },
-                        ])
+                    onPress={() => {
+                        // implementar alert con prompt
+                        setVisible(true)
                     }}
                 />
                 <Button
@@ -107,7 +106,18 @@ export const Drawer = (props) => {
                 />
             </Column>
 
-
+            <CustomAlert visible={visible} onRequestClose={() => setVisible(false)}>
+                <CustomAlert.Header>
+                    <Text>Confirmación</Text>
+                </CustomAlert.Header>
+                <CustomAlert.Body>
+                    <CustomAlert.Input onChangeText={setMessage} text={message} isPsw />
+                </CustomAlert.Body>
+                <CustomAlert.Footer>
+                    <CustomAlert.Button onPress={handleCancel}>Cancelar</CustomAlert.Button>
+                    <CustomAlert.Button onPress={handleAccept}>Aceptar</CustomAlert.Button>
+                </CustomAlert.Footer>
+            </CustomAlert>
         </DrawerContentScrollView>
     );
 }

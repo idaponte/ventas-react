@@ -6,6 +6,7 @@ import { showToast } from '../utils/showToast'
 
 export const PresupContext = createContext({
     presupuesto: {},
+    esAbonoInalambrico: false,
     setPresupuesto: () => { },
 
     loadPresupuesto: () => { },

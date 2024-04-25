@@ -59,13 +59,14 @@ const Button = ({ onPress, children }) => {
     );
 };
 
-const Input = ({ keyboardType = 'default', onChangeText, isPsw = false }) => {
+const Input = ({ keyboardType = 'default', onChangeText, isPsw = false, text = '' }) => {
     return (
         <TextInput
             style={{ borderWidth: 1, borderColor: 'gray', borderRadius: 5, padding: 10, marginBottom: 10 }}
             keyboardType={keyboardType}
             secureTextEntry={!!isPsw}
-            onChange={onChangeText}
+            onChangeText={onChangeText}
+            value={text}
         />
     );
 };
