@@ -16,12 +16,14 @@ const AuthProvider = ({ children }) => {
 
     const [user, setUser] = useState(null)
     const [isLogged, setIsLogged] = useState(false)
+    const [prevLogged, setPrevLogged] = useState(false)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         SecureStorage.getData('user').then((user) => {
             const parsedUser = JSON.parse(user)
             if (user) {
+                setPrevLogged(true)
                 setUser(parsedUser)
             }
 
@@ -31,8 +33,6 @@ const AuthProvider = ({ children }) => {
         })
 
         setLoading(false)
-
-
     }, [])
 
     useEffect(() => {
@@ -42,13 +42,9 @@ const AuthProvider = ({ children }) => {
 
 
     const login = async ({ username, password }) => {
-
-        console.log({
-            'username': username,
-            'password': hashPsw(password),
-        })
-
         try {
+            setLoading(true)
+
             const resp = await Fetch.post('api/login', {
                 'username': username,
                 'password': hashPsw(password),
@@ -56,11 +52,10 @@ const AuthProvider = ({ children }) => {
                 'version': 'prueba'
             })
 
-            console.log(resp)
-
             setUser(resp.data)
             await SecureStorage.setData('user', JSON.stringify(resp.data))
 
+            setPrevLogged(false)
             setLoading(false)
 
         } catch (error) {
@@ -92,7 +87,8 @@ const AuthProvider = ({ children }) => {
             logout,
             user,
             isLogged,
-            loading
+            loading,
+            prevLogged
         }}>
             {children}
         </AuthContext.Provider>

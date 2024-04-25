@@ -15,7 +15,10 @@ export const PresupContext = createContext({
     setCustomerData: () => { },
     addItem: () => { },
     resetItems: () => { },
-    addComunicador: () => { }
+    addComunicador: () => { },
+    hasPresupComunicador: () => { },
+    resetPrecioComunicador: () => { },
+    handleDeleteItem: () => { }
 })
 
 const PresupProvider = ({ children }) => {
@@ -173,7 +176,71 @@ const PresupProvider = ({ children }) => {
         return acc + value
     }, 0))
 
+    const hasPresupComunicador = () => {
+        return presupuesto.items.find(item => esItemComunicador(item.generic_id))
+    }
 
+    const resetPrecioComunicador = (value = 0) => {
+        const comunicador = presupuesto.items.find(item => item.generic_id === 24)
+        if (!comunicador) return
+
+        const newItems = presupuesto.items.map(item => {
+            if (item.generic_id === comunicador.generic_id) {
+                return {
+                    ...item,
+                    precio: value
+                }
+            }
+            return item
+        })
+
+        setPresupuesto(oldPresup => ({
+            ...oldPresup,
+            items: newItems
+        }))
+    }
+
+    const procesarBorrado = (id) => {
+        const newItems = presupuesto.items.filter(i => i.generic_id !== id)
+
+        setPresupuesto(oldPresup => ({
+            ...oldPresup,
+            items: newItems
+        }))
+    }
+
+    const restaAlgunComunicador = (id) => {
+        const comunicadores = presupuesto.items.filter(i => esItemComunicador(i.generic_id) && i.generic_id !== id && i.qty > 0)
+        return comunicadores.length >= 1
+    }
+
+    const tryRomveComunicador = (id) => {
+        const quedaComunicador = restaAlgunComunicador(id)
+
+        if (quedaComunicador) {
+            console.log('Queda al menos un comunicador en el presupuesto')
+            procesarBorrado(id);
+            return true
+        } else {
+            console.log('Debe dejar al menos un comunicador en el presupuesto')
+            showToast('Debe dejar al menos un comunicador en el presupuesto')
+            return false
+        }
+
+    }
+
+    const handleDeleteItem = (id) => {
+        console.log('handleDeleteItem', id)
+        const esComunicador = esItemComunicador(id)
+
+        if (esComunicador) {
+            const commDeleted = tryRomveComunicador(id)
+            return commDeleted
+        }
+
+        procesarBorrado(id)
+        return true
+    }
 
     return (
         <PresupContext.Provider value={{
@@ -190,7 +257,10 @@ const PresupProvider = ({ children }) => {
             setCustomerData,
             addItem,
             resetItems,
-            addComunicador
+            addComunicador,
+            hasPresupComunicador,
+            resetPrecioComunicador,
+            handleDeleteItem
         }}>
             {children}
         </PresupContext.Provider>

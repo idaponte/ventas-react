@@ -30,22 +30,16 @@ const Counter = ({ title, cant, setCant, base = 0 }) => {
 }
 
 export const ItemDetailsModal = ({ isVisible, setIsVisible, itemIndex }) => {
-    const { presupuesto, setPresupuesto, esAbonoInalambrico } = useContext(PresupContext)
+    const { presupuesto, setPresupuesto, esAbonoInalambrico, handleDeleteItem } = useContext(PresupContext)
     const { esItemComunicador } = useContext(DataContext)
     const item = presupuesto.items[itemIndex]
 
     const handleItemCant = (cant, type) => {
-        console.log({
-            esAbonoInalambrico,
-            esItemComunicador: esItemComunicador(item.generic_id),
-        })
 
         if (!esAbonoInalambrico && esItemComunicador(item.generic_id)) {
             showToast('Seleccione un abono inalambrico')
             return
         }
-        // TODO: si el tipo de abono no es inalambrico y el item que se está aumentando es un comunicador se muestra un mensaje de error
-        // revisar si no conviene unificar el metodo de aumentar cantidad con addItem que crea un item y lo agrega
 
         const newItems = presupuesto.items.map(i => {
             if (i.generic_id === item?.generic_id) {
@@ -61,54 +55,6 @@ export const ItemDetailsModal = ({ isVisible, setIsVisible, itemIndex }) => {
             ...oldPresup,
             items: newItems
         }))
-    }
-
-    const handleSugerido = (cant) => {
-        const newItems = presupuesto.items.map(i => {
-            if (i.generic_id === item?.generic_id) {
-                return {
-                    ...i,
-                    sqty: cant
-                }
-            }
-            return i
-        })
-
-        setPresupuesto(oldPresup => ({
-            ...oldPresup,
-            items: newItems
-        }))
-    }
-
-    const handleAceptado = (cant) => {
-        // esItemComunicador(item.generic_id)
-
-        const newItems = presupuesto.items.map(i => {
-            if (i.generic_id === item?.generic_id) {
-                return {
-                    ...i,
-                    qty: cant
-                }
-            }
-            return i
-        })
-
-        setPresupuesto(oldPresup => ({
-            ...oldPresup,
-            items: newItems
-        }))
-    }
-
-
-    const handleDelete = () => {
-        const newItems = presupuesto.items.filter(i => i.generic_id !== item?.generic_id)
-
-        setPresupuesto(oldPresup => ({
-            ...oldPresup,
-            items: newItems
-        }))
-
-        setIsVisible(!isVisible)
     }
 
     const handleComentarios = (value = '') => {
@@ -185,7 +131,10 @@ export const ItemDetailsModal = ({ isVisible, setIsVisible, itemIndex }) => {
                         <Text style={styles.price}>$ 45,13</Text>
                     </View>
 
-                    <Button title="Eliminar" onPress={handleDelete} color={globalColors.danger} style={{ marginTop: 40 }} />
+                    <Button title="Eliminar" onPress={() => {
+                        const deleted = handleDeleteItem(item.generic_id)
+                        if (deleted) setIsVisible(false)
+                    }} color={globalColors.danger} style={{ marginTop: 40 }} />
                 </ScrollView>
             </View>
 

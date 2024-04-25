@@ -3,6 +3,7 @@ import { View } from 'react-native'
 import { Dropdown, Input, Layout } from '../../components/ui'
 import { DataContext } from '../../contexts/DataProvider'
 import { PresupContext } from '../../contexts/PresupProvider'
+import { showToast } from '../../utils/showToast'
 
 const AbonoForm = () => {
 
@@ -12,11 +13,16 @@ const AbonoForm = () => {
         tipoAbono,
         meses,
         bonifs,
+        preciosById,
+        esAbonoInalambrico,
+        getTipoAbonoById,
     } = useContext(DataContext)
 
     const {
         presupuesto,
-        setPresupuesto
+        setPresupuesto,
+        hasPresupComunicador,
+        resetPrecioComunicador,
     } = useContext(PresupContext)
 
     const getTipoAbonoLabel = (value = '') => {
@@ -62,7 +68,7 @@ const AbonoForm = () => {
 
     const setBonifInstalacion = (value) => {
         // TODO: validar que no sea mayor a 100, ni negativo
-        console.log(value25)
+        console.log(value)
 
         const valueNbr = Number(value)
 
@@ -80,16 +86,60 @@ const AbonoForm = () => {
 
     }
 
-    const setTipoAbono = (data) => {
-        setTipoAbono(data)
+    const setTipoAbono = (item) => {
+        const isPrevTipoAbonoInalambrico = esAbonoInalambrico(presupuesto.oper.insta_id)
+        const isNewTipoAbonoInalambrico = esAbonoInalambrico(item.value)
+        const isNewTipoAbonoMant = getTipoAbonoById(item.value).label.toLowerCase().includes('mant.')
+        const comm = hasPresupComunicador()
+
+        console.log({
+            isPrevTipoAbonoInalambrico,
+            isNewTipoAbonoInalambrico,
+            isNewTipoAbonoMant,
+            comm
+
+        })
+
+        if (!comm) {
+            showToast('No se ha seleccionado un comunicador')
+            return
+        }
+
+        if (!isNewTipoAbonoInalambrico && isPrevTipoAbonoInalambrico) {
+            if (comm.qty > 0) {
+                showToast('Debe dejar la cantidad de Comunicador Inalámbrico en 0.')
+                return
+            }
+        }
+
+        if (isNewTipoAbonoMant) {
+            resetPrecioComunicador();
+        }
+
+        if (!isNewTipoAbonoInalambrico && comm.qty > 0) {
+            showToast('Debe dejar la cantidad de Comunicador Inalámbrico en 0.')
+            return;
+        }
+
+        if (!isNewTipoAbonoMant) {
+            const comunicador = preciosById[24]
+            if (!comunicador) return
+            resetPrecioComunicador(comunicador.precio);
+        }
+
+        updateOper('insta_id', item.value)
     }
+
+    useEffect(() => {
+        console.log('tipoAbono', presupuesto.oper.insta_id)
+    }, [presupuesto.oper.insta_id])
 
 
     return (
         <Layout>
             <View style={{ display: 'flex', gap: 20 }}>
 
-                <Dropdown label='Tipo de abono' value={getTipoAbonoLabel(presupuesto.oper.insta_id)} onChange={(item) => updateOper('insta_id', item.value)} data={tipoAbono} />
+                <Dropdown label='Tipo de abono' value={getTipoAbonoLabel(presupuesto.oper.insta_id)} onChange={setTipoAbono} data={tipoAbono} />
                 <Dropdown label='Tipo de instalación' value={presupuesto.oper.categoria} onChange={(item) => updateOper('categoria', item.value)} data={tipoInstalacion} />
                 <Input keyboardType='numeric' onChange={setBonifInstalacion} value={presupuesto.abono.bonifpPercAux?.toString() || ''} label='Bonif. instalación (%)' />
                 <Dropdown label='Bonificación de abono' onChange={(item) => updateAbono('bonifAbono', item.value)} value={getBonifLabel(presupuesto.abono.bonifAbono)} data={bonifs} />
