@@ -7,7 +7,7 @@ import { DataContext } from "../../contexts/DataProvider";
 import { showToast } from "../../utils/showToast";
 
 export const SearchInput = () => {
-    const { precios, searchPrecios } = useContext(DataContext);
+    const { searchItems } = useContext(DataContext);
 
     const [data, setData] = useState([])
 
@@ -38,7 +38,7 @@ export const SearchInput = () => {
                         return
                     }
 
-                    const results = searchPrecios(text)
+                    const results = searchItems(text)
 
                     if (results.length === 0) {
                         showToast('No hay resultados')

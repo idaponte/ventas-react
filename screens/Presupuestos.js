@@ -1,7 +1,8 @@
+import { useContext, useEffect } from "react"
 import { Text, View } from "react-native"
 import { Layout } from "../components/ui/Layout"
-import { ShadowView } from "../components/ui/ShadowView"
 import { CustomPresupuestoItem } from "../components/presupuestos/CustomPresupuestoItem"
+import { PresupuestoServiceContext } from "../contexts/PresupuestosService"
 
 const PresupuestosBox = ({
     children,
@@ -13,10 +14,11 @@ const PresupuestosBox = ({
             borderRadius: 10,
             borderWidth: 1,
             position: 'relative',
-            height: 100,
             display: 'flex',
             justifyContent: 'center',
-            paddingHorizontal: 10,
+            paddingHorizontal: 20,
+            gap: 10,
+            paddingVertical: 30,
         }}>
             <Text
                 style={{
@@ -38,10 +40,21 @@ const PresupuestosBox = ({
 }
 
 const Presupuestos = () => {
+
+    const { presupuestos } = useContext(PresupuestoServiceContext)
+
+
+
     return (
-        <Layout>
+        <Layout styles={{ paddingHorizontal: 10 }}>
             <PresupuestosBox title='En nube'>
-                <CustomPresupuestoItem nombre="Ignacio da Ponte" domicilio="Calle falsa 123" estado='Facturado' />
+                {
+                    presupuestos.map(presup => {
+                        return (
+                            <CustomPresupuestoItem key={presup.abono.presup_id} presupuestoSF={presup} />
+                        )
+                    })
+                }
             </PresupuestosBox>
         </Layout>
     )

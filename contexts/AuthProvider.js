@@ -43,6 +43,7 @@ const AuthProvider = ({ children }) => {
 
     const login = async ({ username, password }) => {
         try {
+            console.log('login')
             setLoading(true)
 
             const resp = await Fetch.post('api/login', {
@@ -51,6 +52,8 @@ const AuthProvider = ({ children }) => {
                 'uuid': 'device.uuid',
                 'version': 'prueba'
             })
+
+            console.log(username, password)
 
             setUser(resp.data)
             await SecureStorage.setData('user', JSON.stringify(resp.data))

@@ -74,10 +74,11 @@ export const presupMockup = {
         "bonifd": 0,
         "bonifp_perc": '0.00',
         "bonifp": "0.00",
+        "bonifpPercAux": 0,
         "dolar": "",
         "insta": null,
         "materiales": 0,
         "presup_id": 0,
     },
-    "items": []
+    "items": {}
 }

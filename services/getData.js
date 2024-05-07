@@ -4,19 +4,20 @@ import { Fetch } from "./fetch"
 export const getData = async () => {
     console.log('getData')
 
-    const endpoints = [
-        'rubros',
-        'bonifs',
-        'meses',
-        'tipoinstalaciones',
-        'dolar',
-        'precios',
-    ]
+    const endpoints = {
+        'rubros': 'rubros',
+        'bonifs': 'bonifs',
+        'meses': 'meses',
+        'tipoAbono': 'tipoinstalaciones',
+        'dolar': 'dolar',
+        'items': 'precios',
+    }
+
 
     const data = await Promise.all(
-        endpoints.map(async endpoint => {
-            const response = await Fetch.get('api/' + endpoint)
-            return { [endpoint]: response['data'] }
+        Object.keys(endpoints).map(async key => {
+            const response = await Fetch.get('api/' + endpoints[key])
+            return { [key]: response['data'] }
         })
     )
 

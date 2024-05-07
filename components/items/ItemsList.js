@@ -5,15 +5,13 @@ import { CustomListItem } from "./CustomListItem"
 import { Divider } from "@rneui/base";
 import { ItemDetailsModal } from "../modals/ItemDetailsModal";
 import { PresupContext } from "../../contexts/PresupProvider";
-import { DataContext } from "../../contexts/DataProvider";
 import { formatPrice } from "../../utils/currencyFormatter";
 
 
 
 
 export const ItemsList = () => {
-    const { presupuesto, totalPrecioMateriales, totalEquipos, totalInsta } = useContext(PresupContext)
-    const { precioMateriales } = useContext(DataContext)
+    const { presupuesto, totalPrecioMateriales, totales } = useContext(PresupContext)
 
     const [modal1Visible, setIsVisible] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null)
@@ -34,9 +32,9 @@ export const ItemsList = () => {
                 <CustomListHeader />
 
                 {
-                    presupuesto.items.map((item, index) => (
-                        <CustomListItem key={index} item={item} onPress={() => {
-                            setSelectedItem(index)
+                    Object.values(presupuesto.items).map((item) => (
+                        <CustomListItem key={item.generic_id} item={item} onPress={() => {
+                            setSelectedItem(item.generic_id)
                             setIsVisible(true)
                         }} />
                     ))
@@ -46,7 +44,7 @@ export const ItemsList = () => {
                     ...styles.footerListItem, backgroundColor: '#c7c7c7'
                 }}>
                     <Text>Materiales</Text>
-                    <Text>{totalPrecioMateriales}</Text>
+                    <Text>{formatPrice(totales.totalMaterialesAceptado)}</Text>
                 </View>
 
 
@@ -54,17 +52,17 @@ export const ItemsList = () => {
 
                 <View style={styles.footerListItem}>
                     <Text>Subtotal</Text>
-                    <Text>{totalEquipos}</Text>
+                    <Text>{formatPrice(totales.totalEquiposAceptado)}</Text>
                 </View>
 
                 <View style={styles.footerListItem}>
                     <Text>Subtotal Insta.</Text>
-                    <Text>{totalInsta}</Text>
+                    <Text>{formatPrice(totales.totalInstaAceptado)}</Text>
                 </View>
             </View>
 
 
-            <ItemDetailsModal itemIndex={selectedItem} isVisible={modal1Visible} setIsVisible={setIsVisible} />
+            <ItemDetailsModal itemId={selectedItem} isVisible={modal1Visible} setIsVisible={setIsVisible} />
         </>
     )
 }

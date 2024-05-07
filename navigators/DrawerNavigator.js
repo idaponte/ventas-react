@@ -11,15 +11,21 @@ import { DataProvider } from '../contexts/DataProvider';
 import PresupProvider, { PresupContext } from '../contexts/PresupProvider';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useContext, useEffect } from 'react';
+import PresupuestosService from '../contexts/PresupuestosService';
+import AgendaService from '../contexts/AgendaService';
 
 const Drawer = createDrawerNavigator();
 
 
-const MiAppState = ({ children }) => {
+const MiAppState = () => {
     return (
         <DataProvider>
             <PresupProvider>
-                <DrawerNavigator />
+                <PresupuestosService>
+                    <AgendaService>
+                        <DrawerNavigator />
+                    </AgendaService>
+                </PresupuestosService>
             </PresupProvider>
         </DataProvider>
     )
@@ -35,10 +41,10 @@ const DrawerNavigator = () => {
 
     return (
         <Drawer.Navigator
-
-            initialRouteName="Formulario"
+            initialRouteName="Presupuestos"
             screenOptions={{
                 headerShown: true,
+                headerTintColor: 'white',
                 statusBarColor: 'transparent',
                 headerStyle: { backgroundColor: globalColors.primary[700] },
                 headerTitleStyle: { color: 'white' },

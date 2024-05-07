@@ -47,7 +47,7 @@ export const Drawer = (props) => {
                         fontWeight: '600',
                     }}
                 >
-                    Username
+                    {user.username}
                 </Text>
             </View>
 

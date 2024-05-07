@@ -1,5 +1,8 @@
 import { Text, TouchableOpacity } from "react-native"
 import { formatPrice } from "../../utils/currencyFormatter"
+import Icon from 'react-native-vector-icons/MaterialIcons'
+import { View } from "react-native"
+
 
 export const CustomListItem = ({ item, onPress }) => {
 
@@ -12,6 +15,7 @@ export const CustomListItem = ({ item, onPress }) => {
             alignItems: 'center',
             backgroundColor: 'white',
             padding: 15,
+            height: 80,
             borderRadius: 10,
             shadowColor: "#000",
             shadowOffset: {
@@ -24,9 +28,14 @@ export const CustomListItem = ({ item, onPress }) => {
         }}
             onPress={onPress}
         >
-            <Text style={{ flex: 3 }}>{item.name}</Text>
-            <Text style={{ flex: 1 }}>{item.qty}</Text>
-            <Text style={{ flex: 1 }}>{`${formatPrice(item.qty * Number(item.precio))}`}</Text>
+            <View style={{ flex: 4, display: 'flex', alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' }}>
+                <Text>{item.name}</Text>
+                {
+                    item.observ && <Icon name='comment' size={10} color='#000' style={{ marginRight: 5 }} />
+                }
+            </View>
+            <Text style={{ flex: 1, textAlign: 'right' }}>{item.qty}</Text>
+            <Text style={{ flex: 2, textAlign: 'right' }}>{`${formatPrice(item.qty * Number(item.precio))}`}</Text>
         </TouchableOpacity>
     )
 }

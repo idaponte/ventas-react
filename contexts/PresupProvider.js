@@ -1,12 +1,19 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { presupMockup } from '../utils/presupMockup'
 import { DataContext } from './DataProvider'
-import { formatPrice } from '../utils/currencyFormatter'
 import { showToast } from '../utils/showToast'
 
 export const PresupContext = createContext({
     presupuesto: {},
-    esAbonoInalambrico: false,
+    totales: {},
+    cuotas: {
+        cantMeses: 0,
+        valorCuotaAceptado: 0,
+        valorCuotaSugerido: 0
+    },
+    abonoInalambrico: false,
+
+
     setPresupuesto: () => { },
 
     loadPresupuesto: () => { },
@@ -22,7 +29,19 @@ export const PresupContext = createContext({
 })
 
 const PresupProvider = ({ children }) => {
-    const { preciosById, tipoInstalacion, tipoPago, bonifs, meses, tipoAbono, precioMateriales, getTipoAbonoById, esItemComunicador } = useContext(DataContext)
+    const {
+        bonifs,
+        items,
+        meses,
+        precioMateriales,
+        tipoAbono,
+        tipoInstalacion,
+        tipoPago,
+        esAbonoInalambrico,
+        esItemComunicador,
+        getItemById,
+        toPesos,
+    } = useContext(DataContext)
 
     const dataInicializada = useRef(false)
 
@@ -30,21 +49,17 @@ const PresupProvider = ({ children }) => {
         ...presupMockup
     })
 
-    const [esAbonoInalambrico, setEsAbonoInalambrico] = useState(false)
+    const [abonoInalambrico, setAbonoInalambrico] = useState(false)
 
     useEffect(() => {
-        const abono = getTipoAbonoById(presupuesto.oper.insta_id)
-        const result = abono?.label.toLowerCase().includes('inalambrico')
-        setEsAbonoInalambrico(result)
+        setAbonoInalambrico(
+            esAbonoInalambrico(presupuesto.oper.insta_id)
+        )
     }, [presupuesto.oper.insta_id])
 
 
-    useEffect(() => {
-        console.log('esAbonoInalambrico', esAbonoInalambrico)
-
-    }, [esAbonoInalambrico])
-
     const loadPresupuesto = () => {
+        console.log('loadPresupuesto')
     }
 
     const savePresupuesto = () => {
@@ -80,27 +95,29 @@ const PresupProvider = ({ children }) => {
     }
 
     const addComunicador = (com) => {
-        console.log('addComunicador')
         const item = createItem({ ...com, qty: 0, sqty: 0 })
-        setPresupuesto({
-            ...presupuesto,
-            items: [...presupuesto.items, item]
-        })
+        setPresupuesto(oldPresup => ({
+            ...oldPresup,
+            items: {
+                ...oldPresup.items,
+                [item.generic_id]: item
+            }
+        }))
     }
 
 
     const addItem = (item) => {
-        const isComunicador = esItemComunicador(item.generic_id)
-        console.log('esAbonoInalambrico', esAbonoInalambrico)
-        if (isComunicador && !esAbonoInalambrico) {
-            showToast('Seleccione un abono inalámbrico antes de agregar un comunicador')
+
+        const itemExists = presupuesto.items[item.generic_id]
+
+        if (itemExists) {
+            // showToast('El item ya existe en el presupuesto')
             return
         }
 
-        const itemExists = presupuesto.items.find(i => i.generic_id === item.generic_id)
-
-        if (itemExists) {
-            showToast('El item ya existe en el presupuesto')
+        const isComunicador = esItemComunicador(item.generic_id)
+        if (isComunicador && !abonoInalambrico) {
+            showToast('Seleccione un abono inalámbrico antes de agregar un comunicador')
             return
         }
 
@@ -110,7 +127,10 @@ const PresupProvider = ({ children }) => {
 
         setPresupuesto(oldPresup => ({
             ...oldPresup,
-            items: [...oldPresup.items, newItem]
+            items: {
+                ...oldPresup.items,
+                [newItem.generic_id]: newItem
+            }
         }))
     }
 
@@ -118,16 +138,15 @@ const PresupProvider = ({ children }) => {
         console.log('resetItems')
         setPresupuesto({
             ...presupuesto,
-            items: []
+            items: {}
         })
     }
 
-
     useEffect(() => {
-        const comunicador = preciosById[24]
+        const comunicador = getItemById(24)
         if (!comunicador) return
         addComunicador(comunicador)
-    }, [preciosById])
+    }, [items])
 
     useEffect(() => {
         if (bonifs.length === 0) return
@@ -135,16 +154,14 @@ const PresupProvider = ({ children }) => {
         if (tipoPago.length === 0) return
         if (dataInicializada.current) return
 
-        const instaIdResidencial = tipoAbono.find(tipo => tipo.label.trim().toLowerCase() === 'residencial')?.value || 0
-
-        console.log('Seteando insta id residencial')
+        const instaIdResidencial = Object.values(tipoAbono).find(tipo => tipo.label.trim().toLowerCase() === 'residencial')?.value || 0
 
         setPresupuesto(oldPresup => ({
             ...oldPresup,
             oper: {
                 ...oldPresup.oper,
                 categoria: tipoInstalacion[0].value,
-                tipoPago: tipoPago[0].value,
+                tipo_pago: tipoPago[0].value,
                 insta_id: instaIdResidencial
             },
             abono: {
@@ -157,51 +174,155 @@ const PresupProvider = ({ children }) => {
         dataInicializada.current = true
     }, [tipoPago, meses, bonifs])
 
+    const [totales, setTotales] = useState({
+        totalEquiposAceptado: 0,
+        totalEquiposSugerido: 0,
+        totalInstaAceptado: 0,
+        totalInstaSugerido: 0,
+        totalInstaBonifAceptado: 0,
+        totalInstaBonifSugerido: 0,
+        totalPresupuestoAceptado: 0,
+        totalPresupuestoSugerido: 0,
+        totalContadoAceptado: 0,
+        totalContadoSugerido: 0,
+        totalPrecioMaterialesAceptado: 0,
+        totalPrecioMaterialesSugerido: 0,
+        totalMaterialesAceptado: 0,
+        totalMaterialesSugerido: 0
+    })
+
     useEffect(() => {
-        console.log('rendering')
-    }, [])
+        const newTotales = getTotales()
+        setTotales(newTotales)
+    }, [
+        presupuesto.items, // TODO: revisar si ahora que es obj dispara el useEffect
+        presupuesto.oper.tipo_pago,
+        presupuesto.abono.bonifpPercAux
+    ])
 
-    const totalPrecioMateriales = formatPrice(presupuesto.items.reduce((acc, item) => {
-        return acc + (item.qty * precioMateriales)
-    }, 0))
+    useEffect(() => {
+        console.log('presupuesto.items changed')
+    }, [presupuesto.items])
 
-    const totalEquipos = formatPrice(presupuesto.items.reduce((acc, item) => {
-        const value = item.qty * (Number(item.precio) + precioMateriales)
-        return acc + value
+    const [cuotas, setCuotas] = useState({
+        cantMeses: 0,
+        valorCuotaAceptado: 0,
+        valorCuotaSugerido: 0
+    })
 
-    }, 0))
+    useEffect(() => {
 
-    const totalInsta = formatPrice(presupuesto.items.reduce((acc, item) => {
-        const value = item.qty * Number(item.insta_precio)
-        return acc + value
-    }, 0))
+        let cantMeses = '';
+        const totalPresupuestoAceptado = totales.totalPresupuestoAceptado
+        const totalPresupuestoSugerido = totales.totalPresupuestoSugerido
+        let valorCuotaAceptado = 0
+        let valorCuotaSugerido = 0
+        const tipoPago = presupuesto.oper.tipo_pago;
+
+
+        if (tipoPago == '6_cuotas') {
+            valorCuotaAceptado = (totalPresupuestoAceptado / 6) * 1.15;
+            valorCuotaSugerido = (totalPresupuestoSugerido / 6) * 1.15;
+            cantMeses = 6;
+        }
+
+        if (tipoPago == '3_cuotas') {
+            valorCuotaAceptado = totalPresupuestoAceptado / 3;
+            valorCuotaSugerido = totalPresupuestoSugerido / 3;
+            cantMeses = 3;
+        }
+
+        setCuotas(prev => ({
+            ...prev,
+            cantMeses,
+            valorCuotaAceptado,
+            valorCuotaSugerido
+        }))
+
+    }, [totales])
+
+    const getTotales = () => {
+        let totalPrecioMaterialesAceptado = 0
+        let totalPrecioMaterialesSugerido = 0
+
+        let totalEquiposAceptado = 0
+        let totalEquiposSugerido = 0
+
+        let totalInstaAceptado = 0
+        let totalInstaSugerido = 0
+
+        let totalMaterialesAceptado = 0
+        let totalMaterialesSugerido = 0
+
+        for (const generic_id in presupuesto.items) {
+            const item = presupuesto.items[generic_id]
+            totalPrecioMaterialesAceptado += item.qty * precioMateriales
+            totalPrecioMaterialesSugerido += item.sqty * precioMateriales
+
+            totalEquiposAceptado += item.qty * (Number(item.precio) + precioMateriales)
+            totalEquiposSugerido += item.sqty * (Number(item.precio) + precioMateriales)
+
+            totalInstaAceptado += item.qty * Number(item.insta_precio)
+            totalInstaSugerido += item.sqty * Number(item.insta_precio)
+
+            totalMaterialesAceptado += item.qty * precioMateriales
+            totalMaterialesSugerido += item.sqty * precioMateriales
+        }
+
+        const bonifp = Number(presupuesto.abono.bonifp);
+        const bonifpPerc = 1 - (presupuesto.abono.bonifpPercAux / 100);
+
+        let totalInstaBonifAceptado = (totalInstaAceptado - bonifp) * bonifpPerc;
+        let totalInstaBonifSugerido = (totalInstaSugerido - bonifp) * bonifpPerc;
+
+        const totalPresupuestoAceptado = toPesos(totalEquiposAceptado) + totalInstaBonifAceptado;
+        const totalPresupuestoSugerido = toPesos(totalEquiposSugerido) + totalInstaBonifSugerido;
+        const totalContadoAceptado = totalPresupuestoAceptado * 0.9;
+        const totalContadoSugerido = totalPresupuestoSugerido * 0.9;
+
+        return {
+            totalEquiposAceptado,
+            totalEquiposSugerido,
+            totalInstaAceptado,
+            totalInstaSugerido,
+            totalInstaBonifAceptado,
+            totalInstaBonifSugerido,
+            totalPresupuestoAceptado,
+            totalPresupuestoSugerido,
+            totalContadoAceptado,
+            totalContadoSugerido,
+            totalPrecioMaterialesAceptado,
+            totalPrecioMaterialesSugerido,
+            totalMaterialesAceptado,
+            totalMaterialesSugerido
+        }
+    }
+
 
     const hasPresupComunicador = () => {
-        return presupuesto.items.find(item => esItemComunicador(item.generic_id))
+        return Object.keys(presupuesto.items).find(esItemComunicador)
     }
 
     const resetPrecioComunicador = (value = 0) => {
-        const comunicador = presupuesto.items.find(item => item.generic_id === 24)
+        const comunicador = presupuesto.items[24]
         if (!comunicador) return
 
-        const newItems = presupuesto.items.map(item => {
-            if (item.generic_id === comunicador.generic_id) {
-                return {
-                    ...item,
-                    precio: value
-                }
-            }
-            return item
-        })
 
         setPresupuesto(oldPresup => ({
             ...oldPresup,
-            items: newItems
+            items: {
+                ...oldPresup.items,
+                [24]: {
+                    ...comunicador,
+                    precio: value
+                }
+            }
         }))
     }
 
     const procesarBorrado = (id) => {
-        const newItems = presupuesto.items.filter(i => i.generic_id !== id)
+        const newItems = { ...presupuesto.items }
+        delete newItems[id]
 
         setPresupuesto(oldPresup => ({
             ...oldPresup,
@@ -210,7 +331,7 @@ const PresupProvider = ({ children }) => {
     }
 
     const restaAlgunComunicador = (id) => {
-        const comunicadores = presupuesto.items.filter(i => esItemComunicador(i.generic_id) && i.generic_id !== id && i.qty > 0)
+        const comunicadores = Object.values(presupuesto.items).filter(i => esItemComunicador(i.generic_id) && i.generic_id !== id && i.qty > 0)
         return comunicadores.length >= 1
     }
 
@@ -242,13 +363,15 @@ const PresupProvider = ({ children }) => {
         return true
     }
 
+    const crearJSON = () => {
+    }
+
     return (
         <PresupContext.Provider value={{
             presupuesto,
-            totalPrecioMateriales,
-            totalEquipos,
-            totalInsta,
-            esAbonoInalambrico,
+            totales,
+            cuotas,
+            abonoInalambrico,
 
             setPresupuesto,
             loadPresupuesto,

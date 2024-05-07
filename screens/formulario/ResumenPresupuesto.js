@@ -1,49 +1,40 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native'
 import { Layout } from '../../components/ui/Layout'
-import { globalColors, globalStyles } from '../../styles/globals'
-import { Divider } from '@rneui/base'
+import { globalColors } from '../../styles/globals'
 import { useContext } from 'react'
 import { DataContext } from '../../contexts/DataProvider'
+import { presupValidator } from '../../validators/presupValidator'
+import { PresupContext } from '../../contexts/PresupProvider'
+import { formatPrice } from '../../utils/currencyFormatter'
+import { showToast } from '../../utils/showToast'
+import { ResumenPresupuestoCard } from '../../components/ResumenPresupuestoCard'
 
-const ResumenPresupuestoCard = ({
-    title,
-    dolar,
-    equipos,
-    equiposUSD,
-    instalacion,
-    total
-}) => {
-    return (
-        <View style={styles.resumenPresupuestoCard}>
-            <View style={{ display: 'flex', alignItems: 'center' }}>
-                <Text style={{ fontWeight: 'bold', fontSize: 25 }}>
-                    {title}
-                </Text>
-                <Text style={{ fontSize: 18 }}>Dolar: ${dolar}</Text>
-            </View>
 
-            <Divider />
-
-            <View style={{ display: 'flex', gap: 10 }}>
-                <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <Text style={{ fontSize: 16 }}>Equipos (US$ {equiposUSD})</Text>
-                    <Text style={globalStyles.price}>${equipos}</Text>
-                </View>
-                <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <Text style={{ fontSize: 16 }}>Instalación</Text>
-                    <Text style={globalStyles.price}>${instalacion}</Text>
-                </View>
-                <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <Text style={{ fontSize: 16 }}>Total presupuesto</Text>
-                    <Text style={globalStyles.price}>${total}</Text>
-                </View>
-            </View>
-        </View>
-    )
-}
 
 const ResumenPresupuesto = () => {
-    const { dolar } = useContext(DataContext)
+    const presupCtx = useContext(PresupContext)
+    const dataCtx = useContext(DataContext)
+    const { dolar, toPesos } = dataCtx
+    const { totales, cuotas } = presupCtx
+
+    const esContado = presupCtx.presupuesto.oper.tipo_pago === 'contado'
+
+    const handleGuardar = () => {
+        let errors = presupValidator({
+            presupCtx,
+            dataCtx
+        })
+
+        if (errors.length) {
+            errors = errors.map((error, index) => `${index + 1}. ${error}`)
+            Alert.alert('Errores', errors.join('\n\n'))
+            return
+        }
+
+        showToast('Presupuesto guardado correctamente')
+        // TODO: cargar presupuesto
+    }
+
 
     return (
         <Layout>
@@ -52,21 +43,30 @@ const ResumenPresupuesto = () => {
                 <ResumenPresupuestoCard
                     title='Presupuesto aceptado'
                     dolar={Number(dolar.cotiz).toFixed(0)}
-                    equipos='0.00'
-                    equiposUSD='0.00'
-                    instalacion='0.00'
-                    total='0.00'
+                    totalEquipos={formatPrice(toPesos(totales.totalEquiposAceptado))}
+                    totalEquiposUSD={totales.totalEquiposAceptado}
+                    totalInsta={formatPrice(totales.totalInstaAceptado)}
+                    totalPresupuesto={formatPrice(totales.totalPresupuestoAceptado)}
+                    esContado={esContado}
+                    totalContado={formatPrice(totales.totalContadoAceptado)}
+                    totalInstaBonif={formatPrice(totales.totalInstaBonifAceptado)}
+                    cantMeses={cuotas.cantMeses}
+                    valorCuota={formatPrice(cuotas.valorCuotaAceptado)}
                 />
 
                 <ResumenPresupuestoCard
                     title='Presupuesto sugerido'
                     dolar={Number(dolar.cotiz).toFixed(0)}
-                    equipos='0.20'
-                    equiposUSD='0.00'
-                    instalacion='0.00'
-                    total='0.00'
+                    totalEquipos={formatPrice(toPesos(totales.totalEquiposSugerido))}
+                    totalEquiposUSD={totales.totalEquiposSugerido}
+                    totalInsta={formatPrice(totales.totalInstaSugerido)}
+                    totalPresupuesto={formatPrice(totales.totalPresupuestoSugerido)}
+                    esContado={esContado}
+                    totalContado={formatPrice(totales.totalContadoSugerido)}
+                    totalInstaBonif={formatPrice(totales.totalInstaBonifSugerido)}
+                    cantMeses={cuotas.cantMeses}
+                    valorCuota={formatPrice(cuotas.valorCuotaSugerido)}
                 />
-
 
                 <View style={{ display: 'flex', gap: 20, flexDirection: 'row', width: '100%', justifyContent: 'center', alignItems: 'center' }}>
 
@@ -74,7 +74,7 @@ const ResumenPresupuesto = () => {
                         <Text style={{ color: 'white', fontSize: 18, fontWeight: 'bold' }}>Limpiar</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={{ backgroundColor: globalColors.success, flex: 1, borderRadius: 50, padding: 20, alignItems: 'center' }}>
+                    <TouchableOpacity style={{ backgroundColor: globalColors.success, flex: 1, borderRadius: 50, padding: 20, alignItems: 'center' }} onPress={handleGuardar}>
                         <Text style={{ color: 'white', fontSize: 18, fontWeight: 'bold' }}>Guardar</Text>
                     </TouchableOpacity>
 
@@ -86,19 +86,6 @@ const ResumenPresupuesto = () => {
     )
 }
 
-const styles = StyleSheet.create({
-    resumenPresupuestoCard: {
-        padding: 20,
-        elevation: 5,
-        borderRadius: 10,
-        shadowColor: 'black',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        backgroundColor: 'white',
-        gap: 25
-    }
-}
-)
+
 
 export default ResumenPresupuesto

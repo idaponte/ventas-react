@@ -29,48 +29,40 @@ const Counter = ({ title, cant, setCant, base = 0 }) => {
     )
 }
 
-export const ItemDetailsModal = ({ isVisible, setIsVisible, itemIndex }) => {
-    const { presupuesto, setPresupuesto, esAbonoInalambrico, handleDeleteItem } = useContext(PresupContext)
+export const ItemDetailsModal = ({ isVisible, setIsVisible, itemId }) => {
+    const { presupuesto, setPresupuesto, abonoInalambrico, handleDeleteItem } = useContext(PresupContext)
     const { esItemComunicador } = useContext(DataContext)
-    const item = presupuesto.items[itemIndex]
+    const item = presupuesto.items[itemId]
 
     const handleItemCant = (cant, type) => {
 
-        if (!esAbonoInalambrico && esItemComunicador(item.generic_id)) {
+        if (!abonoInalambrico && esItemComunicador(item.generic_id)) {
             showToast('Seleccione un abono inalambrico')
             return
         }
 
-        const newItems = presupuesto.items.map(i => {
-            if (i.generic_id === item?.generic_id) {
-                return {
-                    ...i,
+        setPresupuesto(oldPresup => ({
+            ...oldPresup,
+            items: {
+                ...oldPresup.items,
+                [item.generic_id]: {
+                    ...item,
                     [type]: cant
                 }
             }
-            return i
-        })
-
-        setPresupuesto(oldPresup => ({
-            ...oldPresup,
-            items: newItems
         }))
     }
 
     const handleComentarios = (value = '') => {
-        const newItems = presupuesto.items.map(i => {
-            if (i.generic_id === item?.generic_id) {
-                return {
-                    ...i,
+        setPresupuesto(oldPresup => ({
+            ...oldPresup,
+            items: {
+                ...oldPresup.items,
+                [item.generic_id]: {
+                    ...item,
                     observ: value
                 }
             }
-            return i
-        })
-
-        setPresupuesto(oldPresup => ({
-            ...oldPresup,
-            items: newItems
         }))
     }
 

@@ -8,7 +8,7 @@ import { DataContext } from "../../contexts/DataProvider";
 
 export const SearchResultsModal = ({ isVisible, setIsVisible, data }) => {
     const { addItem } = useContext(PresupContext)
-    const { getPrecioById } = useContext(DataContext)
+    const { getItemById } = useContext(DataContext)
 
     const adaptedData = data.map(item => {
         return {
@@ -19,7 +19,7 @@ export const SearchResultsModal = ({ isVisible, setIsVisible, data }) => {
 
 
     const handleItemPress = (item) => {
-        const precio = getPrecioById(item.value)
+        const precio = getItemById(item.value)
 
         addItem(precio)
         setIsVisible(false)

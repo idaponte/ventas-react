@@ -9,24 +9,24 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const DataContext = createContext({
     bonifs: [],
-    meses: [],
-    tipoinstalaciones: [],
-    tipoAbono: [],
-    rubros: [],
     dolar: [],
-    precios: [],
-    preciosById: {},
+    items: {},
+    meses: [],
+    precioMateriales: 0,
+    rubros: [],
+    tipoAbono: {},
     tipoInstalacion: [],
     tipoPago: [],
-    precioMateriales: 0,
-    searchPrecios: () => { },
-    getRubroById: () => { },
-    getPrecioById: () => { },
-    getPreciosById: () => { },
-    getTipoAbonoById: () => { },
+
+    esAbonoInalambrico: () => { },
     esItemComunicador: () => { },
+    getItemById: () => { },
+    getItemsById: () => { },
     getRemoteData: () => { },
-    esAbonoInalambrico: () => { }
+    getRubroById: () => { },
+    getTipoAbonoById: () => { },
+    searchItems: () => { },
+    toPesos: () => { },
 });
 
 export const DataProvider = ({ children }) => {
@@ -35,89 +35,85 @@ export const DataProvider = ({ children }) => {
     const [data, setData] = useState({
         bonifs: [],
         meses: [],
-        tipoinstalaciones: [],
-        tipoAbono: [],
+        tipoAbono: {},
         rubros: [],
         dolar: [],
-        precios: [],
+        items: {},
         precioMateriales: 0,
     })
 
-    const [preciosById, setPreciosById] = useState({})
-    const [rubrosById, setRubrosById] = useState({})
 
-    const storeData = async (toStoreData) => {
-        const dataDraft = { ...toStoreData }
+    const storeData = async (dataDraft) => {
+        try {
+            Object.keys(dataDraft).forEach(async key => {
+                await AsyncStorage.setItem(key, JSON.stringify(dataDraft[key]))
+            })
 
-        Object.keys(dataDraft).forEach(async key => {
-            await AsyncStorage.setItem(key, JSON.stringify(dataDraft[key]))
-        })
-
-        console.log('Data stored')
+            console.log('data stored')
+        } catch (error) {
+            console.error(error)
+        }
     }
 
     const getLocalData = async () => {
-        const dataDraft = { ...data }
+        console.log('fetching local data')
+        try {
+            const dataDraft = { ...data }
 
-        const localData = await Promise.all(Object.keys(dataDraft).map(async key => {
-            const value = await AsyncStorage.getItem(key)
-            const parsedValue = JSON.parse(value)
-            return { [key]: parsedValue }
-        }))
+            const localData = await Promise.all(Object.keys(dataDraft).map(async key => {
+                const value = await AsyncStorage.getItem(key)
+                const parsedValue = JSON.parse(value)
+                return { [key]: parsedValue }
+            }))
 
-        localData.forEach(obj => {
-            Object.assign(dataDraft, obj)
-        })
+            localData.forEach(obj => {
+                Object.assign(dataDraft, obj)
+            })
 
-        setData({ ...dataDraft })
-        loadMaps(dataDraft)
+            setData({ ...dataDraft })
+        } catch (error) {
+            console.error(error)
+        }
     }
 
-    const loadMaps = (dataDraft) => {
-        const preciosByIdDraft = dataDraft.precios.reduce((acc, precio) => {
-            return {
-                ...acc,
-                [precio.generic_id]: precio
-            }
-        }, {})
 
-        const rubrosByIdDraft = dataDraft.rubros.reduce((acc, rubro) => {
-            return {
-                ...acc,
-                [rubro.rubro_id]: rubro
-            }
-        }, {})
-
-        setPreciosById(preciosByIdDraft)
-        setRubrosById(rubrosByIdDraft)
-    }
 
     const getRemoteData = async () => {
-        const newData = await fetchData()
-        const dataDraft = {}
+        console.log('fetching data')
+        const dataDraft = await fetchData()
 
-        for (const key in newData) {
-            dataDraft[key] = newData[key]
-        }
 
         dataDraft.bonifs = dataDraft.bonifs.filter(bonif => bonif.discount === '0.15').map(bonif => ({ label: bonif.name, value: bonif.discount }))
         dataDraft.meses = dataDraft.meses.map(mes => ({ label: `${mes.cant} meses`, value: mes.cant }))
-        dataDraft.tipoAbono = dataDraft.tipoinstalaciones.map(tipo => ({ label: quitarTildes(tipo.name), value: tipo.insta_id, precio: tipo.abono }))
 
+        const adaptedTipoAbono = {}
+        dataDraft.tipoAbono.forEach(tipo => {
+            adaptedTipoAbono[tipo.insta_id] = { label: quitarTildes(tipo.name).toLowerCase(), value: tipo.insta_id, precio: tipo.abono }
+        })
+        dataDraft.tipoAbono = adaptedTipoAbono
 
+        const adaptedItems = {}
+        dataDraft.items.forEach(precio => {
+            const label = quitarTildes(precio.name).toLowerCase()
+            adaptedItems[precio.generic_id] = {
+                ...precio,
+                label,
+                value: precio.generic_id,
+            }
+        })
+        dataDraft.items = adaptedItems
+
+        const precioMateriales = Number(dataDraft.items[325]?.precio) || 0
+        dataDraft.precioMateriales = precioMateriales || 0
 
         setData({ ...dataDraft })
-        loadMaps(dataDraft)
-
         storeData({ ...dataDraft })
     }
 
     const getData = () => {
         if (prevLogged) {
-            console.log('getting local data')
             getLocalData()
         } else {
-            console.log('getting remote data')
             getRemoteData()
         }
     }
@@ -127,32 +123,52 @@ export const DataProvider = ({ children }) => {
     }, [loading, prevLogged])
 
 
-    const searchPrecios = (text) => {
+    const searchItems = (text) => {
         if (!text) return []
-        return data.precios.filter(precio => precio.name.toLowerCase().includes(text.toLowerCase()))
+        const normalizedText = quitarTildes(text).toLowerCase()
+        return Object.values(data.items).filter(item => {
+            return item.label.includes(normalizedText)
+        })
     }
 
-    const getRubroById = (id) => rubrosById[id]
+    const getRubroById = (id) => data.rubros.find(rubro => rubro.value === id)
 
-    const getPrecioById = (id) => preciosById[id]
+    const getItemById = (id) => data.items[id]
 
-    const getPreciosById = (arr) => arr.map(id => preciosById[id]).filter(precio => precio !== undefined)
+    const getItemsById = (ids) => ids.map(getItemById).filter(precio => precio !== undefined)
 
-    const getTipoAbonoById = (id) => data.tipoAbono.find(tipo => tipo.value === id)
+    const getTipoAbonoById = (id) => data.tipoAbono[id]
 
     const esAbonoInalambrico = (id) => {
-        const tipo = data.tipoAbono.find(tipo => tipo.value === id)
-        return tipo.label.toLowerCase().includes('inalam')
+        try {
+            const tipo = getTipoAbonoById(id)
+            if (!tipo) throw new Error('tipo abono not found')
+            return tipo.label.includes('inalam')
+        } catch (error) {
+            console.error(error)
+            return false
+        }
     }
 
-    const esItemComunicador = (generic_id) => getPrecioById(generic_id)?.name.toLowerCase().includes('comunicador')
+    const esItemComunicador = (generic_id) => {
+        try {
+            const item = getItemById(generic_id)
+            if (!item) throw new Error('item not found')
+            return item.name.toLowerCase().includes('comunicador')
+        } catch (error) {
+            console.error(error)
+            return false
+        }
+    }
+
+    const toPesos = (usd) => usd * Number(data.dolar.cotiz)
+
 
     const tipoInstalacion = [
         { label: 'Insta. común', value: 'Insta. común' },
         { label: 'Reseteo', value: 'Reseteo' },
         { label: 'Traslado', value: 'Traslado' },
     ]
-
     const tipoPago = [
         { label: 'otra', value: 'otra' },
         { label: 'contado', value: 'contado' },
@@ -161,29 +177,13 @@ export const DataProvider = ({ children }) => {
         { label: 'contado sin descuentos', value: 'contado_sin_descuentos' },
     ]
 
-    useEffect(() => {
-        const precioMateriales = Number(preciosById[325]?.precio) || 0
-        if (!precioMateriales) return
-
-        setData(oldData => {
-            console.log('setting data - precioMateriales')
-
-            return {
-                ...oldData,
-                precioMateriales
-            }
-        })
-
-    }, [preciosById])
-
     if (
         !data.bonifs.length ||
         !data.meses.length ||
-        !data.tipoinstalaciones.length ||
-        !data.tipoAbono.length ||
+        !Object.keys(data.tipoAbono).length ||
         !data.rubros.length ||
         !Object.keys(data.dolar).length ||
-        !data.precios.length ||
+        !Object.keys(data.items).length ||
         !data.precioMateriales
     ) {
         return <LoadingScreen />
@@ -192,17 +192,17 @@ export const DataProvider = ({ children }) => {
     return (
         <DataContext.Provider value={{
             ...data,
-            preciosById,
             tipoInstalacion,
             tipoPago,
-            searchPrecios,
-            getRubroById,
-            getPrecioById,
-            getPreciosById,
-            getTipoAbonoById,
+            esAbonoInalambrico,
             esItemComunicador,
+            getItemById,
+            getItemsById,
             getRemoteData,
-            esAbonoInalambrico
+            getRubroById,
+            getTipoAbonoById,
+            searchItems,
+            toPesos,
         }}>
             {children}
         </DataContext.Provider>

@@ -12,29 +12,26 @@ const Tab = createMaterialTopTabNavigator();
 
 
 const Formulario = () => {
-    const insets = useSafeAreaInsets();
+    const screenOptions = {
+        tabBarStyle: {
+            backgroundColor: globalColors.primary[700],
+        },
+        tabBarActiveTintColor: 'white',
+        tabBarIndicatorStyle: {
+            backgroundColor: 'white',
+            height: 4,
+        },
+        tabBarLabelStyle: {
+            fontSize: 12,
+            fontWeight: 'bold',
+        },
+
+    }
+
     return (
-        <Tab.Navigator
-            screenOptions={{
-                tabBarStyle: {
-                    backgroundColor: globalColors.primary[700],
-                },
-                tabBarActiveTintColor: 'white',
-                tabBarIndicatorStyle: {
-                    backgroundColor: 'white',
-                    height: 4,
-                },
-                tabBarLabelStyle: {
-                    fontSize: 12,
-                    fontWeight: 'bold',
-                },
-
-            }
-            }
-
-        >
-            <Tab.Screen name="Items" component={Items} />
+        <Tab.Navigator screenOptions={screenOptions} initialRouteName="Contacto">
             <Tab.Screen name="Contacto" component={DatosPersonales} />
+            <Tab.Screen name="Items" component={Items} />
             <Tab.Screen name="Abono" component={AbonoForm} />
             <Tab.Screen name="Valores" component={ResumenPresupuesto} />
         </Tab.Navigator>
