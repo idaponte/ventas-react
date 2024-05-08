@@ -17,11 +17,12 @@ export const presupValidator = ({ presupCtx }) => {
         errors.push('Debe ingresar el número de puerta o las entre calles')
 
 
-    if (!presup.abono.bonifpPerc) errors.push('El porcentaje de bonificación es requerido')
+    if (!isNaN(presup.abono.bonifpPerc)) errors.push('El porcentaje de bonificación es requerido')
 
 
     const arr = [1, 24, 2, 285, 144, 9, 131, 64, 3, 207, 196, 283, 8, 209, 204, 49]
-    for (const item of presup.items) {
+    for (const key in presup.items) {
+        const item = presup.items[key]
         if (arr.includes(item.generic_id)) continue
         const observ = item.observ ?? ''
         if (!observ.length) {

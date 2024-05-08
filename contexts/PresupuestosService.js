@@ -1,43 +1,137 @@
 import { createContext, useContext, useEffect, useState } from "react"
 import { Fetch } from "../services/fetch"
 import LoadingScreen from "../screens/LoadingScreen"
-import { getDom } from "../utils/getDom"
 import { AuthContext } from "./AuthProvider"
 import { PresupuestoModel } from "../models/PresupModel"
-import { View } from "react-native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import { showToast } from "../utils/showToast"
+import { MonssaPresupModel } from "../models/MonssaPresupModel"
 
 export const PresupuestoServiceContext = createContext({
     presupuestos: [],
     presupuestosToCreate: [],
     presupuestosToUpdate: [],
+
+    storePresupuesto: (presupuesto) => { },
+    isPresupNew: (presup_id) => { },
 })
 
 
 const PresupuestosService = ({ children }) => {
-    const { prevLogged, loading } = useContext(AuthContext)
+    const { prevLogged, loading: authLoading } = useContext(AuthContext)
+    const [loading, setLoading] = useState(true)
+
 
     const [state, setState] = useState({
-        presupuestos: [],
-        presupuestosToCreate: [],
-        presupuestosToUpdate: [],
+        presupuestos: {},
+        presupuestosToCreate: {},
+        presupuestosToUpdate: {},
     })
+
+    const addNewPresup = async (presupuesto) => {
+        try {
+
+            const presupuestosToCreate = {
+                ...state.presupuestosToCreate,
+                [presupuesto.presup.presup_id]: presupuesto
+            }
+
+            setState(oldState => ({
+                ...oldState,
+                presupuestosToCreate
+            }))
+
+            await savePresupuestosToLS('presupuestosToCreate', presupuestosToCreate)
+            return true
+        } catch (error) {
+            console.error(error)
+            return false
+        }
+    }
+
+    const updatePresup = async (presupuesto) => {
+        try {
+            const presupId = presupuesto.presup.presup_id
+
+            if (state.presupuestos[presupId]) {
+                const presupDraft = { ...state.presupuestos }
+                delete presupDraft[presupId]
+
+                const presupuestosToUpdate = { ...state.presupuestosToUpdate }
+                presupuestosToUpdate[presupId] = presupuesto
+
+                setState(oldState => ({
+                    ...oldState,
+                    presupuestos: presupDraft,
+                    presupuestosToUpdate
+                }))
+
+                await savePresupuestosToLS('presupuestosToUpdate', presupuestosToUpdate)
+                await savePresupuestosToLS('presupuestos', presupDraft)
+            } else if (state.presupuestosToCreate[presupId]) {
+                const presupuestosToCreateDraft = { ...state.presupuestosToCreate }
+                delete presupuestosToCreateDraft[presupId]
+
+                const presupuestosToUpdate = { ...state.presupuestosToUpdate }
+                presupuestosToUpdate[presupId] = presupuesto
+
+                setState(oldState => ({
+                    ...oldState,
+                    presupuestosToCreate: presupuestosToCreateDraft,
+                    presupuestosToUpdate
+                }))
+
+                await savePresupuestosToLS('presupuestosToUpdate', presupuestosToUpdate)
+                await savePresupuestosToLS('presupuestosToCreate', presupuestosToCreateDraft)
+            }
+
+
+
+            return true
+        } catch (error) {
+            console.error(error)
+            return false
+        }
+    }
+
+    const storePresupuesto = async (presupuesto) => {
+        const monssaPresup = new MonssaPresupModel(presupuesto)
+        let exito = false
+
+        if (isPresupNew(monssaPresup.presup.presup_id)) {
+            exito = await addNewPresup(monssaPresup)
+        } else {
+            exito = await updatePresup(monssaPresup)
+        }
+
+        showToast('Presupuesto guardado correctamente')
+
+        return exito
+    }
 
 
     const getLocalPresups = async () => {
         const presupuestosRAW = await AsyncStorage.getItem('presupuestos')
+        const presupuestosToCreateRAW = await AsyncStorage.getItem('presupuestosToCreate')
+        const presupuestosToUpdateRAW = await AsyncStorage.getItem('presupuestosToUpdate')
 
-        const presupuestos = JSON.parse(presupuestosRAW)
-        if (presupuestos) {
-            setState(oldState => ({
-                ...oldState,
-                presupuestos: presupuestos
-            }))
-        }
+        const presupuestos = JSON.parse(presupuestosRAW) || {}
+        const presupuestosToCreate = JSON.parse(presupuestosToCreateRAW) || {}
+        const presupuestosToUpdate = JSON.parse(presupuestosToUpdateRAW) || {}
+
+        console.log(presupuestos[23540].items[0])
+
+        setState(oldState => ({
+            ...oldState,
+            presupuestos,
+            presupuestosToCreate,
+            presupuestosToUpdate
+        }))
     }
 
-    const savePresupuestosToLS = async (presupuestos) => {
-        await AsyncStorage.setItem('presupuestos', JSON.stringify(presupuestos))
+    const savePresupuestosToLS = async (key, value) => {
+        console.log('saving to LS', key)
+        await AsyncStorage.setItem(key, JSON.stringify(value))
     }
 
     const getRemotePresups = async () => {
@@ -52,41 +146,53 @@ const PresupuestosService = ({ children }) => {
             cant--
         }
 
+        const presupObj = {}
+
+        for (const presup of presupArr) {
+            presupObj[presup.presup.presup_id] = presup
+        }
+
         setState(oldState => ({
             ...oldState,
-            presupuestos: presupArr
+            presupuestos: presupObj
         }))
 
-        savePresupuestosToLS(presupArr)
+        savePresupuestosToLS('presupuestos', presupObj)
     }
 
+    const isPresupNew = (presup_id) => (
+        !state.presupuestos[presup_id] &&
+        !state.presupuestosToCreate[presup_id] &&
+        !state.presupuestosToUpdate[presup_id]
+    )
 
 
-    const loadPresupuestos = () => {
+    const loadPresupuestos = async () => {
         if (prevLogged) {
             console.log('getting local presups')
-            getLocalPresups()
+            await getLocalPresups()
         } else {
             console.log('getting remote presups')
-            getRemotePresups()
+            await getRemotePresups()
         }
+
+        setLoading(false)
     }
 
     useEffect(() => {
         loadPresupuestos()
-    }, [loading, prevLogged])
+    }, [authLoading, prevLogged])
 
-    if (
-        !state.presupuestos.length
-    ) {
-        return <LoadingScreen />
-    }
+    if (loading) return <LoadingScreen />
 
     return (
         <PresupuestoServiceContext.Provider value={{
             presupuestos: state.presupuestos,
             presupuestosToCreate: state.presupuestosToCreate,
             presupuestosToUpdate: state.presupuestosToUpdate,
+
+            storePresupuesto,
+            isPresupNew,
         }}>
             {children}
         </PresupuestoServiceContext.Provider>

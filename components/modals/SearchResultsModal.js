@@ -2,13 +2,9 @@
 import { Text, View, StyleSheet, FlatList, TouchableOpacity } from "react-native"
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { ModalLayout } from "./ModalLayout";
-import { useContext } from "react";
-import { PresupContext } from "../../contexts/PresupProvider";
-import { DataContext } from "../../contexts/DataProvider";
 
-export const SearchResultsModal = ({ isVisible, setIsVisible, data }) => {
-    const { addItem } = useContext(PresupContext)
-    const { getItemById } = useContext(DataContext)
+export const SearchResultsModal = ({ isVisible, setIsVisible, data, handleAddItem }) => {
+
 
     const adaptedData = data.map(item => {
         return {
@@ -18,12 +14,7 @@ export const SearchResultsModal = ({ isVisible, setIsVisible, data }) => {
     })
 
 
-    const handleItemPress = (item) => {
-        const precio = getItemById(item.value)
 
-        addItem(precio)
-        setIsVisible(false)
-    }
 
     return (
         <ModalLayout isVisible={isVisible} setIsVisible={setIsVisible}>
@@ -33,7 +24,7 @@ export const SearchResultsModal = ({ isVisible, setIsVisible, data }) => {
                         ? (<FlatList
                             data={adaptedData}
                             renderItem={({ item, index }) => (
-                                <TouchableOpacity onPress={() => handleItemPress(item)}>
+                                <TouchableOpacity onPress={() => handleAddItem(item)}>
                                     <Text style={{
                                         ...styles.item,
                                         backgroundColor: index % 2 == 0 ? '#f3f3f3' : '#fff'

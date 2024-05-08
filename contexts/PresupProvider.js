@@ -2,6 +2,9 @@ import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { presupMockup } from '../utils/presupMockup'
 import { DataContext } from './DataProvider'
 import { showToast } from '../utils/showToast'
+import { PresupuestoModel } from '../models/PresupModel'
+import LoadingScreen from '../screens/LoadingScreen'
+import { useNavigation, useRoute } from '@react-navigation/native'
 
 export const PresupContext = createContext({
     presupuesto: {},
@@ -20,15 +23,17 @@ export const PresupContext = createContext({
     savePresupuesto: () => { },
     resetPresupuesto: () => { },
     setCustomerData: () => { },
-    addItem: () => { },
+    tryAddItem: () => { },
     resetItems: () => { },
     addComunicador: () => { },
     hasPresupComunicador: () => { },
     resetPrecioComunicador: () => { },
-    handleDeleteItem: () => { }
+    handleDeleteItem: () => { },
+    createEmptyPresupuesto: () => { }
 })
 
 const PresupProvider = ({ children }) => {
+    const dataCtx = useContext(DataContext)
     const {
         bonifs,
         items,
@@ -41,15 +46,18 @@ const PresupProvider = ({ children }) => {
         esItemComunicador,
         getItemById,
         toPesos,
-    } = useContext(DataContext)
+    } = dataCtx
 
     const dataInicializada = useRef(false)
 
-    const [presupuesto, setPresupuesto] = useState({
-        ...presupMockup
-    })
+    const [presupuesto, setPresupuesto] = useState(new PresupuestoModel())
 
     const [abonoInalambrico, setAbonoInalambrico] = useState(false)
+
+    const [loadingPresupuesto, setLoadingPresupuesto] = useState(false)
+
+    const navigation = useNavigation()
+    const route = useRoute()
 
     useEffect(() => {
         setAbonoInalambrico(
@@ -57,10 +65,56 @@ const PresupProvider = ({ children }) => {
         )
     }, [presupuesto.oper.insta_id])
 
+    const loadPresupuesto = (presupuestoSF) => {
+        setLoadingPresupuesto(true)
+        resetPresupuesto()
 
-    const loadPresupuesto = () => {
-        console.log('loadPresupuesto')
+        const presupuestoF = new PresupuestoModel(presupuestoSF)
+
+        setPresupuesto(oldPresup => ({
+            ...oldPresup,
+            abono: presupuestoF.abono,
+            customer: presupuestoF.customer,
+            oper: presupuestoF.oper,
+            const: presupuestoF.const
+        }))
+
+        Object.values(presupuestoF.items).forEach(item => {
+            const itemInstaPrecio = getItemById(item.generic_id).insta_precio
+
+            const newItem = createItem({
+                ...item,
+                insta_precio: itemInstaPrecio
+            })
+            addItem(newItem)
+        })
+
+        setLoadingPresupuesto(false)
     }
+
+    const createEmptyPresupuesto = () => {
+        const newPresup = new PresupuestoModel()
+
+        const comunicador = getItemById(24)
+        console.log(comunicador)
+        const comItem = createItem({ ...comunicador, qty: 0, sqty: 0 })
+        newPresup.addItem(comItem)
+
+        setPresupuesto(oldPresup => ({
+            ...oldPresup,
+            abono: newPresup.abono,
+            customer: newPresup.customer,
+            oper: newPresup.oper,
+            const: newPresup.const,
+            items: newPresup.items
+        }))
+
+        getTotales()
+
+        navigation.navigate('Formulario')
+    }
+
+
 
     const savePresupuesto = () => {
     }
@@ -80,22 +134,38 @@ const PresupProvider = ({ children }) => {
     }
 
     const createItem = (data) => {
-        return {
+        // TODO: insta_precio y precio se deben tratar siempre como numeros, solo serán string cuando se crea o actualiza el presupuesto
+        // TODO: recordar tambien que si se carga un presupuesto del listado, PresupModel debe hacer el parseo de los precios para que sean numeros
+
+        const newItem = {
             generic_id: data['generic_id'],
-            precio: data['precio'] ?? '',
+            precio: data['precio'] ?? 0,
             name: data['name'],
             insta_precio: data['insta_precio'] ?? 0,
-            observ: '',
+            observ: data['observ'] ?? '',
             user_id: data['user_id'],
             qty: data['qty'] ?? 1,
             sqty: data['sqty'] ?? 1,
             faltante: 0,
             qty_cajon: 0,
+            faltante: data['faltante'] ?? 0
         }
+
+        const hasName = data['name'] !== undefined
+        if (!hasName) {
+            newItem.name = getItemById(data['generic_id']).name
+        }
+
+        return newItem
     }
 
     const addComunicador = (com) => {
         const item = createItem({ ...com, qty: 0, sqty: 0 })
+        addItem(item)
+    }
+
+
+    const addItem = (item) => {
         setPresupuesto(oldPresup => ({
             ...oldPresup,
             items: {
@@ -106,32 +176,23 @@ const PresupProvider = ({ children }) => {
     }
 
 
-    const addItem = (item) => {
+    const tryAddItem = (item) => {
 
         const itemExists = presupuesto.items[item.generic_id]
 
         if (itemExists) {
             // showToast('El item ya existe en el presupuesto')
-            return
+            return false
         }
 
         const isComunicador = esItemComunicador(item.generic_id)
         if (isComunicador && !abonoInalambrico) {
             showToast('Seleccione un abono inalámbrico antes de agregar un comunicador')
-            return
+            return false
         }
-
         const newItem = createItem(item)
-
-
-
-        setPresupuesto(oldPresup => ({
-            ...oldPresup,
-            items: {
-                ...oldPresup.items,
-                [newItem.generic_id]: newItem
-            }
-        }))
+        addItem(newItem)
+        return true
     }
 
     const resetItems = () => {
@@ -195,7 +256,7 @@ const PresupProvider = ({ children }) => {
         const newTotales = getTotales()
         setTotales(newTotales)
     }, [
-        presupuesto.items, // TODO: revisar si ahora que es obj dispara el useEffect
+        presupuesto.items,
         presupuesto.oper.tipo_pago,
         presupuesto.abono.bonifpPercAux
     ])
@@ -259,11 +320,11 @@ const PresupProvider = ({ children }) => {
             totalPrecioMaterialesAceptado += item.qty * precioMateriales
             totalPrecioMaterialesSugerido += item.sqty * precioMateriales
 
-            totalEquiposAceptado += item.qty * (Number(item.precio) + precioMateriales)
-            totalEquiposSugerido += item.sqty * (Number(item.precio) + precioMateriales)
+            totalEquiposAceptado += item.qty * (item.precio + precioMateriales)
+            totalEquiposSugerido += item.sqty * (item.precio + precioMateriales)
 
-            totalInstaAceptado += item.qty * Number(item.insta_precio)
-            totalInstaSugerido += item.sqty * Number(item.insta_precio)
+            totalInstaAceptado += item.qty * item.insta_precio
+            totalInstaSugerido += item.sqty * item.insta_precio
 
             totalMaterialesAceptado += item.qty * precioMateriales
             totalMaterialesSugerido += item.sqty * precioMateriales
@@ -366,6 +427,10 @@ const PresupProvider = ({ children }) => {
     const crearJSON = () => {
     }
 
+    if (loadingPresupuesto) {
+        return <LoadingScreen />
+    }
+
     return (
         <PresupContext.Provider value={{
             presupuesto,
@@ -378,12 +443,13 @@ const PresupProvider = ({ children }) => {
             savePresupuesto,
             resetPresupuesto,
             setCustomerData,
-            addItem,
+            tryAddItem,
             resetItems,
             addComunicador,
             hasPresupComunicador,
             resetPrecioComunicador,
-            handleDeleteItem
+            handleDeleteItem,
+            createEmptyPresupuesto,
         }}>
             {children}
         </PresupContext.Provider>

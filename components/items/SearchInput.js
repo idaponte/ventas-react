@@ -5,14 +5,25 @@ import { globalColors, globalStyles } from "../../styles/globals";
 import { SearchResultsModal } from "../modals/SearchResultsModal";
 import { DataContext } from "../../contexts/DataProvider";
 import { showToast } from "../../utils/showToast";
+import { PresupContext } from "../../contexts/PresupProvider";
 
 export const SearchInput = () => {
-    const { searchItems } = useContext(DataContext);
+    const { searchItems, getItemById } = useContext(DataContext);
+    const { tryAddItem } = useContext(PresupContext);
 
     const [data, setData] = useState([])
 
     const [text, setText] = useState('');
     const [isVisible, setIsVisible] = useState(false);
+
+    const handleAddItem = (item) => {
+        const precio = getItemById(item.value)
+
+        const exito = tryAddItem(precio)
+
+        if (exito) setText('')
+        setIsVisible(false)
+    }
 
     return (
         <>
@@ -53,7 +64,7 @@ export const SearchInput = () => {
                 </TouchableOpacity>
             </View >
 
-            <SearchResultsModal data={data} isVisible={isVisible} setIsVisible={setIsVisible} />
+            <SearchResultsModal data={data} isVisible={isVisible} setIsVisible={setIsVisible} handleAddItem={handleAddItem} />
         </>
     )
 }

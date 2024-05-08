@@ -8,31 +8,43 @@ import { PresupContext } from '../../contexts/PresupProvider'
 import { formatPrice } from '../../utils/currencyFormatter'
 import { showToast } from '../../utils/showToast'
 import { ResumenPresupuestoCard } from '../../components/ResumenPresupuestoCard'
+import { PresupuestoServiceContext } from '../../contexts/PresupuestosService'
+import { useNavigation } from '@react-navigation/native'
 
 
 
 const ResumenPresupuesto = () => {
     const presupCtx = useContext(PresupContext)
     const dataCtx = useContext(DataContext)
-    const { dolar, toPesos } = dataCtx
+
+    const { storePresupuesto } = useContext(PresupuestoServiceContext)
+
+    const navigation = useNavigation()
+
+    const { dolarCotiz, toPesos } = dataCtx
     const { totales, cuotas } = presupCtx
 
     const esContado = presupCtx.presupuesto.oper.tipo_pago === 'contado'
 
-    const handleGuardar = () => {
-        let errors = presupValidator({
-            presupCtx,
-            dataCtx
-        })
+    const handleGuardar = async () => {
+        try {
+            let errors = presupValidator({ presupCtx })
 
-        if (errors.length) {
-            errors = errors.map((error, index) => `${index + 1}. ${error}`)
-            Alert.alert('Errores', errors.join('\n\n'))
-            return
+            if (errors.length) {
+                errors = errors.map((error, index) => `${index + 1}. ${error}`)
+                Alert.alert('Errores', errors.join('\n\n'))
+                return
+            }
+
+            const exito = await storePresupuesto(presupCtx.presupuesto)
+
+            if (exito) {
+                showToast('Presupuesto guardado correctamente')
+                navigation.navigate('Presupuestos')
+            }
+        } catch (error) {
+            console.error(error)
         }
-
-        showToast('Presupuesto guardado correctamente')
-        // TODO: cargar presupuesto
     }
 
 
@@ -42,7 +54,7 @@ const ResumenPresupuesto = () => {
 
                 <ResumenPresupuestoCard
                     title='Presupuesto aceptado'
-                    dolar={Number(dolar.cotiz).toFixed(0)}
+                    dolar={dolarCotiz}
                     totalEquipos={formatPrice(toPesos(totales.totalEquiposAceptado))}
                     totalEquiposUSD={totales.totalEquiposAceptado}
                     totalInsta={formatPrice(totales.totalInstaAceptado)}
@@ -56,7 +68,7 @@ const ResumenPresupuesto = () => {
 
                 <ResumenPresupuestoCard
                     title='Presupuesto sugerido'
-                    dolar={Number(dolar.cotiz).toFixed(0)}
+                    dolar={dolarCotiz}
                     totalEquipos={formatPrice(toPesos(totales.totalEquiposSugerido))}
                     totalEquiposUSD={totales.totalEquiposSugerido}
                     totalInsta={formatPrice(totales.totalInstaSugerido)}

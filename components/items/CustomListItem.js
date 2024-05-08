@@ -15,7 +15,7 @@ export const CustomListItem = ({ item, onPress }) => {
             alignItems: 'center',
             backgroundColor: 'white',
             padding: 15,
-            height: 80,
+            height: 60,
             borderRadius: 10,
             shadowColor: "#000",
             shadowOffset: {
@@ -25,17 +25,30 @@ export const CustomListItem = ({ item, onPress }) => {
             shadowOpacity: 0.22,
             shadowRadius: 2.22,
             elevation: 3,
+            position: 'relative',
         }}
             onPress={onPress}
         >
+            {item.observ && <View style={{
+                backgroundColor: '#2c2c2c',
+                width: 100,
+                borderRadius: 10,
+                borderBottomLeftRadius: 0,
+                borderTopRightRadius: 0,
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                paddingVertical: 2,
+            }}>
+                <Text style={{ color: 'white', textAlign: 'center', fontSize: 10 }}>Comentado</Text>
+            </View>}
+
             <View style={{ flex: 4, display: 'flex', alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Text>{item.name}</Text>
-                {
-                    item.observ && <Icon name='comment' size={10} color='#000' style={{ marginRight: 5 }} />
-                }
+                {/* {item.observ && <Icon name='comment' size={10} color='#000' style={{ marginRight: 5 }} />} */}
             </View>
             <Text style={{ flex: 1, textAlign: 'right' }}>{item.qty}</Text>
-            <Text style={{ flex: 2, textAlign: 'right' }}>{`${formatPrice(item.qty * Number(item.precio))}`}</Text>
+            <Text style={{ flex: 2, textAlign: 'right' }}>{`${formatPrice(item.qty * item.precio)}`}</Text>
         </TouchableOpacity>
     )
 }

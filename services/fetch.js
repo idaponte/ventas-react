@@ -1,12 +1,11 @@
 import { SecureStorage, saveToSecureStorage } from "../utils/secureStorage";
 
 export class Fetch {
-    devMode = true;
     devUrl = 'http://10.0.2.2:8000/';
     prodUrl = 'https://ventas.monssa.com.ar/';
 
     getUrl(url) {
-        const finalUrl = this.devMode ? this.devUrl + url : this.prodUrl + url;
+        const finalUrl = __DEV__ ? this.devUrl + url : this.prodUrl + url;
         console.log('URL:', finalUrl);
         return finalUrl;
     }

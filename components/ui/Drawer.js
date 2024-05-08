@@ -47,7 +47,7 @@ export const Drawer = (props) => {
                         fontWeight: '600',
                     }}
                 >
-                    {user.username}
+                    {user?.username}
                 </Text>
             </View>
 
@@ -89,7 +89,7 @@ export const Drawer = (props) => {
                 <Button
                     color={globalColors.danger}
                     style={{ marginHorizontal: 20 }}
-                    title='Cerrar sesión'
+                    title='Cerrar sesión' // TODO: si no sincronizó no puede cerrar sesión
                     onPress={() =>
                         Alert.alert('Cerrar sesión', '¿Está seguro que desea cerrar sesión?', [
                             {

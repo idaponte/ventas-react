@@ -9,6 +9,7 @@ import { Input } from "../ui/Input";
 import { Button } from "../ui/Button";
 import { DataContext } from "../../contexts/DataProvider";
 import { showToast } from "../../utils/showToast";
+import { formatPrice } from "../../utils/currencyFormatter";
 
 const Counter = ({ title, cant, setCant, base = 0 }) => {
 
@@ -31,7 +32,7 @@ const Counter = ({ title, cant, setCant, base = 0 }) => {
 
 export const ItemDetailsModal = ({ isVisible, setIsVisible, itemId }) => {
     const { presupuesto, setPresupuesto, abonoInalambrico, handleDeleteItem } = useContext(PresupContext)
-    const { esItemComunicador } = useContext(DataContext)
+    const { esItemComunicador, precioMateriales } = useContext(DataContext)
     const item = presupuesto.items[itemId]
 
     const handleItemCant = (cant, type) => {
@@ -104,23 +105,23 @@ export const ItemDetailsModal = ({ isVisible, setIsVisible, itemId }) => {
 
                     <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', }}>
                         <Text style={{ fontSize: 18 }}>Sub. sugerido</Text>
-                        <Text style={styles.price}>$ 45,13</Text>
+                        <Text style={styles.price}>{formatPrice(item?.precio * item?.sqty)}</Text>
                     </View>
 
                     <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
                         <Text style={{ fontSize: 12 }} >Sub. Materiales</Text>
-                        <Text style={styles.price}>$ 45,13</Text>
+                        <Text style={styles.price}>{formatPrice(precioMateriales * item?.sqty)}</Text>
                     </View>
 
 
                     <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                         <Text style={{ fontSize: 18 }}>Sub. aceptado</Text>
-                        <Text style={styles.price}>$ 45,13</Text>
+                        <Text style={styles.price}>{formatPrice(item?.precio * item?.qty)}</Text>
                     </View>
 
                     <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', }}>
                         <Text style={{ fontSize: 12 }} >Sub. Materiales</Text>
-                        <Text style={styles.price}>$ 45,13</Text>
+                        <Text style={styles.price}>{formatPrice(precioMateriales * item?.qty)}</Text>
                     </View>
 
                     <Button title="Eliminar" onPress={() => {

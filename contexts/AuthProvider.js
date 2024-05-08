@@ -3,6 +3,7 @@ import { Fetch } from "../services/fetch"
 import { hashPsw } from "../utils/hashPsw"
 import { showToast } from "../utils/showToast"
 import { SecureStorage, saveToSecureStorage } from "../utils/secureStorage"
+import LoadingScreen from "../screens/LoadingScreen"
 
 export const AuthContext = createContext({
     login: async () => { },
@@ -83,6 +84,8 @@ const AuthProvider = ({ children }) => {
     }
 
 
+
+    if (loading) return <LoadingScreen />
 
     return (
         <AuthContext.Provider value={{

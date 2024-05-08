@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from "react-native"
 import { globalStyles } from "../styles/globals"
 import { Divider } from "@rneui/themed"
+import { formatPrice } from "../utils/currencyFormatter"
 
 export const ResumenPresupuestoCard = ({
     title,
@@ -22,7 +23,7 @@ export const ResumenPresupuestoCard = ({
                 <Text style={{ fontWeight: 'bold', fontSize: 25 }}>
                     {title}
                 </Text>
-                <Text style={{ fontSize: 18 }}>Dolar: ${dolar}</Text>
+                <Text style={{ fontSize: 18 }}>Dolar: {formatPrice(dolar)}</Text>
             </View>
 
             <Divider />

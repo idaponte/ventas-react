@@ -41,21 +41,45 @@ const PresupuestosBox = ({
 
 const Presupuestos = () => {
 
-    const { presupuestos } = useContext(PresupuestoServiceContext)
-
-
+    const { presupuestos, presupuestosToCreate, presupuestosToUpdate } = useContext(PresupuestoServiceContext)
 
     return (
-        <Layout styles={{ paddingHorizontal: 10 }}>
-            <PresupuestosBox title='En nube'>
-                {
-                    presupuestos.map(presup => {
-                        return (
-                            <CustomPresupuestoItem key={presup.abono.presup_id} presupuestoSF={presup} />
-                        )
-                    })
-                }
-            </PresupuestosBox>
+        <Layout styles={{ paddingHorizontal: 10, gap: 30 }}>
+            {
+                Object.keys(presupuestosToCreate).length
+                    ? (
+                        <PresupuestosBox title='Locales creados'>
+                            {Object.values(presupuestosToCreate).map(presup => (
+                                <CustomPresupuestoItem key={presup.abono.presup_id} presupuestoSF={presup} />
+                            ))}
+                        </PresupuestosBox>
+                    )
+                    : null
+            }
+
+            {
+                Object.keys(presupuestosToUpdate).length
+                    ? (
+                        <PresupuestosBox title='Locales actualizados'>
+                            {Object.values(presupuestosToUpdate).map(presup => (
+                                <CustomPresupuestoItem key={presup.abono.presup_id} presupuestoSF={presup} />
+                            ))}
+                        </PresupuestosBox>
+                    )
+                    : null
+            }
+
+            {
+                Object.keys(presupuestos).length
+                    ? (
+                        <PresupuestosBox title='En nube'>
+                            {Object.values(presupuestos).map(presup => (
+                                <CustomPresupuestoItem key={presup.abono.presup_id} presupuestoSF={presup} />
+                            ))}
+                        </PresupuestosBox>
+                    )
+                    : null
+            }
         </Layout>
     )
 }

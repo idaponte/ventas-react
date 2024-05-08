@@ -68,7 +68,7 @@ export class PresupuestoModel {
                 mockup.oper.intobserv_new,
                 mockup.oper.modo_facturacion,
                 mockup.oper.observ,
-                mockup.oper.presup_id,
+                OperModel.getRandomId(),
                 mockup.oper.prior,
                 mockup.oper.reboteobserv,
                 mockup.oper.rubro_id,
@@ -89,28 +89,13 @@ export class PresupuestoModel {
                 mockup.abono.materiales
             )
 
-            this.items = mockup.items.map(item => {
-                return new ItemModel(
-                    item.presup_id,
-                    item.generic_id,
-                    item.observ,
-                    item.user_id,
-                    item.qty,
-                    item.precio,
-                    item.faltante,
-                    item.sqty,
-                    item.qty_cajon
-                )
-            }
-            )
-
+            this.items = {}
             return
         }
 
         if (Object.keys(data).length === 3) {
             const presup = data.presup;
             const abono = data.abono;
-            const items = data.items;
 
             this.const = new ConstModel(
                 presup.account_id,
@@ -196,8 +181,12 @@ export class PresupuestoModel {
                 abono.materiales
             )
 
-            this.items = items.map(item => {
-                return new ItemModel(
+            const rawItems = data.items;
+
+            this.items = {};
+
+            for (const item of rawItems) {
+                this.items[item.generic_id] = new ItemModel(
                     item.presup_id,
                     item.generic_id,
                     item.observ,
@@ -206,12 +195,21 @@ export class PresupuestoModel {
                     item.precio,
                     item.faltante,
                     item.sqty,
-                    item.qty_cajon
+                    item.qty_cajon,
                 )
-            })
+            }
 
         }
     }
+
+    addItem(item) {
+        this.items = {
+            ...this.items,
+            item
+        };
+    }
+
+
 
     static fromMockup() {
         return new PresupuestoModel();
@@ -347,6 +345,10 @@ export class OperModel {
         this.tipo_pago = tipo_pago;
         this.vend_id = vend_id;
     }
+
+    static getRandomId() {
+        return Math.random().toString(36).substr(2, 6);
+    }
 }
 
 export class ConstModel {
@@ -393,12 +395,16 @@ export class AbonoModel {
 
 export class ItemModel {
     constructor(presup_id, generic_id, observ, user_id, qty, precio, faltante, sqty, qty_cajon) {
+        let parsedPrecio = Number(precio);
+        if (isNaN(parsedPrecio)) parsedPrecio = 0;
+
+
         this.presup_id = presup_id;
         this.generic_id = generic_id;
         this.observ = observ;
         this.user_id = user_id;
         this.qty = qty;
-        this.precio = precio;
+        this.precio = parsedPrecio;
         this.faltante = faltante;
         this.sqty = sqty;
         this.qty_cajon = qty_cajon;

@@ -7,23 +7,14 @@ import { PresupContext } from "../../contexts/PresupProvider";
 
 export const ItemsScreenHeader = () => {
     const { rubros, getRubroById, getItemsById } = useContext(DataContext);
-    const { presupuesto, setPresupuesto, addItem, resetItems } = useContext(PresupContext);
-
-    const items = rubros.map(rubro => {
-        return {
-            label: rubro.name,
-            value: rubro.rubro_id
-        }
-    })
-
-
+    const { presupuesto, setPresupuesto, tryAddItem, resetItems } = useContext(PresupContext);
 
     const handleRubroChange = (item) => {
         setPresupuesto(oldPresup => ({
             ...oldPresup,
             oper: {
                 ...oldPresup.oper,
-                rubroId: item.value
+                rubro_id: item.value
             }
         }))
 
@@ -36,7 +27,7 @@ export const ItemsScreenHeader = () => {
             const items = getItemsById([24, 1, 8, 9, 10, 11]);
 
             for (let item of items) {
-                addItem(item)
+                tryAddItem(item)
             }
 
         }
@@ -46,7 +37,7 @@ export const ItemsScreenHeader = () => {
             const items = getItemsById([24, 14, 88]);
 
             for (let item of items) {
-                addItem(item)
+                tryAddItem(item)
             }
         }
     }
@@ -55,8 +46,8 @@ export const ItemsScreenHeader = () => {
         <>
             <View style={{ gap: 10, marginBottom: 20 }}>
                 <Dropdown
-                    data={items}
-                    value={getRubroById(presupuesto.oper.rubroId)?.label || ''}
+                    data={rubros}
+                    value={getRubroById(presupuesto.oper.rubro_id)?.label || ''}
                     onChange={handleRubroChange} />
                 <SearchInput />
             </View>

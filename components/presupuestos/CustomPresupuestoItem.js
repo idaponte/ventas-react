@@ -8,7 +8,7 @@ import { Button } from '../ui/Button'
 import { useNavigation } from '@react-navigation/native'
 import { getDom } from '../../utils/getDom'
 import { getHumanDate } from '../../utils/getHumanDate'
-import { DomicilioModel, PresupuestoModel } from '../../models/PresupModel'
+import { DomicilioModel } from '../../models/PresupModel'
 import { PresupContext } from '../../contexts/PresupProvider'
 
 // PresupSF es un presupuesto sin formato, el cual se necesita para usarlo en PresupProvider
@@ -16,7 +16,6 @@ export const CustomPresupuestoItem = ({ presupuestoSF }) => {
     const [show, setShow] = useState(false)
     const navigation = useNavigation()
     const { loadPresupuesto } = useContext(PresupContext)
-
 
     const nombre = `${presupuestoSF.presup.ape} ${presupuestoSF.presup.name}`
     const domicilio = DomicilioModel.getDom(presupuestoSF.presup)
@@ -33,8 +32,7 @@ export const CustomPresupuestoItem = ({ presupuestoSF }) => {
     }
 
     const inicializarPresupuesto = () => {
-        const presupuesto = new PresupuestoModel(presupuestoSF)
-        loadPresupuesto(presupuesto)
+        loadPresupuesto(presupuestoSF)
         navigation.navigate('Formulario')
     }
 
@@ -62,7 +60,7 @@ export const CustomPresupuestoItem = ({ presupuestoSF }) => {
                 onPress={() => setShow(true)}
             >
                 <Text numberOfLines={1} style={{ flex: 2 }} >{nombre}</Text>
-                <Text style={{ flex: 1, textAlign: 'right' }}>ID {presupuestoSF.abono.presup_id}</Text>
+                <Text style={{ flex: 1, textAlign: 'right', textTransform: 'uppercase' }}>ID {presupuestoSF.presup.presup_id}</Text>
             </TouchableOpacity>
 
             <ModalLayout isVisible={show} setIsVisible={setShow}>

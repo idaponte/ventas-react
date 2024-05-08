@@ -13,6 +13,8 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useContext, useEffect } from 'react';
 import PresupuestosService from '../contexts/PresupuestosService';
 import AgendaService from '../contexts/AgendaService';
+import { Alert } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const Drawer = createDrawerNavigator();
 
@@ -32,12 +34,26 @@ const MiAppState = () => {
 }
 
 const DrawerNavigator = () => {
-
-    const { presupuesto } = useContext(PresupContext);
+    const { presupuesto, createEmptyPresupuesto } = useContext(PresupContext);
 
     const showPresupuesto = () => {
         console.log(presupuesto)
     }
+
+    const newPresup = () => {
+        Alert.alert('Crear nuevo presupuesto', 'Si creas un nuevo presupuesto se va a perder el contenido del actual.', [
+            {
+                text: 'Cancelar',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel',
+            },
+            {
+                text: 'OK',
+                onPress: createEmptyPresupuesto
+            },
+        ])
+    }
+
 
     return (
         <Drawer.Navigator
@@ -51,8 +67,8 @@ const DrawerNavigator = () => {
                 headerRight: () => {
                     return (
                         <Row style={{ gap: 20, marginRight: 20 }}>
-                            <IconButton icon="plus" style={{ backgroundColor: 'transparent' }} size={24} color="white" onPress={showPresupuesto} />
-                            <IconButton icon="bug" style={{ backgroundColor: 'transparent' }} size={24} color="white" onPress={showPresupuesto} />
+                            <IconButton icon="plus" style={{ backgroundColor: 'transparent' }} size={24} color="white" onPress={newPresup} />
+                            {__DEV__ && <IconButton icon="bug" style={{ backgroundColor: 'transparent' }} size={24} color="white" onPress={showPresupuesto} />}
                         </Row>
                     )
                 }
@@ -65,7 +81,9 @@ const DrawerNavigator = () => {
             }}
 
         >
-            <Drawer.Screen name="Formulario" component={Formulario} />
+            <Drawer.Screen options={{
+                title: `Presupuesto: ${`${presupuesto.oper.presup_id}`.toUpperCase()}`,
+            }} name="Formulario" component={Formulario} />
             <Drawer.Screen name="Agenda" component={Agenda} />
             <Drawer.Screen name="Presupuestos" component={Presupuestos} />
         </Drawer.Navigator>
