@@ -14,3 +14,10 @@ export const getHumanDate = (date = new Date(), fullDate = false) => {
 
 };
 
+export const getYYYYMMDD = (date = new Date()) => {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth();
+    const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
+
+    return `${year}-${month}-${day}`;
+}

@@ -10,6 +10,7 @@ export const Dropdown = ({
     value = '',
     onChange = () => { },
     data = [],
+    editable = true
 }) => {
     const [visible, setVisible] = useState(false)
 
@@ -24,9 +25,10 @@ export const Dropdown = ({
                 </Text>
                 <TouchableOpacity
                     style={styles.input}
+                    disabled={!editable}
                     onPress={() => setVisible(true)}
                 >
-                    <Text style={{ textTransform: 'uppercase' }}>{value.length ? value : defaultValue}</Text>
+                    <Text style={{ textTransform: 'uppercase', color: editable ? '#000' : 'grey' }}>{value.length ? value : defaultValue}</Text>
 
                     <View style={{ position: 'absolute', right: 20 }}>
                         <Icon name='chevron-down' size={10} color='darkgrey' />

@@ -12,7 +12,7 @@ export const PresupuestoServiceContext = createContext({
     presupuestosToCreate: [],
     presupuestosToUpdate: [],
 
-    storePresupuesto: (presupuesto) => { },
+    storePresupuesto: async (presupuesto) => { },
     isPresupNew: (presup_id) => { },
 })
 
@@ -27,6 +27,14 @@ const PresupuestosService = ({ children }) => {
         presupuestosToCreate: {},
         presupuestosToUpdate: {},
     })
+
+    const syncPresupuestosToCreate = async () => {
+        /* TODO: sync presupuestosToCreate with server
+         if (creating) {
+      map['presup'].removeWhere((key, value) => key == "intobserv_new");
+    }
+        */
+    }
 
     const addNewPresup = async (presupuesto) => {
         try {
@@ -119,7 +127,6 @@ const PresupuestosService = ({ children }) => {
         const presupuestosToCreate = JSON.parse(presupuestosToCreateRAW) || {}
         const presupuestosToUpdate = JSON.parse(presupuestosToUpdateRAW) || {}
 
-        console.log(presupuestos[23540].items[0])
 
         setState(oldState => ({
             ...oldState,

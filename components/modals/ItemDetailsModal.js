@@ -1,17 +1,17 @@
-import { Modal, ScrollView, Text, View, StyleSheet, TextInput } from "react-native"
+import { useContext } from "react";
+import { ScrollView, Text, View, StyleSheet } from "react-native"
 import { Button as RNButton, Divider } from "@rneui/themed";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { globalColors } from "../../styles/globals";
-import { useContext, useEffect, useState } from "react";
 import { ModalLayout } from "./ModalLayout";
-import { PresupContext } from "../../contexts/PresupProvider";
 import { Input } from "../ui/Input";
 import { Button } from "../ui/Button";
+import { PresupContext } from "../../contexts/PresupProvider";
 import { DataContext } from "../../contexts/DataProvider";
-import { showToast } from "../../utils/showToast";
 import { formatPrice } from "../../utils/currencyFormatter";
+import { showToast } from "../../utils/showToast";
 
-const Counter = ({ title, cant, setCant, base = 0 }) => {
+const Counter = ({ title, cant, setCant, base = 0, disabled = false }) => {
 
     const handleCant = (cant) => {
         if (cant < base) return;
@@ -22,16 +22,16 @@ const Counter = ({ title, cant, setCant, base = 0 }) => {
         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
             <Text style={{ fontSize: 18 }}>{title}</Text>
             <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                <RNButton color='lightgrey' size='md' disabled={cant === 0} onPress={() => handleCant(cant - 1)}><Icon name="minus" /></RNButton>
+                <RNButton color='lightgrey' size='md' disabled={cant === 0 || disabled} onPress={() => handleCant(cant - 1)}><Icon name="minus" /></RNButton>
                 <Text style={{ marginHorizontal: 20, fontSize: 18 }} >{cant}</Text>
-                <RNButton color='lightgrey' size='md' onPress={() => handleCant(cant + 1)}><Icon name="plus" /></RNButton>
+                <RNButton disabled={disabled} color='lightgrey' size='md' onPress={() => handleCant(cant + 1)}><Icon name="plus" /></RNButton>
             </View>
         </View>
     )
 }
 
 export const ItemDetailsModal = ({ isVisible, setIsVisible, itemId }) => {
-    const { presupuesto, setPresupuesto, abonoInalambrico, handleDeleteItem } = useContext(PresupContext)
+    const { presupuesto, setPresupuesto, abonoInalambrico, handleDeleteItem, isPresupEditable } = useContext(PresupContext)
     const { esItemComunicador, precioMateriales } = useContext(DataContext)
     const item = presupuesto.items[itemId]
 
@@ -79,12 +79,14 @@ export const ItemDetailsModal = ({ isVisible, setIsVisible, itemId }) => {
 
                     <View style={{ display: 'flex', flexDirection: 'column' }}>
                         <Counter
+                            disabled={!isPresupEditable}
                             title='Sugerido'
                             cant={item?.sqty}
                             setCant={(cant) => handleItemCant(cant, 'sqty')}
                         />
 
                         <Counter
+                            disabled={!isPresupEditable}
                             title='Aceptado'
                             cant={item?.qty}
                             setCant={(cant) => handleItemCant(cant, 'qty')}
@@ -93,7 +95,7 @@ export const ItemDetailsModal = ({ isVisible, setIsVisible, itemId }) => {
 
                     <View style={{ display: 'flex', }}>
                         <Text style={{ fontSize: 18, marginBottom: 5 }}>Comentarios (*)</Text>
-                        <Input multiline={true} numberOfLines={4} value={item?.observ} onChange={handleComentarios} />
+                        <Input editable={isPresupEditable} multiline={true} numberOfLines={4} value={item?.observ} onChange={handleComentarios} />
                     </View>
 
                     <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 }}>
@@ -124,10 +126,16 @@ export const ItemDetailsModal = ({ isVisible, setIsVisible, itemId }) => {
                         <Text style={styles.price}>{formatPrice(precioMateriales * item?.qty)}</Text>
                     </View>
 
-                    <Button title="Eliminar" onPress={() => {
-                        const deleted = handleDeleteItem(item.generic_id)
-                        if (deleted) setIsVisible(false)
-                    }} color={globalColors.danger} style={{ marginTop: 40 }} />
+                    <Button
+                        disabled={!isPresupEditable}
+                        title="Eliminar"
+                        onPress={() => {
+                            const deleted = handleDeleteItem(item.generic_id)
+                            if (deleted) setIsVisible(false)
+                        }}
+                        color={isPresupEditable ? globalColors.danger[600] : globalColors.disabled}
+                        style={{ marginTop: 40 }}
+                    />
                 </ScrollView>
             </View>
 

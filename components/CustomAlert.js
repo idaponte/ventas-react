@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, TextInput, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, Modal } from 'react-native';
+import { Input as CustomInput } from './ui/Input';
 import { globalColors } from '../styles/globals';
 
 const CustomAlert = ({ visible, onRequestClose, children }) => {
@@ -60,13 +60,14 @@ const Button = ({ onPress, children }) => {
 };
 
 const Input = ({ keyboardType = 'default', onChangeText, isPsw = false, text = '' }) => {
+    console.log(isPsw)
     return (
-        <TextInput
-            style={{ borderWidth: 1, borderColor: 'gray', borderRadius: 5, padding: 10, marginBottom: 10 }}
+        <CustomInput
             keyboardType={keyboardType}
-            secureTextEntry={!!isPsw}
-            onChangeText={onChangeText}
+            isPsw={isPsw}
+            onChange={onChangeText}
             value={text}
+
         />
     );
 };

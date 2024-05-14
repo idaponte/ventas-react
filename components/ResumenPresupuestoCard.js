@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         backgroundColor: 'white',
-        gap: 25
+        gap: 15
     },
     listItem: { display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
 })

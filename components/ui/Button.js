@@ -1,11 +1,13 @@
-import { Text, TouchableOpacity } from 'react-native'
+import { Text, TouchableHighlight } from 'react-native'
 import { globalColors } from '../../styles/globals'
 export const Button = ({
     onPress,
     title,
     style = {},
     color = globalColors.primary[600],
+    underlayColor = globalColors.primary[800],
     variant = 'primary',
+    disabled = false,
 }) => {
     let buttonStyle;
     let textColor;
@@ -35,7 +37,7 @@ export const Button = ({
     }
 
     return (
-        <TouchableOpacity
+        <TouchableHighlight
             style={{
                 paddingVertical: 10,
                 paddingHorizontal: 20,
@@ -43,11 +45,13 @@ export const Button = ({
                 ...buttonStyle,
                 ...style,
             }}
+            disabled={disabled}
             onPress={onPress}
+            underlayColor={underlayColor}
         >
             <Text style={{ color: textColor, textAlign: 'center', fontWeight: '600', fontSize: 16 }}>
                 {title}
             </Text>
-        </TouchableOpacity>
+        </TouchableHighlight>
     );
 };

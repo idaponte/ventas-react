@@ -1,15 +1,16 @@
-import { BottomSheet, Button, Icon, ListItem } from "@rneui/themed";
-import { useContext, useEffect, useState } from "react";
-import { View, TextInput, StyleSheet, TouchableOpacity } from "react-native";
-import { globalColors, globalStyles } from "../../styles/globals";
+import { useContext, useState } from "react";
+import { Icon } from "@rneui/themed";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { globalColors } from "../../styles/globals";
 import { SearchResultsModal } from "../modals/SearchResultsModal";
 import { DataContext } from "../../contexts/DataProvider";
 import { showToast } from "../../utils/showToast";
 import { PresupContext } from "../../contexts/PresupProvider";
+import { Input } from "../ui";
 
 export const SearchInput = () => {
     const { searchItems, getItemById } = useContext(DataContext);
-    const { tryAddItem } = useContext(PresupContext);
+    const { isPresupEditable, tryAddItem } = useContext(PresupContext);
 
     const [data, setData] = useState([])
 
@@ -17,6 +18,7 @@ export const SearchInput = () => {
     const [isVisible, setIsVisible] = useState(false);
 
     const handleAddItem = (item) => {
+        console.log('handleAddItem')
         const precio = getItemById(item.value)
 
         const exito = tryAddItem(precio)
@@ -25,40 +27,43 @@ export const SearchInput = () => {
         setIsVisible(false)
     }
 
+    const handlePress = () => {
+        if (!text) {
+            showToast('Ingrese un término de búsqueda')
+            return
+        }
+
+        const results = searchItems(text)
+
+        if (results.length === 0) {
+            showToast('No hay resultados')
+            return
+        }
+
+        setData(results)
+        setIsVisible(true)
+    }
+
     return (
         <>
             <View style={styles.searchInputContainer}>
-                <TextInput
-                    style={{
-                        ...styles.input,
-                        ...globalStyles.inputBorder
-                    }}
+                <Input
+                    style={styles.input}
                     value={text}
-                    onChangeText={setText}
+                    onChange={setText}
                     placeholder="Buscar"
-
+                // editable={isPresupEditable}
                 />
 
-                <TouchableOpacity style={{
-                    backgroundColor: globalColors.primary[500],
-                    padding: 10,
-                    borderRadius: 7
-                }} onPress={() => {
-                    if (!text) {
-                        showToast('Ingrese un término de búsqueda')
-                        return
-                    }
-
-                    const results = searchItems(text)
-
-                    if (results.length === 0) {
-                        showToast('No hay resultados')
-                        return
-                    }
-
-                    setData(results)
-                    setIsVisible(true)
-                }}>
+                <TouchableOpacity
+                    style={{
+                        backgroundColor: isPresupEditable ? globalColors.primary[500] : 'grey',
+                        padding: 10,
+                        borderRadius: 7,
+                    }}
+                    disabled={!isPresupEditable}
+                    onPress={handlePress}
+                >
 
                     <Icon name="search" color="white" />
                 </TouchableOpacity>

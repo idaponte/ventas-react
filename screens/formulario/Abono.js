@@ -21,6 +21,7 @@ const AbonoForm = () => {
     const {
         presupuesto,
         abonoInalambrico,
+        isPresupEditable,
         setPresupuesto,
         hasPresupComunicador,
         resetPrecioComunicador,
@@ -126,19 +127,41 @@ const AbonoForm = () => {
         updateOper('insta_id', item.value)
     }
 
+    const handleIntobserv = (value) => {
+        console.log(value)
+        if (isNaN(Number(presupuesto.oper.presup_id))) {
+            updateOper('intobserv', value)
+        } else {
+            updateOper('intobserv_new', value)
+        }
+    }
+
+    const getIntobserv = () => {
+        if (isNaN(Number(presupuesto.oper.presup_id))) {
+            return presupuesto.oper.intobserv
+        } else {
+            return presupuesto.oper.intobserv_new
+        }
+    }
+
+    const handleNewIntobserv = (value) => {
+        updateOper('intobserv_new', value)
+    }
+
     return (
         <Layout>
             <View style={{ display: 'flex', gap: 20 }}>
 
-                <Dropdown label='Tipo de abono' value={getTipoAbonoLabel(presupuesto.oper.insta_id)} onChange={setTipoAbono} data={Object.values(tipoAbono)} />
-                <Dropdown label='Tipo de instalación' value={presupuesto.oper.categoria} onChange={(item) => updateOper('categoria', item.value)} data={tipoInstalacion} />
-                <Input keyboardType='numeric' onChange={setBonifInstalacion} value={presupuesto.abono.bonifpPercAux?.toString() || ''} label='Bonif. instalación (%)' />
-                <Dropdown label='Bonificación de abono' onChange={(item) => updateAbono('bonifAbono', item.value)} value={getBonifLabel(presupuesto.abono.bonifAbono)} data={bonifs} />
-                <Dropdown label='Meses de bonificación' onChange={(item) => updateAbono('bonifMeses', item.value)} value={getMesesLabel(presupuesto.abono.bonifMeses)} data={meses} />
-                <Dropdown label='Tipo de pago' onChange={(item) => updateOper('tipo_pago', item.value)} value={getTipoPagoLabel} data={tipoPago} />
-                <Input label='Detalle forma de pago' onChange={(value) => updateOper('formapago', value)} value={presupuesto.oper.formapago} />
-                <Input label='Observaciones internas' onChange={(value) => updateOper('intobserv', value)} value={presupuesto.oper.intobserv} multiline numberOfLines={4} />
-                <Input label='Observaciones para el cliente' onChange={(value) => updateOper('observ', value)} value={presupuesto.oper.observ} multiline numberOfLines={4} />
+                <Dropdown editable={isPresupEditable} label='Tipo de abono' value={getTipoAbonoLabel(presupuesto.oper.insta_id)} onChange={setTipoAbono} data={Object.values(tipoAbono)} />
+                <Dropdown editable={isPresupEditable} label='Tipo de instalación' value={presupuesto.oper.categoria} onChange={(item) => updateOper('categoria', item.value)} data={tipoInstalacion} />
+                <Input editable={isPresupEditable} keyboardType='numeric' onChange={setBonifInstalacion} value={presupuesto.abono.bonifpPercAux?.toString() || ''} label='Bonif. instalación (%)' />
+                <Dropdown editable={isPresupEditable} label='Bonificación de abono' onChange={(item) => updateAbono('bonif_abono', item.value)} value={getBonifLabel(presupuesto.abono.bonif_abono)} data={bonifs} />
+                <Dropdown editable={isPresupEditable} label='Meses de bonificación' onChange={(item) => updateAbono('bonif_meses', item.value)} value={getMesesLabel(presupuesto.abono.bonif_meses)} data={meses} />
+                <Dropdown editable={isPresupEditable} label='Tipo de pago' onChange={(item) => updateOper('tipo_pago', item.value)} value={getTipoPagoLabel} data={tipoPago} />
+                <Input editable={isPresupEditable} label='Detalle forma de pago' onChange={(value) => updateOper('formapago', value)} value={presupuesto.oper.formapago} />
+                <Input editable={isPresupEditable} label='Observaciones internas' onChange={handleIntobserv} value={getIntobserv()} multiline numberOfLines={4} />
+                <Input editable={isPresupEditable} label='Añador obs. interna' onChange={handleNewIntobserv} value={presupuesto.oper.intobserv_new} multiline numberOfLines={2} />
+                <Input editable={isPresupEditable} label='Observaciones para el cliente' onChange={(value) => updateOper('observ', value)} value={presupuesto.oper.observ} multiline numberOfLines={4} />
 
             </View>
         </Layout >

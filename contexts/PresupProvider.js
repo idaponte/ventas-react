@@ -15,7 +15,7 @@ export const PresupContext = createContext({
         valorCuotaSugerido: 0
     },
     abonoInalambrico: false,
-
+    isPresupEditable: false,
 
     setPresupuesto: () => { },
 
@@ -56,6 +56,9 @@ const PresupProvider = ({ children }) => {
 
     const [loadingPresupuesto, setLoadingPresupuesto] = useState(false)
 
+    const isPresupEditable = presupuesto.oper.status.toLowerCase() === 'creado'
+
+
     const navigation = useNavigation()
     const route = useRoute()
 
@@ -68,6 +71,8 @@ const PresupProvider = ({ children }) => {
     const loadPresupuesto = (presupuestoSF) => {
         setLoadingPresupuesto(true)
         resetPresupuesto()
+
+        console.log(presupuestoSF)
 
         const presupuestoF = new PresupuestoModel(presupuestoSF)
 
@@ -96,7 +101,6 @@ const PresupProvider = ({ children }) => {
         const newPresup = new PresupuestoModel()
 
         const comunicador = getItemById(24)
-        console.log(comunicador)
         const comItem = createItem({ ...comunicador, qty: 0, sqty: 0 })
         newPresup.addItem(comItem)
 
@@ -227,8 +231,8 @@ const PresupProvider = ({ children }) => {
             },
             abono: {
                 ...oldPresup.abono,
-                bonifAbono: bonifs[0].value,
-                bonifMeses: meses[0].value
+                bonif_abono: bonifs[0].value,
+                bonif_meses: meses[0].value
             }
         }))
 
@@ -262,7 +266,7 @@ const PresupProvider = ({ children }) => {
     ])
 
     useEffect(() => {
-        console.log('presupuesto.items changed')
+        // console.log('presupuesto.items changed')
     }, [presupuesto.items])
 
     const [cuotas, setCuotas] = useState({
@@ -361,7 +365,7 @@ const PresupProvider = ({ children }) => {
 
 
     const hasPresupComunicador = () => {
-        return Object.keys(presupuesto.items).find(esItemComunicador)
+        return Object.keys(presupuesto.items).find(esItemComunicador) !== undefined
     }
 
     const resetPrecioComunicador = (value = 0) => {
@@ -437,6 +441,7 @@ const PresupProvider = ({ children }) => {
             totales,
             cuotas,
             abonoInalambrico,
+            isPresupEditable,
 
             setPresupuesto,
             loadPresupuesto,

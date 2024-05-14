@@ -165,6 +165,7 @@ export const DataProvider = ({ children }) => {
 
     const esItemComunicador = (generic_id) => {
         try {
+            console.log({ generic_id })
             const item = getItemById(generic_id)
             if (!item) throw new Error('item not found')
             return item.name.toLowerCase().includes('comunicador')

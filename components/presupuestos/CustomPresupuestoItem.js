@@ -10,6 +10,7 @@ import { getDom } from '../../utils/getDom'
 import { getHumanDate } from '../../utils/getHumanDate'
 import { DomicilioModel } from '../../models/PresupModel'
 import { PresupContext } from '../../contexts/PresupProvider'
+import { globalColors } from '../../styles/globals'
 
 // PresupSF es un presupuesto sin formato, el cual se necesita para usarlo en PresupProvider
 export const CustomPresupuestoItem = ({ presupuestoSF }) => {
@@ -23,12 +24,14 @@ export const CustomPresupuestoItem = ({ presupuestoSF }) => {
 
     const getColorByStatus = (str) => {
         if (typeof str !== 'string') return '#000'
-        const status = str.toLowerCase();
-        if (status == 'creado') return '#f5e042';
-        if (status == 'acepta') return 'green';
-        if (status == 'facturado') return 'teal';
 
-        return 'black';
+        const status = str.toLowerCase();
+        const acepta = presupuestoSF.presup.intobserv.toLowerCase().includes('acept');
+
+        if (status === 'creado' && acepta) return '#f5e042';
+        if (status === 'creado' && !acepta) return '#000';
+
+        return globalColors.success[500]
     }
 
     const inicializarPresupuesto = () => {
@@ -36,28 +39,31 @@ export const CustomPresupuestoItem = ({ presupuestoSF }) => {
         navigation.navigate('Formulario')
     }
 
-
     return (
         <>
-            <TouchableOpacity style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                backgroundColor: 'white',
-                paddingVertical: 20,
-                paddingLeft: 20,
-                paddingRight: 10,
-                borderRadius: 10,
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 1 },
-                shadowOpacity: 0.22,
-                shadowRadius: 2.22,
-                elevation: 3,
-                borderLeftColor: getColorByStatus(presupuestoSF.presup.status),
-                borderLeftWidth: 8,
-            }}
-                onPress={() => setShow(true)}
+            <TouchableOpacity
+                style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    backgroundColor: 'white',
+                    paddingVertical: 20,
+                    paddingLeft: 20,
+                    paddingRight: 10,
+                    borderRadius: 10,
+                    shadowColor: "#000",
+                    shadowOffset: { width: 0, height: 1 },
+                    shadowOpacity: 0.22,
+                    shadowRadius: 2.22,
+                    elevation: 3,
+                    borderLeftColor: getColorByStatus(presupuestoSF.presup.status),
+                    borderLeftWidth: 8,
+                }}
+                onPress={() => {
+                    console.log('show')
+                    setShow(true)
+                }}
             >
                 <Text numberOfLines={1} style={{ flex: 2 }} >{nombre}</Text>
                 <Text style={{ flex: 1, textAlign: 'right', textTransform: 'uppercase' }}>ID {presupuestoSF.presup.presup_id}</Text>
@@ -93,8 +99,10 @@ export const CustomPresupuestoItem = ({ presupuestoSF }) => {
                             </TextPrimary>
                         </Column>
 
-                        <Button style={{ marginTop: 20 }} title='Ver' onPress={inicializarPresupuesto} />
-                        <Button style={{ marginTop: 20, backgroundColor: 'grey' }} title='Cerrar' onPress={() => setShow(false)} />
+                        <View style={{ display: 'flex', flexDirection: 'row', width: '100%', gap: 10, marginTop: 20 }}>
+                            <Button style={{ flex: 1, backgroundColor: 'grey' }} title='Cerrar' onPress={() => setShow(false)} />
+                            <Button style={{ flex: 1 }} title='Ver' onPress={inicializarPresupuesto} />
+                        </View>
                     </ColumnBetween>
 
                 </ModalLayout.Content>

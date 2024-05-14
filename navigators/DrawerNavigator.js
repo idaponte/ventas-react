@@ -15,6 +15,7 @@ import PresupuestosService from '../contexts/PresupuestosService';
 import AgendaService from '../contexts/AgendaService';
 import { Alert } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { View } from 'react-native';
 
 const Drawer = createDrawerNavigator();
 
@@ -34,10 +35,10 @@ const MiAppState = () => {
 }
 
 const DrawerNavigator = () => {
-    const { presupuesto, createEmptyPresupuesto } = useContext(PresupContext);
+    const { presupuesto, createEmptyPresupuesto, hasPresupComunicador } = useContext(PresupContext);
 
     const showPresupuesto = () => {
-        console.log(presupuesto)
+        console.log('hasPresupComunicador()', hasPresupComunicador())
     }
 
     const newPresup = () => {
@@ -48,7 +49,7 @@ const DrawerNavigator = () => {
                 style: 'cancel',
             },
             {
-                text: 'OK',
+                text: 'Aceptar',
                 onPress: createEmptyPresupuesto
             },
         ])

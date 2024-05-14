@@ -16,6 +16,7 @@ const InputGroup = ({ children }) => {
 const DatosPersonales = () => {
     const {
         presupuesto,
+        isPresupEditable,
         setPresupuesto,
     } = useContext(PresupContext);
 
@@ -60,35 +61,35 @@ const DatosPersonales = () => {
     return (
         <Layout>
             <View style={styles.form}>
-                <Input label="Nombre (*)" value={presupuesto.customer.name} onChange={text => handleCustomerChange('name', text)} />
-                <Input label="Apellido (*)" value={presupuesto.customer.ape} onChange={text => handleCustomerChange('ape', text)} />
+                <Input editable={isPresupEditable} label="Nombre (*)" value={presupuesto.customer.name} onChange={text => handleCustomerChange('name', text)} />
+                <Input editable={isPresupEditable} label="Apellido (*)" value={presupuesto.customer.ape} onChange={text => handleCustomerChange('ape', text)} />
                 <InputGroup>
-                    <Input label="Ciudad (*)" value={presupuesto.customer.domicilio.ciudad} onChange={text => handleDomicilioData('ciudad', text)} />
-                    <Input label="Código postal (*)" value={presupuesto.customer.domicilio.cp} onChange={text => handleDomicilioData('cp', text)} />
+                    <Input editable={isPresupEditable} label="Ciudad (*)" value={presupuesto.customer.domicilio.ciudad} onChange={text => handleDomicilioData('ciudad', text)} />
+                    <Input editable={isPresupEditable} label="Código postal (*)" value={presupuesto.customer.domicilio.cp} onChange={text => handleDomicilioData('cp', text)} />
                 </InputGroup>
                 <InputGroup>
-                    <Input label="Calle (*)" value={presupuesto.customer.domicilio.calle} onChange={text => handleDomicilioData('calle', text)} />
-                    <Input label="Nro" value={presupuesto.customer.domicilio.nro} onChange={text => handleDomicilioData('nro', text)} />
+                    <Input editable={isPresupEditable} label="Calle (*)" value={presupuesto.customer.domicilio.calle} onChange={text => handleDomicilioData('calle', text)} />
+                    <Input editable={isPresupEditable} label="Nro" value={presupuesto.customer.domicilio.nro} onChange={text => handleDomicilioData('nro', text)} />
                 </InputGroup>
-                <Input label="Entre" value={presupuesto.customer.domicilio.entre} onChange={text => handleDomicilioData('entre', text)} />
+                <Input editable={isPresupEditable} label="Entre" value={presupuesto.customer.domicilio.entre} onChange={text => handleDomicilioData('entre', text)} />
 
                 <InputGroup>
-                    <Input label="Piso" value={presupuesto.customer.domicilio.piso} onChange={text => handleDomicilioData('piso', text)} />
-                    <Input label="Oficina" value={presupuesto.customer.domicilio.oficina} onChange={text => handleDomicilioData('ofi', text)} />
-                </InputGroup>
-
-                <InputGroup>
-                    <Input label="Cel. pre." keyboardType="numeric" value={presupuesto.customer.contacto.cel_pre} onChange={text => handleContactoData('cel_pre', text)} />
-                    <Input label="Cel. car." keyboardType="numeric" value={presupuesto.customer.contacto.cel_car} onChange={text => handleContactoData('cel_car', text)} />
-                    <Input label="Cel. nro." keyboardType="numeric" value={presupuesto.customer.contacto.cel_nbr} onChange={text => handleContactoData('cel_nbr', text)} />
+                    <Input editable={isPresupEditable} label="Piso" value={presupuesto.customer.domicilio.piso} onChange={text => handleDomicilioData('piso', text)} />
+                    <Input editable={isPresupEditable} label="Oficina" value={presupuesto.customer.domicilio.oficina} onChange={text => handleDomicilioData('ofi', text)} />
                 </InputGroup>
 
                 <InputGroup>
-                    <Input label="Tel. pre." keyboardType="numeric" value={presupuesto.customer.contacto.tel_pre} onChange={text => handleContactoData('tel_pre', text)} />
-                    <Input label="Tel. car." keyboardType="numeric" value={presupuesto.customer.contacto.tel_car} onChange={text => handleContactoData('tel_car', text)} />
-                    <Input label="Tel. nro." keyboardType="numeric" value={presupuesto.customer.contacto.tel_nbr} onChange={text => handleContactoData('tel_nbr', text)} />
+                    <Input editable={isPresupEditable} label="Cel. pre." keyboardType="numeric" value={presupuesto.customer.contacto.cel_pre} onChange={text => handleContactoData('cel_pre', text)} />
+                    <Input editable={isPresupEditable} label="Cel. car." keyboardType="numeric" value={presupuesto.customer.contacto.cel_car} onChange={text => handleContactoData('cel_car', text)} />
+                    <Input editable={isPresupEditable} label="Cel. nro." keyboardType="numeric" value={presupuesto.customer.contacto.cel_nbr} onChange={text => handleContactoData('cel_nbr', text)} />
                 </InputGroup>
-                <Input label="Email" keyboardType="email-address" value={presupuesto.customer.contacto.email} onChange={text => handleContactoData('email', text)} />
+
+                <InputGroup>
+                    <Input editable={isPresupEditable} label="Tel. pre." keyboardType="numeric" value={presupuesto.customer.contacto.tel_pre} onChange={text => handleContactoData('tel_pre', text)} />
+                    <Input editable={isPresupEditable} label="Tel. car." keyboardType="numeric" value={presupuesto.customer.contacto.tel_car} onChange={text => handleContactoData('tel_car', text)} />
+                    <Input editable={isPresupEditable} label="Tel. nro." keyboardType="numeric" value={presupuesto.customer.contacto.tel_nbr} onChange={text => handleContactoData('tel_nbr', text)} />
+                </InputGroup>
+                <Input editable={isPresupEditable} label="Email" keyboardType="email-address" value={presupuesto.customer.contacto.email} onChange={text => handleContactoData('email', text)} />
             </View>
         </Layout>
     )

@@ -10,6 +10,8 @@ export const Input = ({
     multiline = false,
     numberOfLines = 1,
     keyboardType = 'default',
+    editable = true,
+    isPsw = false
 }) => {
     const [focused, setFocused] = useState(false)
 
@@ -31,10 +33,12 @@ export const Input = ({
                 onBlur={() => setFocused(false)}
                 placeholder={placeholder}
                 value={value}
+                editable={editable}
                 onChangeText={onChange}
                 multiline={multiline}
                 numberOfLines={numberOfLines}
                 keyboardType={keyboardType}
+                secureTextEntry={isPsw}
                 textAlignVertical={multiline ? 'top' : 'center'}
             />
         </View>

@@ -49,8 +49,8 @@ const Presupuestos = () => {
                 Object.keys(presupuestosToCreate).length
                     ? (
                         <PresupuestosBox title='Locales creados'>
-                            {Object.values(presupuestosToCreate).map(presup => (
-                                <CustomPresupuestoItem key={presup.abono.presup_id} presupuestoSF={presup} />
+                            {Object.values(presupuestosToCreate).map((presup, i) => (
+                                <CustomPresupuestoItem key={i} presupuestoSF={presup} />
                             ))}
                         </PresupuestosBox>
                     )
@@ -61,8 +61,8 @@ const Presupuestos = () => {
                 Object.keys(presupuestosToUpdate).length
                     ? (
                         <PresupuestosBox title='Locales actualizados'>
-                            {Object.values(presupuestosToUpdate).map(presup => (
-                                <CustomPresupuestoItem key={presup.abono.presup_id} presupuestoSF={presup} />
+                            {Object.values(presupuestosToUpdate).map((presup, i) => (
+                                <CustomPresupuestoItem key={i} presupuestoSF={presup} />
                             ))}
                         </PresupuestosBox>
                     )

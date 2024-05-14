@@ -1,9 +1,6 @@
-import { PresupuestoModel } from "./PresupModel";
-
 export class MonssaPresupModel {
 
     constructor(presupuesto) {
-
         this.presup = {
             ...presupuesto.const,
             ...presupuesto.oper,

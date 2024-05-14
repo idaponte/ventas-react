@@ -87,7 +87,7 @@ export const Drawer = (props) => {
                     }}
                 />
                 <Button
-                    color={globalColors.danger}
+                    color={globalColors.danger[600]}
                     style={{ marginHorizontal: 20 }}
                     title='Cerrar sesión' // TODO: si no sincronizó no puede cerrar sesión
                     onPress={() =>
@@ -111,7 +111,9 @@ export const Drawer = (props) => {
                     <Text>Confirmación</Text>
                 </CustomAlert.Header>
                 <CustomAlert.Body>
-                    <CustomAlert.Input onChangeText={setMessage} text={message} isPsw />
+                    <View style={{ height: 100 }}>
+                        <CustomAlert.Input onChangeText={setMessage} text={message} isPsw />
+                    </View>
                 </CustomAlert.Body>
                 <CustomAlert.Footer>
                     <CustomAlert.Button onPress={handleCancel}>Cancelar</CustomAlert.Button>

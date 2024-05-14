@@ -1,5 +1,6 @@
 
 
+import { getYYYYMMDD } from "../utils/getHumanDate";
 import { presupMockup } from "../utils/presupMockup";
 
 
@@ -61,7 +62,7 @@ export class PresupuestoModel {
 
             this.oper = new OperModel(
                 mockup.oper.categoria,
-                mockup.oper.creado,
+                mockup.oper.creado || getYYYYMMDD(),
                 mockup.oper.formapago,
                 mockup.oper.insta_id,
                 mockup.oper.intobserv,
@@ -205,7 +206,7 @@ export class PresupuestoModel {
     addItem(item) {
         this.items = {
             ...this.items,
-            item
+            [item.generic_id]: item
         };
     }
 

@@ -7,7 +7,8 @@ export const Layout = ({ children, styles = {} }) => {
             showsHorizontalScrollIndicator={false}
             endFillColor="#000"
             overScrollMode="never"
-            style={{ backgroundColor: '#fff' }}
+            keyboardShouldPersistTaps="handled"
+            style={{ backgroundColor: '#fbfbfb' }}
         >
             <View style={{ flex: 1, padding: 20, ...styles }}>
                 {children}

@@ -1,7 +1,8 @@
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native'
-import { Layout } from '../../components/ui/Layout'
-import { globalColors } from '../../styles/globals'
 import { useContext } from 'react'
+import { View, Text, TouchableHighlight, StyleSheet, Alert } from 'react-native'
+import { Layout } from '../../components/ui/Layout'
+import { Button } from '../../components/ui/Button'
+import { globalColors } from '../../styles/globals'
 import { DataContext } from '../../contexts/DataProvider'
 import { presupValidator } from '../../validators/presupValidator'
 import { PresupContext } from '../../contexts/PresupProvider'
@@ -22,9 +23,14 @@ const ResumenPresupuesto = () => {
     const navigation = useNavigation()
 
     const { dolarCotiz, toPesos } = dataCtx
-    const { totales, cuotas } = presupCtx
+    const { totales, cuotas, isPresupEditable, resetPresupuesto } = presupCtx
 
     const esContado = presupCtx.presupuesto.oper.tipo_pago === 'contado'
+
+    const handleClose = () => {
+        resetPresupuesto()
+        navigation.navigate('Presupuestos')
+    }
 
     const handleGuardar = async () => {
         try {
@@ -50,7 +56,7 @@ const ResumenPresupuesto = () => {
 
     return (
         <Layout>
-            <View style={{ display: 'flex', gap: 15, justifyContent: 'center' }}>
+            <View style={{ display: 'flex', gap: 15, justifyContent: 'center', }}>
 
                 <ResumenPresupuestoCard
                     title='Presupuesto aceptado'
@@ -80,20 +86,22 @@ const ResumenPresupuesto = () => {
                     valorCuota={formatPrice(cuotas.valorCuotaSugerido)}
                 />
 
-                <View style={{ display: 'flex', gap: 20, flexDirection: 'row', width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                <View style={styles.buttonContainer}>
 
-                    <TouchableOpacity style={{ backgroundColor: globalColors.danger, flex: 1, borderRadius: 50, padding: 20, alignItems: 'center' }}>
-                        <Text style={{ color: 'white', fontSize: 18, fontWeight: 'bold' }}>Limpiar</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={{ backgroundColor: globalColors.success, flex: 1, borderRadius: 50, padding: 20, alignItems: 'center' }} onPress={handleGuardar}>
-                        <Text style={{ color: 'white', fontSize: 18, fontWeight: 'bold' }}>Guardar</Text>
-                    </TouchableOpacity>
-
+                    {
+                        isPresupEditable
+                            ? (
+                                <>
+                                    <Button title='Limpiar' style={styles.button} onPress={handleGuardar} />
+                                    <Button title='Guardar' style={styles.button} onPress={handleGuardar} color={globalColors.success[600]} underlayColor={globalColors.success[800]} />
+                                </>
+                            )
+                            : (
+                                <Button title='Cerrar' style={styles.button} onPress={handleClose} />
+                            )
+                    }
                 </View>
-
             </View>
-
         </Layout>
     )
 }
@@ -101,3 +109,9 @@ const ResumenPresupuesto = () => {
 
 
 export default ResumenPresupuesto
+
+
+const styles = StyleSheet.create({
+    button: { flex: 1, paddingVertical: 15 },
+    buttonContainer: { display: 'flex', gap: 20, flexDirection: 'row', width: '100%', justifyContent: 'center', alignItems: 'center' },
+})
