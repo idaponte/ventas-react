@@ -130,7 +130,7 @@ const AbonoForm = () => {
     const handleIntobserv = (value) => {
         console.log(value)
         if (isNaN(Number(presupuesto.oper.presup_id))) {
-            updateOper('intobserv', value)
+            
         } else {
             updateOper('intobserv_new', value)
         }
@@ -159,8 +159,10 @@ const AbonoForm = () => {
                 <Dropdown editable={isPresupEditable} label='Meses de bonificación' onChange={(item) => updateAbono('bonif_meses', item.value)} value={getMesesLabel(presupuesto.abono.bonif_meses)} data={meses} />
                 <Dropdown editable={isPresupEditable} label='Tipo de pago' onChange={(item) => updateOper('tipo_pago', item.value)} value={getTipoPagoLabel} data={tipoPago} />
                 <Input editable={isPresupEditable} label='Detalle forma de pago' onChange={(value) => updateOper('formapago', value)} value={presupuesto.oper.formapago} />
-                <Input editable={isPresupEditable} label='Observaciones internas' onChange={handleIntobserv} value={getIntobserv()} multiline numberOfLines={4} />
-                <Input editable={isPresupEditable} label='Añador obs. interna' onChange={handleNewIntobserv} value={presupuesto.oper.intobserv_new} multiline numberOfLines={2} />
+
+                <Input editable={isPresupEditable && isNaN(Number(presupuesto.oper.presup_id))} label='Observaciones internas' onChange={ (value) => updateOper('intobserv', value)} value={presupuesto.oper.intobserv} multiline numberOfLines={4} />
+                {!isNaN(Number(presupuesto.oper.presup_id)) && <Input editable={isPresupEditable && !isNaN(Number(presupuesto.oper.presup_id))} label='Añadir obs. interna' onChange={(value) => updateOper('intobserv_new', value)} value={presupuesto.oper.intobserv_new} multiline numberOfLines={2} />}
+
                 <Input editable={isPresupEditable} label='Observaciones para el cliente' onChange={(value) => updateOper('observ', value)} value={presupuesto.oper.observ} multiline numberOfLines={4} />
 
             </View>

@@ -9,29 +9,21 @@ export const Button = ({
     variant = 'primary',
     disabled = false,
 }) => {
-    let buttonStyle;
-    let textColor;
+    let buttonStyles;
+    let textColor = color;
+    let backgroundColor = 'transparent'
 
     switch (variant) {
         case 'outlined':
-            buttonStyle = {
-                backgroundColor: 'transparent',
+            buttonStyles = {
                 borderWidth: 1,
                 borderColor: color,
             };
-            textColor = color;
             break;
         case 'text':
-            buttonStyle = {
-                backgroundColor: 'transparent',
-            };
-            textColor = color;
             break;
         default:
-            buttonStyle = {
-                backgroundColor: color,
-                borderRadius: 50,
-            };
+            backgroundColor = color
             textColor = 'white';
             break;
     }
@@ -42,7 +34,9 @@ export const Button = ({
                 paddingVertical: 10,
                 paddingHorizontal: 20,
                 borderRadius: 50,
-                ...buttonStyle,
+                backgroundColor,
+                textColor,
+                ...buttonStyles,
                 ...style,
             }}
             disabled={disabled}
@@ -55,3 +49,17 @@ export const Button = ({
         </TouchableHighlight>
     );
 };
+
+export const CloseButton = ({ onPress, title = 'Cerrar', style = {} }) => {
+    return (
+        <Button
+            onPress={onPress}
+            title={title}
+            color={globalColors.grey[600]}
+            underlayColor={globalColors.grey[800]}
+            style={style}
+        />
+    );
+}
+
+Button.Close = CloseButton;

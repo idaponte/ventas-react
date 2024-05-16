@@ -8,7 +8,7 @@ const Login = () => {
     const { login } = useContext(AuthContext)
 
     const [user, setUser] = useState({
-        username: 'ebaioni',
+        username: 'emarconi',
         password: '123'
     })
 

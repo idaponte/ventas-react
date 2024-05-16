@@ -1,6 +1,8 @@
 
 import React, { useState } from 'react'
 import { StyleSheet, Text, TextInput, View } from 'react-native'
+import { globalColors } from '../../styles/globals'
+
 
 export const Input = ({
     label = '',
@@ -27,6 +29,7 @@ export const Input = ({
                 style={{
                     ...styles.input,
                     borderColor: focused ? '#000' : '#a8a8a8',
+                    backgroundColor: editable ? 'white' : globalColors.grey[200]
                 }}
                 cursorColor='black'
                 onFocus={() => setFocused(true)}

@@ -114,7 +114,7 @@ export const CustomAgendaItem = ({
 
                     </View>
 
-                    <Button
+                    <Button.Close
                         title="Iniciar presupuesto"
                         onPress={() => navigation.navigate('Formulario')}
                         style={{

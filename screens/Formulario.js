@@ -7,7 +7,6 @@ import ResumenPresupuesto from "./formulario/ResumenPresupuesto";
 
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { globalColors } from "../styles/globals";
-import { color } from "@rneui/base";
 const Tab = createMaterialTopTabNavigator();
 
 
@@ -15,14 +14,15 @@ const Formulario = () => {
     const screenOptions = {
         tabBarStyle: {
             backgroundColor: globalColors.primary[700],
+
         },
+
         tabBarActiveTintColor: 'white',
         tabBarIndicatorStyle: {
             backgroundColor: 'white',
             height: 4,
         },
         tabBarLabelStyle: {
-            fontSize: 12,
             fontWeight: 'bold',
         },
 

@@ -1,15 +1,10 @@
-
-
+import { useContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AuthProvider, { AuthContext } from './contexts/AuthProvider';
 import AuthNavigator from './navigators/AuthNavigator';
-import DrawerNavigator from './navigators/DrawerNavigator';
-import { useContext, useEffect } from 'react';
 import MiAppState from './navigators/DrawerNavigator';
-import { ModalLayout } from './components/modals/ModalLayout';
-import { ActivityIndicator, Text } from 'react-native';
 import LoadingScreen from './screens/LoadingScreen';
 
 const Stack = createNativeStackNavigator();

@@ -37,7 +37,11 @@ export const CustomPresupuestoItem = ({ presupuestoSF }) => {
     const inicializarPresupuesto = () => {
         loadPresupuesto(presupuestoSF)
         navigation.navigate('Formulario')
+        setShow(false)
     }
+
+    const deleteDoubleBlank = (str) => str.replace(/\s+/g, ' ')
+
 
     return (
         <>
@@ -65,7 +69,7 @@ export const CustomPresupuestoItem = ({ presupuestoSF }) => {
                     setShow(true)
                 }}
             >
-                <Text numberOfLines={1} style={{ flex: 2 }} >{nombre}</Text>
+                <Text numberOfLines={1} style={{ flex: 2, }} >{nombre}</Text>
                 <Text style={{ flex: 1, textAlign: 'right', textTransform: 'uppercase' }}>ID {presupuestoSF.presup.presup_id}</Text>
             </TouchableOpacity>
 
@@ -73,9 +77,9 @@ export const CustomPresupuestoItem = ({ presupuestoSF }) => {
                 <ModalLayout.Content>
                     <ColumnBetween>
                         <Column>
-                            <RowBetween>
-                                <Text style={{ fontSize: 24, marginBottom: 20, }}>
-                                    {nombre}
+                            <RowBetween wrap>
+                                <Text style={{ fontSize: 24, marginBottom: 20 }}>
+                                    {deleteDoubleBlank(nombre)}
                                 </Text>
 
                                 <Text style={{
@@ -100,7 +104,7 @@ export const CustomPresupuestoItem = ({ presupuestoSF }) => {
                         </Column>
 
                         <View style={{ display: 'flex', flexDirection: 'row', width: '100%', gap: 10, marginTop: 20 }}>
-                            <Button style={{ flex: 1, backgroundColor: 'grey' }} title='Cerrar' onPress={() => setShow(false)} />
+                            <Button.Close style={{ flex: 1 }} onPress={() => setShow(false)} />
                             <Button style={{ flex: 1 }} title='Ver' onPress={inicializarPresupuesto} />
                         </View>
                     </ColumnBetween>

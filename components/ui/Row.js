@@ -8,9 +8,9 @@ export const Row = ({ children, style = {} }) => {
     )
 }
 
-export const RowBetween = ({ children }) => {
+export const RowBetween = ({ children, wrap = false }) => {
     return (
-        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flexWrap: !!wrap ? 'wrap' : 'nowrap' }}>
             {children}
         </View>
     )

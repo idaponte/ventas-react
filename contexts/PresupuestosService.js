@@ -145,13 +145,13 @@ const PresupuestosService = ({ children }) => {
         const resp = await Fetch.get('api/' + 'presupuestos')
         const presupuestosRemotos = resp.data
 
-        const presupArr = []
-        let cant = 10
-        for (const presup of Object.values(presupuestosRemotos)) {
-            if (!cant) break
-            presupArr.push(presup)
-            cant--
-        }
+        const presupArr = Object.values(presupuestosRemotos)
+        // let cant = 10
+        // for (const presup of Object.values(presupuestosRemotos)) {
+        //     if (!cant) break
+        //     presupArr.push(presup)
+        //     cant--
+        // }
 
         const presupObj = {}
 

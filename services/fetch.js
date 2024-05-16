@@ -1,7 +1,7 @@
 import { SecureStorage, saveToSecureStorage } from "../utils/secureStorage";
 
 export class Fetch {
-    devUrl = 'http://10.0.2.2:8000/';
+    devUrl = 'http://localhost:8000/';
     prodUrl = 'https://ventas.monssa.com.ar/';
 
     getUrl(url) {
