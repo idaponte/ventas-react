@@ -11,7 +11,7 @@ export const PresupuestoServiceContext = createContext({
     presupuestos: [],
     presupuestosToCreate: [],
     presupuestosToUpdate: [],
-
+    isSync: true,
     storePresupuesto: async (presupuesto) => { },
     isPresupNew: (presup_id) => { },
 })
@@ -27,6 +27,8 @@ const PresupuestosService = ({ children }) => {
         presupuestosToCreate: {},
         presupuestosToUpdate: {},
     })
+
+    const isSync = Object.keys(state.presupuestosToCreate).length === 0 && Object.keys(state.presupuestosToUpdate).length === 0
 
     const syncPresupuestosToCreate = async () => {
         /* TODO: sync presupuestosToCreate with server
@@ -142,7 +144,7 @@ const PresupuestosService = ({ children }) => {
     }
 
     const getRemotePresups = async () => {
-        const resp = await Fetch.get('api/' + 'presupuestos')
+        const resp = await Fetch.get('presupuestos')
         const presupuestosRemotos = resp.data
 
         const presupArr = Object.values(presupuestosRemotos)
@@ -197,6 +199,7 @@ const PresupuestosService = ({ children }) => {
             presupuestos: state.presupuestos,
             presupuestosToCreate: state.presupuestosToCreate,
             presupuestosToUpdate: state.presupuestosToUpdate,
+            isSync,
 
             storePresupuesto,
             isPresupNew,

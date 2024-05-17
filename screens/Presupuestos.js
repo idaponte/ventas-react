@@ -44,7 +44,7 @@ const Presupuestos = () => {
     const { presupuestos, presupuestosToCreate, presupuestosToUpdate } = useContext(PresupuestoServiceContext)
 
     return (
-        <Layout styles={{ paddingHorizontal: 10, gap: 30 }}>
+        <Layout styles={{ paddingHorizontal: 10, gap: 30 }} onScrollEndDrag={() => { console.log('rersfsadfd') }}>
             {
                 Object.keys(presupuestosToCreate).length
                     ? (

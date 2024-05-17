@@ -35,17 +35,35 @@ const MiAppState = () => {
 }
 
 const DrawerNavigator = () => {
-    const { presupuesto, createEmptyPresupuesto, hasPresupComunicador } = useContext(PresupContext);
+    const { presupuesto, createEmptyPresupuesto, hasPresupComunicador, setPresupuesto } = useContext(PresupContext);
 
     const showPresupuesto = () => {
-        console.log('hasPresupComunicador()', hasPresupComunicador())
+        setPresupuesto(oldpresup => ({
+            ...oldpresup,
+            customer: {
+                ...oldpresup.customer,
+                name: 'Ignacio',
+                ape: 'Baguinho',
+                domicilio: {
+                    ...oldpresup.customer.domicilio,
+                    calle: '123',
+                    nro: '456',
+                    ciudad: 'La plata',
+                    cp: '1900',
+                },
+                contacto: {
+                    ...oldpresup.customer.contacto,
+                    email: 'daponteignacio@gmail.com',
+                }
+            },
+        }))
     }
 
     const newPresup = () => {
         Alert.alert('Crear nuevo presupuesto', 'Si creas un nuevo presupuesto se va a perder el contenido del actual.', [
             {
                 text: 'Cancelar',
-                onPress: () => console.log('Cancel Pressed'),
+                onPress: () => { },
                 style: 'cancel',
             },
             {
@@ -68,8 +86,8 @@ const DrawerNavigator = () => {
                 headerRight: () => {
                     return (
                         <Row style={{ gap: 20, marginRight: 20 }}>
-                            <IconButton icon="plus" style={{ backgroundColor: 'transparent' }} size={24} color="white" onPress={newPresup} />
-                            {__DEV__ && <IconButton icon="bug" style={{ backgroundColor: 'transparent' }} size={24} color="white" onPress={showPresupuesto} />}
+                            <IconButton icon="plus" style={{ backgroundColor: 'transparent', padding: 5 }} size={24} color="white" onPress={newPresup} />
+                            {__DEV__ && <IconButton icon="bug" style={{ backgroundColor: 'transparent', padding: 5 }} size={24} color="white" onPress={showPresupuesto} />}
                         </Row>
                     )
                 }
@@ -82,9 +100,7 @@ const DrawerNavigator = () => {
             }}
 
         >
-            <Drawer.Screen options={{
-                title: `Presupuesto: ${`${presupuesto.oper.presup_id}`.toUpperCase()}`,
-            }} name="Formulario" component={Formulario} />
+            <Drawer.Screen name="Formulario" component={Formulario} options={{ title: `ID: ${`${presupuesto.oper.presup_id}`.toUpperCase()}` }} />
             <Drawer.Screen name="Agenda" component={Agenda} />
             <Drawer.Screen name="Presupuestos" component={Presupuestos} />
         </Drawer.Navigator>

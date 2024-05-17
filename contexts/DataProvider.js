@@ -48,8 +48,6 @@ export const DataProvider = ({ children }) => {
             Object.keys(dataDraft).forEach(async key => {
                 await AsyncStorage.setItem(key, JSON.stringify(dataDraft[key]))
             })
-
-            console.log('data stored')
         } catch (error) {
             console.error(error)
         }
@@ -79,7 +77,7 @@ export const DataProvider = ({ children }) => {
 
 
     const getRemoteData = async () => {
-        console.log('fetching data')
+        console.log('fetching remote data')
         const dataDraft = await fetchData()
 
 
@@ -87,7 +85,6 @@ export const DataProvider = ({ children }) => {
         dataDraft.meses = dataDraft.meses.map(mes => ({ label: `${mes.cant} meses`, value: mes.cant }))
         dataDraft.rubros = dataDraft.rubros.map(rubro => ({ label: quitarTildes(rubro.name).toLowerCase(), value: rubro.rubro_id }))
         dataDraft.dolarCotiz = Number(dataDraft.dolar.cotiz)
-        delete dataDraft.dolar
 
 
         const adaptedTipoAbono = {}
@@ -165,7 +162,6 @@ export const DataProvider = ({ children }) => {
 
     const esItemComunicador = (generic_id) => {
         try {
-            console.log({ generic_id })
             const item = getItemById(generic_id)
             if (!item) throw new Error('item not found')
             return item.name.toLowerCase().includes('comunicador')
@@ -199,6 +195,7 @@ export const DataProvider = ({ children }) => {
         !Object.keys(data.items).length ||
         !data.precioMateriales
     ) {
+        console.log('loadddddds')
         return <LoadingScreen />
     }
 

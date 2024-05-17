@@ -254,8 +254,8 @@ export class DomicilioModel {
         this.ciudad = ciudad || "";
         this.cp = cp || "";
         this.entre = entre || "";
-        this.lat = lat || "";
-        this.lon = lon || "";
+        this.lat = lat;
+        this.lon = lon;
         this.nro = nro || "";
         this.ofi = ofi || "";
         this.piso = piso || "";

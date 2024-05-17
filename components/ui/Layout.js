@@ -1,9 +1,10 @@
 import { ScrollView, View } from 'react-native';
 
-export const Layout = ({ children, styles = {} }) => {
+export const Layout = ({ children, styles = {}, onScrollEndDrag = () => { } }) => {
 
     return (
         <ScrollView
+            onScrollEndDrag={onScrollEndDrag}
             showsHorizontalScrollIndicator={false}
             endFillColor="#000"
             overScrollMode="never"

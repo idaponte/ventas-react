@@ -5,6 +5,7 @@ import { showToast } from '../utils/showToast'
 import { PresupuestoModel } from '../models/PresupModel'
 import LoadingScreen from '../screens/LoadingScreen'
 import { useNavigation, useRoute } from '@react-navigation/native'
+import { AuthContext } from './AuthProvider'
 
 export const PresupContext = createContext({
     presupuesto: {},
@@ -29,7 +30,8 @@ export const PresupContext = createContext({
     hasPresupComunicador: () => { },
     resetPrecioComunicador: () => { },
     handleDeleteItem: () => { },
-    createEmptyPresupuesto: () => { }
+    createEmptyPresupuesto: () => { },
+    getPresupToPost: () => { }
 })
 
 const PresupProvider = ({ children }) => {
@@ -47,6 +49,11 @@ const PresupProvider = ({ children }) => {
         getItemById,
         toPesos,
     } = dataCtx
+
+    const authCtx = useContext(AuthContext)
+
+    const { user } = authCtx
+
 
     const dataInicializada = useRef(false)
 
@@ -72,7 +79,7 @@ const PresupProvider = ({ children }) => {
         setLoadingPresupuesto(true)
         resetPresupuesto()
 
-        console.log(presupuestoSF)
+        // console.log(presupuestoSF)
 
         const presupuestoF = new PresupuestoModel(presupuestoSF)
 
@@ -97,8 +104,31 @@ const PresupProvider = ({ children }) => {
         setLoadingPresupuesto(false)
     }
 
+    const getPresupToPost = () => {
+        const { totalInstaAceptado } = getTotales()
+        return {
+            ...presupuesto,
+            abono: {
+                ...presupuesto.abono,
+                insta: totalInstaAceptado
+            }
+        }
+    }
+
     const createEmptyPresupuesto = () => {
+        const instaIdResidencial = Object.values(tipoAbono).find(tipo => tipo.label.trim().toLowerCase() === 'residencial')?.value || 0
+
         const newPresup = new PresupuestoModel()
+
+        newPresup.oper.vend_id = user.user_id
+        newPresup.abono.dolar = dataCtx.dolarCotiz
+        newPresup.oper.categoria = tipoInstalacion[0].value
+        newPresup.oper.tipo_pago = tipoPago[0].value
+        newPresup.oper.insta_id = instaIdResidencial
+
+        newPresup.abono.abono = Number(tipoAbono[instaIdResidencial].precio)
+        newPresup.abono.bonif_abono = bonifs[0].value
+        newPresup.abono.bonif_meses = meses[0].value
 
         const comunicador = getItemById(24)
         const comItem = createItem({ ...comunicador, qty: 0, sqty: 0 })
@@ -140,14 +170,13 @@ const PresupProvider = ({ children }) => {
     const createItem = (data) => {
         // TODO: insta_precio y precio se deben tratar siempre como numeros, solo serán string cuando se crea o actualiza el presupuesto
         // TODO: recordar tambien que si se carga un presupuesto del listado, PresupModel debe hacer el parseo de los precios para que sean numeros
-
         const newItem = {
             generic_id: data['generic_id'],
             precio: data['precio'] ?? 0,
             name: data['name'],
             insta_precio: data['insta_precio'] ?? 0,
             observ: data['observ'] ?? '',
-            user_id: data['user_id'],
+            user_id: user.user_id,
             qty: data['qty'] ?? 1,
             sqty: data['sqty'] ?? 1,
             faltante: 0,
@@ -200,7 +229,6 @@ const PresupProvider = ({ children }) => {
     }
 
     const resetItems = () => {
-        console.log('resetItems')
         setPresupuesto({
             ...presupuesto,
             items: {}
@@ -213,12 +241,7 @@ const PresupProvider = ({ children }) => {
         addComunicador(comunicador)
     }, [items])
 
-    useEffect(() => {
-        if (bonifs.length === 0) return
-        if (meses.length === 0) return
-        if (tipoPago.length === 0) return
-        if (dataInicializada.current) return
-
+    const setDefaultValues = () => {
         const instaIdResidencial = Object.values(tipoAbono).find(tipo => tipo.label.trim().toLowerCase() === 'residencial')?.value || 0
 
         setPresupuesto(oldPresup => ({
@@ -231,13 +254,22 @@ const PresupProvider = ({ children }) => {
             },
             abono: {
                 ...oldPresup.abono,
+                abono: Number(tipoAbono[instaIdResidencial].precio),
                 bonif_abono: bonifs[0].value,
                 bonif_meses: meses[0].value
             }
         }))
+    }
 
+    useEffect(() => {
+        if (bonifs.length === 0) return
+        if (meses.length === 0) return
+        if (tipoPago.length === 0) return
+        if (Object.values(tipoAbono).length === 0) return
+        if (dataInicializada.current) return
+        setDefaultValues()
         dataInicializada.current = true
-    }, [tipoPago, meses, bonifs])
+    }, [tipoPago, meses, bonifs, tipoAbono])
 
     const [totales, setTotales] = useState({
         totalEquiposAceptado: 0,
@@ -416,7 +448,6 @@ const PresupProvider = ({ children }) => {
     }
 
     const handleDeleteItem = (id) => {
-        console.log('handleDeleteItem', id)
         const esComunicador = esItemComunicador(id)
 
         if (esComunicador) {
@@ -455,6 +486,7 @@ const PresupProvider = ({ children }) => {
             resetPrecioComunicador,
             handleDeleteItem,
             createEmptyPresupuesto,
+            getPresupToPost
         }}>
             {children}
         </PresupContext.Provider>

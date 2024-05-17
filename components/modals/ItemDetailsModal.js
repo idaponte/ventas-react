@@ -127,13 +127,14 @@ export const ItemDetailsModal = ({ isVisible, setIsVisible, itemId }) => {
                     </View>
 
                     <Button
-                        disabled={!isPresupEditable}
+                        disabled={isPresupEditable}
                         title="Eliminar"
                         onPress={() => {
                             const deleted = handleDeleteItem(item.generic_id)
                             if (deleted) setIsVisible(false)
                         }}
-                        color={isPresupEditable ? globalColors.danger[600] : globalColors.disabled}
+                        color={globalColors.danger[600]}
+                        underlayColor={globalColors.danger[800]}
                         style={{ marginTop: 40 }}
                     />
                 </ScrollView>

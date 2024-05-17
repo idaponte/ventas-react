@@ -18,7 +18,6 @@ export const SearchInput = () => {
     const [isVisible, setIsVisible] = useState(false);
 
     const handleAddItem = (item) => {
-        console.log('handleAddItem')
         const precio = getItemById(item.value)
 
         const exito = tryAddItem(precio)
@@ -52,20 +51,20 @@ export const SearchInput = () => {
                     value={text}
                     onChange={setText}
                     placeholder="Buscar"
-                // editable={isPresupEditable}
                 />
 
                 <TouchableOpacity
                     style={{
-                        backgroundColor: isPresupEditable ? globalColors.primary[500] : 'grey',
-                        padding: 10,
-                        borderRadius: 7,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: globalColors.primary[600],
+                        borderRadius: 50,
+                        padding: 11
                     }}
                     disabled={!isPresupEditable}
                     onPress={handlePress}
                 >
-
-                    <Icon name="search" color="white" />
+                    <Icon name="search" size={25} color="white" />
                 </TouchableOpacity>
             </View >
 
@@ -81,7 +80,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        gap: 10
+        gap: 10,
     },
     input: {
         backgroundColor: '#fff',

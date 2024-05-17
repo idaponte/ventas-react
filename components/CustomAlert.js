@@ -59,15 +59,14 @@ const Button = ({ onPress, children }) => {
     );
 };
 
-const Input = ({ keyboardType = 'default', onChangeText, isPsw = false, text = '' }) => {
-    console.log(isPsw)
+const Input = ({ keyboardType = 'default', onChangeText, isPsw = false, text = '', placeholder = '' }) => {
     return (
         <CustomInput
             keyboardType={keyboardType}
             isPsw={isPsw}
             onChange={onChangeText}
             value={text}
-
+            placeholder={placeholder}
         />
     );
 };

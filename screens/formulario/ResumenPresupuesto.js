@@ -11,6 +11,8 @@ import { showToast } from '../../utils/showToast'
 import { ResumenPresupuestoCard } from '../../components/ResumenPresupuestoCard'
 import { PresupuestoServiceContext } from '../../contexts/PresupuestosService'
 import { useNavigation } from '@react-navigation/native'
+import { MonssaPresupModel } from '../../models/MonssaPresupModel'
+import { Fetch } from '../../services/fetch'
 
 
 
@@ -22,7 +24,7 @@ const ResumenPresupuesto = () => {
 
     const navigation = useNavigation()
 
-    const { dolarCotiz, toPesos } = dataCtx
+    const { dolarCotiz, toPesos, dolar } = dataCtx
     const { totales, cuotas, isPresupEditable, resetPresupuesto } = presupCtx
 
     const esContado = presupCtx.presupuesto.oper.tipo_pago === 'contado'
@@ -42,7 +44,25 @@ const ResumenPresupuesto = () => {
                 return
             }
 
-            const exito = await storePresupuesto(presupCtx.presupuesto)
+
+            // for (const key in monssaPresup) {
+            //     console.log(key, monssaPresup[key])
+            // }
+
+            // const resp = await fetch('http://localhost:8000/api/presupuestos/create', {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body: JSON.stringify({ presupuestos: [monssaPresup] })
+            // })
+
+            // const data = await resp.json()
+
+            // console.log({ data })
+
+            const finalPresup = presupCtx.getPresupToPost()
+            const exito = await storePresupuesto(finalPresup)
 
             if (exito) {
                 showToast('Presupuesto guardado correctamente')
@@ -92,7 +112,7 @@ const ResumenPresupuesto = () => {
                         isPresupEditable
                             ? (
                                 <>
-                                    <Button title='Limpiar' style={styles.button} onPress={handleGuardar} />
+                                    <Button title='Limpiar' style={styles.button} onPress={() => { }} />
                                     <Button title='Guardar' style={styles.button} onPress={handleGuardar} color={globalColors.success[600]} underlayColor={globalColors.success[800]} />
                                 </>
                             )

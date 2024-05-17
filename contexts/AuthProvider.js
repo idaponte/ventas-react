@@ -37,35 +37,36 @@ const AuthProvider = ({ children }) => {
     }, [])
 
     useEffect(() => {
-        console.log('user', user)
+        if (user) console.log('user', user)
         setIsLogged(user !== null && user !== undefined)
     }, [user])
 
 
     const login = async ({ username, password }) => {
+        let error = ''
+
         try {
-            console.log('login')
             setLoading(true)
 
-            const resp = await Fetch.post('api/login', {
+            const resp = await Fetch.post('login', {
                 'username': username,
                 'password': hashPsw(password),
                 'uuid': 'device.uuid',
                 'version': 'prueba'
             })
 
-            console.log(username, password)
-
             setUser(resp.data)
             await SecureStorage.setData('user', JSON.stringify(resp.data))
-
             setPrevLogged(false)
-            setLoading(false)
+
 
         } catch (error) {
-            console.error('error', error.message)
-            showToast(error.message)
+            console.log('error', error.message)
+            error = error.message
         }
+
+        setLoading(false)
+        return error
     }
 
     const logout = async () => {
@@ -85,7 +86,7 @@ const AuthProvider = ({ children }) => {
 
 
 
-    if (loading) return <LoadingScreen />
+    // if (loading) return <LoadingScreen />
 
     return (
         <AuthContext.Provider value={{

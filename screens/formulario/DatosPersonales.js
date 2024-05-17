@@ -69,7 +69,7 @@ const DatosPersonales = () => {
                 </InputGroup>
                 <InputGroup>
                     <Input editable={isPresupEditable} label="Calle (*)" value={presupuesto.customer.domicilio.calle} onChange={text => handleDomicilioData('calle', text)} />
-                    <Input editable={isPresupEditable} label="Nro" value={presupuesto.customer.domicilio.nro} onChange={text => handleDomicilioData('nro', text)} />
+                    <Input editable={isPresupEditable} label="Número" value={presupuesto.customer.domicilio.nro} onChange={text => handleDomicilioData('nro', text)} />
                 </InputGroup>
                 <Input editable={isPresupEditable} label="Entre" value={presupuesto.customer.domicilio.entre} onChange={text => handleDomicilioData('entre', text)} />
 

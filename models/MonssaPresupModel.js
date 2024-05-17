@@ -10,7 +10,6 @@ export class MonssaPresupModel {
             ape: presupuesto.customer.ape,
         }
         this.abono = { ...presupuesto.abono }
-        // {"faltante": 1, "generic_id": 1, "observ": "local", "precio": "45.00", "presup_id": 23667, "qty": 1, "qty_cajon": 0, "sqty": 1, "user_id": 1008}
         this.items = Object.values(presupuesto.items).map(item => ({
             faltante: item.faltante,
             generic_id: item.generic_id,

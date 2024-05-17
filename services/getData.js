@@ -2,8 +2,6 @@ import { Fetch } from "./fetch"
 
 
 export const getData = async () => {
-    console.log('getData')
-
     const endpoints = {
         'rubros': 'rubros',
         'bonifs': 'bonifs',
@@ -16,7 +14,7 @@ export const getData = async () => {
 
     const data = await Promise.all(
         Object.keys(endpoints).map(async key => {
-            const response = await Fetch.get('api/' + endpoints[key])
+            const response = await Fetch.get(endpoints[key])
             return { [key]: response['data'] }
         })
     )

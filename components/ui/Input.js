@@ -29,7 +29,7 @@ export const Input = ({
                 style={{
                     ...styles.input,
                     borderColor: focused ? '#000' : '#a8a8a8',
-                    backgroundColor: editable ? 'white' : globalColors.grey[200]
+                    backgroundColor: editable ? 'white' : globalColors.grey[200],
                 }}
                 cursorColor='black'
                 onFocus={() => setFocused(true)}
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-start',
         maxWidth: '100%',
-        padding: 15,
+        padding: 10,
     },
     inputFocused: {
         borderColor: '#000',

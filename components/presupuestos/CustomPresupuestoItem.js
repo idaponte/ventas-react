@@ -64,10 +64,7 @@ export const CustomPresupuestoItem = ({ presupuestoSF }) => {
                     borderLeftColor: getColorByStatus(presupuestoSF.presup.status),
                     borderLeftWidth: 8,
                 }}
-                onPress={() => {
-                    console.log('show')
-                    setShow(true)
-                }}
+                onPress={() => setShow(true)}
             >
                 <Text numberOfLines={1} style={{ flex: 2, }} >{nombre}</Text>
                 <Text style={{ flex: 1, textAlign: 'right', textTransform: 'uppercase' }}>ID {presupuestoSF.presup.presup_id}</Text>

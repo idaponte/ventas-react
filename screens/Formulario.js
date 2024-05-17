@@ -24,6 +24,7 @@ const Formulario = () => {
         },
         tabBarLabelStyle: {
             fontWeight: 'bold',
+            fontSize: 11,
         },
 
     }

@@ -10,8 +10,9 @@ export const Button = ({
     disabled = false,
 }) => {
     let buttonStyles;
-    let textColor = color;
+    let textColor = disabled ? globalColors.grey[500] : color;
     let backgroundColor = 'transparent'
+    let finalUnderlayColor = underlayColor
 
     switch (variant) {
         case 'outlined':
@@ -19,11 +20,12 @@ export const Button = ({
                 borderWidth: 1,
                 borderColor: color,
             };
+            underlayColor = globalColors.grey[100];
             break;
         case 'text':
             break;
         default:
-            backgroundColor = color
+            backgroundColor = disabled ? globalColors.grey[500] : color;
             textColor = 'white';
             break;
     }

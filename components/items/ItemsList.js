@@ -21,13 +21,7 @@ export const ItemsList = () => {
 
     return (
         <>
-            <View style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 10,
-                flex: 1,
-                marginBottom: 20,
-            }}>
+            <View style={{ gap: 10, marginBottom: 20 }}>
 
                 <CustomListHeader />
 

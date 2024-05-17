@@ -1,12 +1,12 @@
 import { SecureStorage, saveToSecureStorage } from "../utils/secureStorage";
 
 export class Fetch {
-    devUrl = 'http://localhost:8000/';
+    devUrl = 'http://localhost:8000/api/';
     prodUrl = 'https://ventas.monssa.com.ar/';
 
     getUrl(url) {
         const finalUrl = __DEV__ ? this.devUrl + url : this.prodUrl + url;
-        console.log('URL:', finalUrl);
+        console.log('url', finalUrl);
         return finalUrl;
     }
 
@@ -55,14 +55,12 @@ export class Fetch {
             const response = await fetch(this.getUrl(url), {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'multipart/form-data',
+                    credentials: 'same-origin',
                 },
                 body: formData,
                 ...options
             });
-
-            const extranetCookie = response.headers.get('set-cookie').split(';')[0];
-            await SecureStorage.setData('extranet', extranetCookie);
 
             const fromJson = await response.json();
 
@@ -70,12 +68,15 @@ export class Fetch {
                 throw new Error(fromJson['ed']);
             }
 
+            const extranetCookie = response.headers.get('set-cookie').split(';')[0];
+            await SecureStorage.setData('extranet', extranetCookie);
+
             return {
                 status: 200,
                 data: fromJson
             };
         } catch (error) {
-            console.error(error.message);
+            // console.error(error.message);
             throw new Error(error.message);
         }
     }
