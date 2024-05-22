@@ -23,14 +23,13 @@ const PersonaInfo = ({ title, info }) => {
 
 
 
-export const CustomAgendaItem = ({
-    onPress,
-    fecha,
-    hora,
-    nombre,
-}) => {
+export const CustomAgendaItem = ({ data }) => {
     const [show, setShow] = useState(false)
     const navigation = useNavigation()
+
+    const nombre = `${data.ape} ${data.name}`
+    const fecha = '12/12/2021'
+    const hora = '12:00'
 
     return (
         <>
@@ -106,29 +105,21 @@ export const CustomAgendaItem = ({
                             onPress={() => { }}
                             size={15}
                             color={'white'}
-                            style={{
-                                borderRadius: 50,
-                                padding: 10,
-                            }}
+                            style={{ borderRadius: 50, padding: 10 }}
                         />
 
                     </View>
 
-                    <Button.Close
+                    <Button
                         title="Iniciar presupuesto"
                         onPress={() => navigation.navigate('Formulario')}
-                        style={{
-                            marginTop: 20
-                        }}
+                        style={{ marginTop: 20 }}
                     />
 
-                    <Button
+                    <Button.Close
                         title="Cerrar"
                         onPress={() => setShow(false)}
-                        style={{
-                            marginTop: 10,
-                            backgroundColor: 'grey'
-                        }}
+                        style={{ marginTop: 10 }}
                     />
                 </ModalLayout.Content>
             </ModalLayout>

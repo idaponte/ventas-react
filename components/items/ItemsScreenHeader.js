@@ -7,7 +7,7 @@ import { PresupContext } from "../../contexts/PresupProvider";
 
 export const ItemsScreenHeader = () => {
     const { rubros, getRubroById, getItemsById } = useContext(DataContext);
-    const { presupuesto, isPresupEditable, setPresupuesto, tryAddItem, resetItems } = useContext(PresupContext);
+    const { presupuesto, isPresupEditable, setPresupuesto, tryAddItem, addComunicador, resetItems } = useContext(PresupContext);
 
     const handleRubroChange = (item) => {
         setPresupuesto(oldPresup => ({
@@ -22,24 +22,20 @@ export const ItemsScreenHeader = () => {
         const esCctv = item.label.toLowerCase() === 'cctv'
 
         if (esRobo) {
-            // TODO: debe poder agregarse el comunicador (id 24). Consultar si se agrega con qty en 0 o 1
             resetItems()
 
-            const items = getItemsById([24, 1, 8, 9, 10, 11]);
+            const items = getItemsById([1, 8, 9, 10, 11]);
 
-            for (let item of items) {
-                tryAddItem(item)
-            }
-
+            addComunicador()
+            for (let item of items) tryAddItem(item)
         }
 
         if (esCctv) {
             resetItems()
-            const items = getItemsById([24, 14, 88]);
+            const items = getItemsById([14, 88]);
 
-            for (let item of items) {
-                tryAddItem(item)
-            }
+            addComunicador()
+            for (let item of items) tryAddItem(item)
         }
     }
 

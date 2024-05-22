@@ -40,7 +40,7 @@ export const presupMockup = {
         "reboteobserv": null,
         "rubro_id": 4,
         "signature": null,
-        "status": "creado",
+        "status": "Creado",
         "tecobserv": null,
         "tipo_cond_pago": "bonif_10%",
         "tipo_pago": "otra",

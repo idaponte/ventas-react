@@ -51,9 +51,9 @@ const Footer = ({ children }) => {
     );
 };
 
-const Button = ({ onPress, children }) => {
+const Button = ({ onPress, children, disabled = false }) => {
     return (
-        <TouchableOpacity onPress={onPress} style={{ padding: 10 }}>
+        <TouchableOpacity disabled={disabled} onPress={onPress} style={{ padding: 10 }}>
             <Text style={{ color: globalColors.primary[700] }}>{children}</Text>
         </TouchableOpacity>
     );

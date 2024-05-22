@@ -14,6 +14,7 @@ export const PresupuestoServiceContext = createContext({
     isSync: true,
     storePresupuesto: async (presupuesto) => { },
     isPresupNew: (presup_id) => { },
+    syncPresupuestos: async () => { },
 })
 
 
@@ -29,14 +30,6 @@ const PresupuestosService = ({ children }) => {
     })
 
     const isSync = Object.keys(state.presupuestosToCreate).length === 0 && Object.keys(state.presupuestosToUpdate).length === 0
-
-    const syncPresupuestosToCreate = async () => {
-        /* TODO: sync presupuestosToCreate with server
-         if (creating) {
-      map['presup'].removeWhere((key, value) => key == "intobserv_new");
-    }
-        */
-    }
 
     const addNewPresup = async (presupuesto) => {
         try {
@@ -119,7 +112,6 @@ const PresupuestosService = ({ children }) => {
         return exito
     }
 
-
     const getLocalPresups = async () => {
         const presupuestosRAW = await AsyncStorage.getItem('presupuestos')
         const presupuestosToCreateRAW = await AsyncStorage.getItem('presupuestosToCreate')
@@ -138,22 +130,12 @@ const PresupuestosService = ({ children }) => {
         }))
     }
 
-    const savePresupuestosToLS = async (key, value) => {
-        console.log('saving to LS', key)
-        await AsyncStorage.setItem(key, JSON.stringify(value))
-    }
 
     const getRemotePresups = async () => {
         const resp = await Fetch.get('presupuestos')
         const presupuestosRemotos = resp.data
 
         const presupArr = Object.values(presupuestosRemotos)
-        // let cant = 10
-        // for (const presup of Object.values(presupuestosRemotos)) {
-        //     if (!cant) break
-        //     presupArr.push(presup)
-        //     cant--
-        // }
 
         const presupObj = {}
 
@@ -169,11 +151,6 @@ const PresupuestosService = ({ children }) => {
         savePresupuestosToLS('presupuestos', presupObj)
     }
 
-    const isPresupNew = (presup_id) => (
-        !state.presupuestos[presup_id] &&
-        !state.presupuestosToCreate[presup_id] &&
-        !state.presupuestosToUpdate[presup_id]
-    )
 
 
     const loadPresupuestos = async () => {
@@ -188,9 +165,57 @@ const PresupuestosService = ({ children }) => {
         setLoading(false)
     }
 
+    const syncPresupuestos = async () => {
+        console.log('syncPresupuestos')
+        const toCreate = Object.values(state.presupuestosToCreate)
+        const toUpdate = Object.values(state.presupuestosToUpdate)
+
+        if (toCreate.length === 0 && toUpdate.length === 0) {
+            showToast('No hay presupuestos para sincronizar')
+            console.log('no hay presupuestos para sincronizar')
+            return
+        }
+
+        try {
+            const resp = await fetch('http://localhost:8000/api/presupuestos/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    presupuestos: [
+                        ...Object.values(state.presupuestosToCreate),
+                        ...Object.values(state.presupuestosToUpdate)
+                    ]
+                })
+            })
+
+            const data = await resp.json()
+
+            console.log({ data })
+        } catch (error) {
+            console.error(error)
+        }
+
+    }
+
     useEffect(() => {
         loadPresupuestos()
     }, [authLoading, prevLogged])
+
+
+
+    const isPresupNew = (presup_id) => (
+        !state.presupuestos[presup_id] &&
+        !state.presupuestosToCreate[presup_id] &&
+        !state.presupuestosToUpdate[presup_id]
+    )
+
+
+    const savePresupuestosToLS = async (key, value) => {
+        console.log('saving to LS', key)
+        await AsyncStorage.setItem(key, JSON.stringify(value))
+    }
 
     if (loading) return <LoadingScreen />
 
@@ -200,7 +225,7 @@ const PresupuestosService = ({ children }) => {
             presupuestosToCreate: state.presupuestosToCreate,
             presupuestosToUpdate: state.presupuestosToUpdate,
             isSync,
-
+            syncPresupuestos,
             storePresupuesto,
             isPresupNew,
         }}>

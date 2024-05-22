@@ -170,6 +170,9 @@ const PresupProvider = ({ children }) => {
     const createItem = (data) => {
         // TODO: insta_precio y precio se deben tratar siempre como numeros, solo serán string cuando se crea o actualiza el presupuesto
         // TODO: recordar tambien que si se carga un presupuesto del listado, PresupModel debe hacer el parseo de los precios para que sean numeros
+
+        console.log(data)
+
         const newItem = {
             generic_id: data['generic_id'],
             precio: data['precio'] ?? 0,
@@ -192,13 +195,20 @@ const PresupProvider = ({ children }) => {
         return newItem
     }
 
-    const addComunicador = (com) => {
-        const item = createItem({ ...com, qty: 0, sqty: 0 })
+    const addComunicador = () => {
+        const comunicador = getItemById(24)
+        if (!comunicador) return
+        const item = createItem({ ...comunicador, qty: 0, sqty: 0 })
         addItem(item)
     }
 
 
     const addItem = (item) => {
+        // if (itemExists(item.generic_id)) {
+        //     console.log('El item ya existe en el presupuesto')
+        //     return
+        // }
+
         setPresupuesto(oldPresup => ({
             ...oldPresup,
             items: {
@@ -208,21 +218,22 @@ const PresupProvider = ({ children }) => {
         }))
     }
 
+    const itemExists = (id) => presupuesto.items[id] !== undefined
 
     const tryAddItem = (item) => {
 
-        const itemExists = presupuesto.items[item.generic_id]
-
-        if (itemExists) {
+        if (itemExists(item.generic_id)) {
             // showToast('El item ya existe en el presupuesto')
             return false
         }
 
         const isComunicador = esItemComunicador(item.generic_id)
+
         if (isComunicador && !abonoInalambrico) {
             showToast('Seleccione un abono inalámbrico antes de agregar un comunicador')
             return false
         }
+
         const newItem = createItem(item)
         addItem(newItem)
         return true
@@ -236,9 +247,7 @@ const PresupProvider = ({ children }) => {
     }
 
     useEffect(() => {
-        const comunicador = getItemById(24)
-        if (!comunicador) return
-        addComunicador(comunicador)
+        addComunicador()
     }, [items])
 
     const setDefaultValues = () => {

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import { Layout } from "../components/ui/Layout"
 import { ShadowView } from "../components/ui/ShadowView"
@@ -8,8 +8,12 @@ import { CustomAgendaItem } from "../components/agenda/CustomAgendaItem"
 import { getHumanDate } from "../utils/getHumanDate"
 
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import { Fetch } from "../services/fetch"
+import { AgendaContext } from "../contexts/AgendaService"
 
 const Agenda = () => {
+    const { agenda } = useContext(AgendaContext)
+
     const [date, setDate] = useState(new Date(1598051730000));
 
     const onChange = (event, selectedDate) => {
@@ -33,6 +37,8 @@ const Agenda = () => {
     const showTimepicker = () => {
         showMode('time');
     };
+
+
     return (
         <>
             <Layout>
@@ -69,7 +75,16 @@ const Agenda = () => {
                     </View>
                 </ShadowView>
 
-                <CustomAgendaItem nombre="Ignacio da Ponte" fecha="12/12/2021" hora="10:00" />
+                {
+                    agenda.map((item, index) => {
+                        return (
+                            <CustomAgendaItem
+                                data={item}
+                                key={index}
+                            />
+                        )
+                    })
+                }
             </Layout>
 
 

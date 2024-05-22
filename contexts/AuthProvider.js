@@ -1,13 +1,12 @@
 import { createContext, useEffect, useState } from "react"
 import { Fetch } from "../services/fetch"
 import { hashPsw } from "../utils/hashPsw"
-import { showToast } from "../utils/showToast"
-import { SecureStorage, saveToSecureStorage } from "../utils/secureStorage"
-import LoadingScreen from "../screens/LoadingScreen"
+import { SecureStorage } from "../utils/secureStorage"
 
 export const AuthContext = createContext({
     login: async () => { },
-    logout: () => { },
+    logout: async () => { },
+    validateSession: async () => { },
     loading: true,
     user: null,
     isLogged: false
@@ -84,19 +83,41 @@ const AuthProvider = ({ children }) => {
         }
     }
 
+    const validateSession = async (password = '') => {
+        try {
 
+            const resp = await Fetch.post('login', {
+                'username': user.username,
+                'password': hashPsw(password),
+                'uuid': 'device.uuid',
+                'version': 'prueba'
+            })
+
+            console.log(resp)
+
+
+            return ''
+        } catch (error) {
+            return error.message
+        }
+
+    }
 
     // if (loading) return <LoadingScreen />
+
 
     return (
         <AuthContext.Provider value={{
             login,
             logout,
+            validateSession,
             user,
             isLogged,
             loading,
-            prevLogged
+            prevLogged,
+
         }}>
+
             {children}
         </AuthContext.Provider>
     )

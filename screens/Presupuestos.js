@@ -1,8 +1,10 @@
-import { useContext, useEffect } from "react"
-import { Text, View } from "react-native"
+import { useContext, useEffect, useState } from "react"
+import { RefreshControl, Text, View } from "react-native"
 import { Layout } from "../components/ui/Layout"
 import { CustomPresupuestoItem } from "../components/presupuestos/CustomPresupuestoItem"
 import { PresupuestoServiceContext } from "../contexts/PresupuestosService"
+import { AuthContext } from "../contexts/AuthProvider"
+import { ValidateSessionModal } from "../components/presupuestos/ValidateSessionModal"
 
 const PresupuestosBox = ({
     children,
@@ -42,45 +44,70 @@ const PresupuestosBox = ({
 const Presupuestos = () => {
 
     const { presupuestos, presupuestosToCreate, presupuestosToUpdate } = useContext(PresupuestoServiceContext)
+    const { validateSession } = useContext(AuthContext)
+
+    const [refreshing, setRefreshing] = useState(false)
+
+    const onRefresh = () => {
+        setRefreshing(true)
+        setModalVisible(true)
+        setRefreshing(false)
+    }
+
+    const [modalVisible, setModalVisible] = useState(false)
+
+    const presupuestosArr = Object.values(presupuestos).reverse()
+    const presupuestosToCreateArr = Object.values(presupuestosToCreate)
+    const presupuestosToUpdateArr = Object.values(presupuestosToUpdate)
+
+
 
     return (
-        <Layout styles={{ paddingHorizontal: 10, gap: 30 }} onScrollEndDrag={() => { console.log('rersfsadfd') }}>
-            {
-                Object.keys(presupuestosToCreate).length
-                    ? (
-                        <PresupuestosBox title='Locales creados'>
-                            {Object.values(presupuestosToCreate).map((presup, i) => (
-                                <CustomPresupuestoItem key={i} presupuestoSF={presup} />
-                            ))}
-                        </PresupuestosBox>
-                    )
-                    : null
-            }
+        <>
 
-            {
-                Object.keys(presupuestosToUpdate).length
-                    ? (
-                        <PresupuestosBox title='Locales actualizados'>
-                            {Object.values(presupuestosToUpdate).map((presup, i) => (
-                                <CustomPresupuestoItem key={i} presupuestoSF={presup} />
-                            ))}
-                        </PresupuestosBox>
-                    )
-                    : null
-            }
+            <ValidateSessionModal visible={modalVisible} setVisible={setModalVisible} validateSession={validateSession} />
+            <Layout
+                styles={{ paddingHorizontal: 10, gap: 30 }}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+            >
+                {
+                    presupuestosToCreateArr.length
+                        ? (
+                            <PresupuestosBox title='Locales creados'>
+                                {presupuestosToCreateArr.map((presup, i) => (
+                                    <CustomPresupuestoItem key={i} presupuestoSF={presup} />
+                                ))}
+                            </PresupuestosBox>
+                        )
+                        : null
+                }
 
-            {
-                Object.keys(presupuestos).length
-                    ? (
-                        <PresupuestosBox title='En nube'>
-                            {Object.values(presupuestos).map(presup => (
-                                <CustomPresupuestoItem key={presup.abono.presup_id} presupuestoSF={presup} />
-                            ))}
-                        </PresupuestosBox>
-                    )
-                    : null
-            }
-        </Layout>
+                {
+                    presupuestosToUpdateArr.length
+                        ? (
+                            <PresupuestosBox title='Locales actualizados'>
+                                {presupuestosToUpdateArr.map((presup, i) => (
+                                    <CustomPresupuestoItem key={i} presupuestoSF={presup} />
+                                ))}
+                            </PresupuestosBox>
+                        )
+                        : null
+                }
+
+                {
+                    presupuestosArr.length
+                        ? (
+                            <PresupuestosBox title='En nube'>
+                                {presupuestosArr.map(presup => (
+                                    <CustomPresupuestoItem key={presup.abono.presup_id} presupuestoSF={presup} />
+                                ))}
+                            </PresupuestosBox>
+                        )
+                        : null
+                }
+            </Layout>
+        </>
+
     )
 }
 

@@ -10,12 +10,10 @@ import { Drawer as DrawerContent, Row, Button, IconButton } from '../components/
 import { DataProvider } from '../contexts/DataProvider';
 import PresupProvider, { PresupContext } from '../contexts/PresupProvider';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import PresupuestosService from '../contexts/PresupuestosService';
 import AgendaService from '../contexts/AgendaService';
 import { Alert } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { View } from 'react-native';
 
 const Drawer = createDrawerNavigator();
 
@@ -24,11 +22,13 @@ const MiAppState = () => {
     return (
         <DataProvider>
             <PresupProvider>
-                <PresupuestosService>
-                    <AgendaService>
-                        <DrawerNavigator />
-                    </AgendaService>
-                </PresupuestosService>
+                <AgendaService>
+                    <PresupuestosService>
+                        <AgendaService>
+                            <DrawerNavigator />
+                        </AgendaService>
+                    </PresupuestosService>
+                </AgendaService>
             </PresupProvider>
         </DataProvider>
     )
@@ -73,31 +73,28 @@ const DrawerNavigator = () => {
         ])
     }
 
+    const screenOptions = {
+        headerShown: true,
+        headerTintColor: 'white',
+        statusBarColor: 'transparent',
+        headerStyle: { backgroundColor: globalColors.primary[700] },
+        headerTitleStyle: { color: 'white' },
+        headerRight: () => {
+            return (
+                <Row style={{ gap: 20, marginRight: 20 }}>
+                    <IconButton icon="plus" style={{ backgroundColor: 'transparent', padding: 5 }} size={24} color="white" onPress={newPresup} />
+                    {__DEV__ && <IconButton icon="bug" style={{ backgroundColor: 'transparent', padding: 5 }} size={24} color="white" onPress={showPresupuesto} />}
+                </Row>
+            )
+        }
+
+    }
 
     return (
         <Drawer.Navigator
-            initialRouteName="Presupuestos"
-            screenOptions={{
-                headerShown: true,
-                headerTintColor: 'white',
-                statusBarColor: 'transparent',
-                headerStyle: { backgroundColor: globalColors.primary[700] },
-                headerTitleStyle: { color: 'white' },
-                headerRight: () => {
-                    return (
-                        <Row style={{ gap: 20, marginRight: 20 }}>
-                            <IconButton icon="plus" style={{ backgroundColor: 'transparent', padding: 5 }} size={24} color="white" onPress={newPresup} />
-                            {__DEV__ && <IconButton icon="bug" style={{ backgroundColor: 'transparent', padding: 5 }} size={24} color="white" onPress={showPresupuesto} />}
-                        </Row>
-                    )
-                }
-
-            }}
-            drawerContent={(props) => {
-                return (
-                    <DrawerContent {...props} />
-                )
-            }}
+            initialRouteName="Agenda"
+            screenOptions={screenOptions}
+            drawerContent={(props) => <DrawerContent {...props} />}
 
         >
             <Drawer.Screen name="Formulario" component={Formulario} options={{ title: `ID: ${`${presupuesto.oper.presup_id}`.toUpperCase()}` }} />

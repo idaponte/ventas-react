@@ -22,7 +22,7 @@ export const DataContext = createContext({
     esItemComunicador: () => { },
     getItemById: () => { },
     getItemsById: () => { },
-    getRemoteData: () => { },
+    getRemoteData: async () => { },
     getRubroById: () => { },
     getTipoAbonoById: () => { },
     searchItems: () => { },
@@ -195,7 +195,6 @@ export const DataProvider = ({ children }) => {
         !Object.keys(data.items).length ||
         !data.precioMateriales
     ) {
-        console.log('loadddddds')
         return <LoadingScreen />
     }
 
