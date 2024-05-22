@@ -10,6 +10,7 @@ import { getHumanDate } from "../utils/getHumanDate"
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { Fetch } from "../services/fetch"
 import { AgendaContext } from "../contexts/AgendaService"
+import { Column } from "../components/ui"
 
 const Agenda = () => {
     const { agenda } = useContext(AgendaContext)
@@ -75,16 +76,9 @@ const Agenda = () => {
                     </View>
                 </ShadowView>
 
-                {
-                    agenda.map((item, index) => {
-                        return (
-                            <CustomAgendaItem
-                                data={item}
-                                key={index}
-                            />
-                        )
-                    })
-                }
+                <Column style={{ gap: 10 }}>
+                    {agenda.map((item, index) => <CustomAgendaItem data={item} key={index} />)}
+                </Column>
             </Layout>
 
 

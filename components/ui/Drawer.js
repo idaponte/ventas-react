@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { Alert, StyleSheet, Text, View } from 'react-native';
@@ -8,10 +8,11 @@ import { globalColors } from '../../styles/globals';
 import { AuthContext } from '../../contexts/AuthProvider';
 import { PresupuestoServiceContext } from '../../contexts/PresupuestosService';
 import { showToast } from '../../utils/showToast';
+import { ValidateSessionModal } from '../presupuestos/ValidateSessionModal';
 
 export const Drawer = (props) => {
 
-    const { logout, user, setValidateSessionModal } = useContext(AuthContext)
+    const { logout, user, validateSession } = useContext(AuthContext)
     const { isSync } = useContext(PresupuestoServiceContext)
 
 
@@ -23,6 +24,8 @@ export const Drawer = (props) => {
 
         await logout()
     }
+
+    const [modalVisible, setModalVisible] = useState(false)
 
     return (
         <DrawerContentScrollView {...props} >
@@ -54,11 +57,13 @@ export const Drawer = (props) => {
             </View>
 
             <Column style={{ gap: 20, marginTop: '100%' }}>
+                <ValidateSessionModal visible={modalVisible} setVisible={setModalVisible} validateSession={validateSession} />
+
                 <Button
                     variant='outlined'
                     title='Sincronizar'
                     style={{ marginHorizontal: 20 }}
-                    onPress={() => setValidateSessionModal(true)}
+                    onPress={() => setModalVisible(true)}
                 />
                 <Button
                     color={globalColors.danger[600]}

@@ -143,11 +143,7 @@ const PresupuestosService = ({ children }) => {
             presupObj[presup.presup.presup_id] = presup
         }
 
-        setState(oldState => ({
-            ...oldState,
-            presupuestos: presupObj
-        }))
-
+        setState({ presupuestos: presupObj, presupuestosToCreate: {}, presupuestosToUpdate: {} })
         savePresupuestosToLS('presupuestos', presupObj)
     }
 
@@ -165,6 +161,12 @@ const PresupuestosService = ({ children }) => {
         setLoading(false)
     }
 
+    const resetLS = async () => {
+        await AsyncStorage.removeItem('presupuestos')
+        await AsyncStorage.removeItem('presupuestosToCreate')
+        await AsyncStorage.removeItem('presupuestosToUpdate')
+    }
+
     const syncPresupuestos = async () => {
         console.log('syncPresupuestos')
         const toCreate = Object.values(state.presupuestosToCreate)
@@ -177,22 +179,23 @@ const PresupuestosService = ({ children }) => {
         }
 
         try {
-            const resp = await fetch('http://localhost:8000/api/presupuestos/create', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    presupuestos: [
-                        ...Object.values(state.presupuestosToCreate),
-                        ...Object.values(state.presupuestosToUpdate)
-                    ]
-                })
+            Fetch.postJson('presupuestos/create', {
+                presupuestos: [
+                    ...toCreate,
+                    ...toUpdate.filter(presup => isNaN(presup.presup.presup_id))
+                ]
             })
 
-            const data = await resp.json()
+            Fetch.postJson('presupuestos/update', {
+                presupuestos: [
+                    ...toUpdate.filter(presup => !isNaN(presup.presup.presup_id))
+                ]
+            })
 
-            console.log({ data })
+
+            await resetLS()
+            await getRemotePresups()
+
         } catch (error) {
             console.error(error)
         }
