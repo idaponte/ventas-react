@@ -67,7 +67,7 @@ const PresupProvider = ({ children }) => {
 
 
     const navigation = useNavigation()
-    const route = useRoute()
+
 
     useEffect(() => {
         setAbonoInalambrico(
@@ -79,9 +79,10 @@ const PresupProvider = ({ children }) => {
         setLoadingPresupuesto(true)
         resetPresupuesto()
 
-        // console.log(presupuestoSF)
-
         const presupuestoF = new PresupuestoModel(presupuestoSF)
+
+        console.log(presupuestoF)
+
 
         setPresupuesto(oldPresup => ({
             ...oldPresup,
@@ -90,6 +91,7 @@ const PresupProvider = ({ children }) => {
             oper: presupuestoF.oper,
             const: presupuestoF.const
         }))
+
 
         Object.values(presupuestoF.items).forEach(item => {
             const itemInstaPrecio = getItemById(item.generic_id).insta_precio
@@ -110,7 +112,8 @@ const PresupProvider = ({ children }) => {
             ...presupuesto,
             abono: {
                 ...presupuesto.abono,
-                insta: totalInstaAceptado
+                insta: totalInstaAceptado,
+                dolar: dataCtx.dolarCotiz
             }
         }
     }
@@ -468,12 +471,7 @@ const PresupProvider = ({ children }) => {
         return true
     }
 
-    const crearJSON = () => {
-    }
-
-    if (loadingPresupuesto) {
-        return <LoadingScreen />
-    }
+    if (loadingPresupuesto) <LoadingScreen />
 
     return (
         <PresupContext.Provider value={{

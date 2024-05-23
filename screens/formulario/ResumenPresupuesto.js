@@ -44,23 +44,6 @@ const ResumenPresupuesto = () => {
                 return
             }
 
-
-            // for (const key in monssaPresup) {
-            //     console.log(key, monssaPresup[key])
-            // }
-
-            // const resp = await fetch('http://localhost:8000/api/presupuestos/create', {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: JSON.stringify({ presupuestos: [monssaPresup] })
-            // })
-
-            // const data = await resp.json()
-
-            // console.log({ data })
-
             const finalPresup = presupCtx.getPresupToPost()
             const exito = await storePresupuesto(finalPresup)
 

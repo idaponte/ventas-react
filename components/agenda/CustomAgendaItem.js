@@ -1,10 +1,13 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { Divider } from '@rneui/themed'
 import { ModalLayout } from '../modals/ModalLayout'
 import { globalStyles } from '../../styles/globals'
 import { Button, Input, IconButton } from '../ui'
+import { getHumanDate } from '../../utils/getHumanDate'
+import { getDom } from '../../utils/getDom'
+import { PresupContext } from '../../contexts/PresupProvider'
 
 const PersonaInfo = ({ title, info }) => {
     return (
@@ -28,8 +31,13 @@ export const CustomAgendaItem = ({ data }) => {
     const navigation = useNavigation()
 
     const nombre = `${data.ape} ${data.name}`
-    const fecha = '12/12/2021'
-    const hora = '12:00'
+    const fecha = getHumanDate(new Date(data.start), true)
+
+    const { loadPresupuesto } = useContext(PresupContext)
+
+    const {
+
+    } = data
 
     return (
         <>
@@ -53,7 +61,7 @@ export const CustomAgendaItem = ({ data }) => {
                 onPress={() => setShow(true)}
             >
                 <Text>{nombre}</Text>
-                <Text>{fecha + " " + hora}</Text>
+                <Text>{fecha}</Text>
             </TouchableOpacity>
 
             <ModalLayout isVisible={show} setIsVisible={setShow}>
@@ -66,9 +74,9 @@ export const CustomAgendaItem = ({ data }) => {
                     </Text>
                     <Divider />
 
-                    <PersonaInfo title="Domicilio" info={'Calle falsa 123'} />
-                    <PersonaInfo title="Fecha y hora" info={fecha + " " + hora} />
-                    <PersonaInfo title="Telefono" info={'123456789'} />
+                    <PersonaInfo title="Domicilio" info={getDom(data)} />
+                    <PersonaInfo title="Fecha y hora" info={fecha} />
+                    <PersonaInfo title="Teléfono" info={data.tel} />
 
                     <Text style={{ fontSize: 18, marginTop: 20, fontWeight: '600' }}>
                         Observaciones
@@ -112,7 +120,22 @@ export const CustomAgendaItem = ({ data }) => {
 
                     <Button
                         title="Iniciar presupuesto"
-                        onPress={() => navigation.navigate('Formulario')}
+                        onPress={() => {
+                            loadPresupuesto({
+                                presup: {
+                                    ape: data.ape,
+                                    name: data.name,
+                                    calle: data.calle,
+                                    ciudad: data.ciudad,
+                                    entre: data.entre,
+                                    nro: data.nro,
+                                    user_id: data.user_id,
+                                    vend_id: data.vend_id
+                                }
+                            })
+
+                            navigation.navigate('Formulario')
+                        }}
                         style={{ marginTop: 20 }}
                     />
 

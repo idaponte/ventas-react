@@ -81,8 +81,41 @@ export class Fetch {
         }
     }
 
+    async postJsonData(url, data, options = {}) {
+        try {
+            const response = await fetch(this.getUrl(url), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    credentials: 'same-origin',
+                },
+                body: JSON.stringify(data),
+                ...options
+            });
+
+            const fromJson = await response.json();
+
+            if (fromJson['ed'] !== undefined && fromJson['ed'].toLowerCase() !== 'ok') {
+                throw new Error(fromJson['ed']);
+            }
+
+            return {
+                status: 200,
+                data: fromJson
+            };
+        } catch (error) {
+            // console.error(error.message);
+            throw new Error(error.message);
+        }
+    }
+
     static async post(url, data, options = {}) {
         const fetch = new Fetch();
         return fetch.postData(url, data, options);
+    }
+
+    static async postJson(url, data, options = {}) {
+        const fetch = new Fetch();
+        return fetch.postJsonData(url, data, options);
     }
 }

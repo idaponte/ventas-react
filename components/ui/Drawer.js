@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { Alert, StyleSheet, Text, View } from 'react-native';
