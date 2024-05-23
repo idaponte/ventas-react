@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { Alert, StyleSheet, Text, View } from 'react-native';
@@ -8,10 +8,11 @@ import { globalColors } from '../../styles/globals';
 import { AuthContext } from '../../contexts/AuthProvider';
 import { PresupuestoServiceContext } from '../../contexts/PresupuestosService';
 import { showToast } from '../../utils/showToast';
+import { ValidateSessionModal } from '../presupuestos/ValidateSessionModal';
 
 export const Drawer = (props) => {
 
-    const { logout, user, setValidateSessionModal } = useContext(AuthContext)
+    const { logout, user } = useContext(AuthContext)
     const { isSync } = useContext(PresupuestoServiceContext)
 
 
@@ -24,61 +25,68 @@ export const Drawer = (props) => {
         await logout()
     }
 
+    const [modalVisible, setModalVisible] = useState(false)
+
     return (
-        <DrawerContentScrollView {...props} >
+        <>
+            <ValidateSessionModal visible={modalVisible} setVisible={setModalVisible} />
 
-            <View style={styles.drawerHeader}>
-                <Text style={{ color: 'white', fontSize: 25, fontWeight: '600' }}>
-                    {user?.username}
-                </Text>
-            </View>
+            <DrawerContentScrollView {...props} >
 
-            <View>
-                <DrawerItem
-                    icon={({ color, size }) => <Icon name="calendar" size={size} color={color} />}
-                    label="Agenda"
-                    onPress={() => props.navigation.navigate('Agenda')}
-                />
+                <View style={styles.drawerHeader}>
+                    <Text style={{ color: 'white', fontSize: 25, fontWeight: '600' }}>
+                        {user?.username}
+                    </Text>
+                </View>
 
-                <DrawerItem
-                    icon={({ color, size }) => <Icon name="list" size={size} color={color} />}
-                    label="Presupuestos"
-                    onPress={() => props.navigation.navigate('Presupuestos')}
-                />
+                <View>
+                    <DrawerItem
+                        icon={({ color, size }) => <Icon name="calendar" size={size} color={color} />}
+                        label="Agenda"
+                        onPress={() => props.navigation.navigate('Agenda')}
+                    />
 
-                <DrawerItem
-                    icon={({ color, size }) => <Icon name="table" size={size} color={color} />}
-                    label="Formulario"
-                    onPress={() => props.navigation.navigate('Formulario')}
-                />
-            </View>
+                    <DrawerItem
+                        icon={({ color, size }) => <Icon name="list" size={size} color={color} />}
+                        label="Presupuestos"
+                        onPress={() => props.navigation.navigate('Presupuestos')}
+                    />
 
-            <Column style={{ gap: 20, marginTop: '100%' }}>
-                <Button
-                    variant='outlined'
-                    title='Sincronizar'
-                    style={{ marginHorizontal: 20 }}
-                    onPress={() => setValidateSessionModal(true)}
-                />
-                <Button
-                    color={globalColors.danger[600]}
-                    underlayColor={globalColors.danger[800]}
-                    style={{ marginHorizontal: 20 }}
-                    title='Cerrar sesión' // TODO: si no sincronizó no puede cerrar sesión
-                    onPress={() =>
-                        Alert.alert('Cerrar sesión', '¿Está seguro que desea cerrar sesión?', [
-                            {
-                                text: 'Cancelar', onPress: () => {
-                                    console.log('Cancelado')
-                                }, style: 'cancel'
-                            },
-                            { text: 'Aceptar', onPress: () => handleLogout() },
-                        ])
-                    }
-                />
-            </Column>
+                    <DrawerItem
+                        icon={({ color, size }) => <Icon name="table" size={size} color={color} />}
+                        label="Formulario"
+                        onPress={() => props.navigation.navigate('Formulario')}
+                    />
+                </View>
 
-        </DrawerContentScrollView>
+                <Column style={{ gap: 20, marginTop: '100%' }}>
+                    <Button
+                        variant='outlined'
+                        title='Sincronizar'
+                        style={{ marginHorizontal: 20 }}
+                        onPress={() => setModalVisible(true)}
+                    />
+                    <Button
+                        color={globalColors.danger[600]}
+                        underlayColor={globalColors.danger[800]}
+                        style={{ marginHorizontal: 20 }}
+                        title='Cerrar sesión' // TODO: si no sincronizó no puede cerrar sesión
+                        onPress={() =>
+                            Alert.alert('Cerrar sesión', '¿Está seguro que desea cerrar sesión?', [
+                                {
+                                    text: 'Cancelar', onPress: () => {
+                                        console.log('Cancelado')
+                                    }, style: 'cancel'
+                                },
+                                { text: 'Aceptar', onPress: () => handleLogout() },
+                            ])
+                        }
+                    />
+                </Column>
+
+            </DrawerContentScrollView>
+        </>
+
     );
 }
 

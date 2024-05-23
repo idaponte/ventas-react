@@ -44,7 +44,6 @@ const PresupuestosBox = ({
 const Presupuestos = () => {
 
     const { presupuestos, presupuestosToCreate, presupuestosToUpdate } = useContext(PresupuestoServiceContext)
-    const { validateSession } = useContext(AuthContext)
 
     const [refreshing, setRefreshing] = useState(false)
 
@@ -65,7 +64,7 @@ const Presupuestos = () => {
     return (
         <>
 
-            <ValidateSessionModal visible={modalVisible} setVisible={setModalVisible} validateSession={validateSession} />
+            <ValidateSessionModal visible={modalVisible} setVisible={setModalVisible} />
             <Layout
                 styles={{ paddingHorizontal: 10, gap: 30 }}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}

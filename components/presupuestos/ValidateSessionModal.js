@@ -4,11 +4,11 @@ import { PresupuestoServiceContext } from '../../contexts/PresupuestosService'
 import { DataContext } from '../../contexts/DataProvider'
 import { Text } from 'react-native'
 import { Column } from '../ui/Column'
+import { AuthContext } from '../../contexts/AuthProvider'
 
 export const ValidateSessionModal = ({
     visible = false,
     setVisible = () => { },
-    validateSession = async () => { },
 }) => {
     const [error, setError] = useState('')
     const [isSyncing, setIsSyncing] = useState(false)
@@ -16,12 +16,13 @@ export const ValidateSessionModal = ({
 
     const { syncPresupuestos } = useContext(PresupuestoServiceContext)
     const { getRemoteData } = useContext(DataContext)
+    const { validateSession } = useContext(AuthContext)
 
 
 
     const handleAccept = async () => {
         setIsSyncing(true)
-        const errorMsg = await validateSession(password)
+        const errorMsg = await validate(password)
 
         if (errorMsg.length) {
             setError(errorMsg)

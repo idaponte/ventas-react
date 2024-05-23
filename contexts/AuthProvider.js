@@ -19,33 +19,52 @@ const AuthProvider = ({ children }) => {
     const [prevLogged, setPrevLogged] = useState(false)
     const [loading, setLoading] = useState(true)
 
-    useEffect(() => {
-        SecureStorage.getData('user').then((user) => {
-            const parsedUser = JSON.parse(user)
+    const [authState, setAuthState] = useState({
+        user: null,
+        isLogged: false,
+        prevLogged: false,
+        loading: true,
+    })
+
+
+    const getUserFromStorage = async () => {
+        try {
+            const user = await SecureStorage.getData('user')
+
             if (user) {
-                setPrevLogged(true)
-                setUser(parsedUser)
+
+                setAuthState(prev => ({
+                    ...prev,
+                    prevLogged: true,
+                    user: JSON.parse(user),
+                    loading: false
+                }))
+
             }
 
-        }).catch((error) => {
+        } catch (error) {
             console.error('error', error)
-            setUser(null)
-        })
 
-        setLoading(false)
-    }, [])
+            setAuthState(prev => ({
+                ...prev,
+                user: null,
+                loading: false
+            }))
+        }
+    }
 
-    useEffect(() => {
-        if (user) console.log('user', user)
-        setIsLogged(user !== null && user !== undefined)
-    }, [user])
-
+    const handleAuthState = () => {
+        if (authState.user) console.log('user', authState.user)
+        setAuthState(prev => ({
+            ...prev,
+            isLogged: authState.user !== null && authState.user !== undefined,
+        }))
+    }
 
     const login = async ({ username, password }) => {
-        let error = ''
 
         try {
-            setLoading(true)
+            setAuthState(prev => ({ ...prev, loading: true }))
 
             const resp = await Fetch.post('login', {
                 'username': username,
@@ -54,30 +73,25 @@ const AuthProvider = ({ children }) => {
                 'version': 'prueba'
             })
 
-            setUser(resp.data)
             await SecureStorage.setData('user', JSON.stringify(resp.data))
-            setPrevLogged(false)
 
+            setAuthState(prev => ({
+                ...prev,
+                user: resp.data,
+                prevLogged: false,
+                loading: false
+            }))
 
         } catch (error) {
             console.log('error', error.message)
-            error = error.message
+            setAuthState(prev => ({ ...prev, loading: false }))
         }
-
-        setLoading(false)
-        return error
     }
 
     const logout = async () => {
         try {
-            // const resp = await Fetch.get('api/logout')
-
-            // if (resp.status !== 200) throw new Error('Error al cerrar sesión')
-
-            setUser(null)
             await SecureStorage.removeData('user')
-
-
+            setAuthState(prev => ({ ...prev, user: null }))
         } catch (error) {
             console.error(error)
         }
@@ -86,15 +100,12 @@ const AuthProvider = ({ children }) => {
     const validateSession = async (password = '') => {
         try {
 
-            const resp = await Fetch.post('login', {
+            await Fetch.post('login', {
                 'username': user.username,
                 'password': hashPsw(password),
                 'uuid': 'device.uuid',
                 'version': 'prueba'
             })
-
-            console.log(resp)
-
 
             return ''
         } catch (error) {
@@ -103,19 +114,15 @@ const AuthProvider = ({ children }) => {
 
     }
 
-    // if (loading) return <LoadingScreen />
-
+    useEffect(() => { getUserFromStorage() }, [])
+    useEffect(() => { handleAuthState() }, [authState.user])
 
     return (
         <AuthContext.Provider value={{
             login,
             logout,
             validateSession,
-            user,
-            isLogged,
-            loading,
-            prevLogged,
-
+            ...authState,
         }}>
 
             {children}
