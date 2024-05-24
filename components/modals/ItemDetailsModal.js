@@ -4,10 +4,9 @@ import { Button as RNButton, Divider } from "@rneui/themed";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { globalColors } from "../../styles/globals";
 import { ModalLayout } from "./ModalLayout";
-import { Input } from "../ui/Input";
-import { Button } from "../ui/Button";
-import { PresupContext } from "../../contexts/PresupProvider";
-import { DataContext } from "../../contexts/DataProvider";
+import { Input, Button } from "../ui/Button";
+import { DataContext, PresupContext } from "../../contexts";
+
 import { formatPrice } from "../../utils/currencyFormatter";
 import { showToast } from "../../utils/showToast";
 

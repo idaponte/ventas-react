@@ -1,9 +1,9 @@
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getData as fetchData } from "../services/getData";
 import { quitarTildes } from "../utils/quitarTildes";
 import LoadingScreen from "../screens/LoadingScreen";
 import { AuthContext } from "./AuthProvider";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 

@@ -12,12 +12,7 @@ export const AuthContext = createContext({
     isLogged: false
 })
 
-const AuthProvider = ({ children }) => {
-
-    const [user, setUser] = useState(null)
-    const [isLogged, setIsLogged] = useState(false)
-    const [prevLogged, setPrevLogged] = useState(false)
-    const [loading, setLoading] = useState(true)
+export const AuthProvider = ({ children }) => {
 
     const [authState, setAuthState] = useState({
         user: null,
@@ -101,7 +96,7 @@ const AuthProvider = ({ children }) => {
         try {
 
             await Fetch.post('login', {
-                'username': user.username,
+                'username': authState.user.username,
                 'password': hashPsw(password),
                 'uuid': 'device.uuid',
                 'version': 'prueba'
@@ -130,4 +125,4 @@ const AuthProvider = ({ children }) => {
     )
 }
 
-export default AuthProvider
+// export default AuthProvider

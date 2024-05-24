@@ -1,16 +1,14 @@
-import { useContext, useEffect, useState } from "react"
-import { Text, TouchableOpacity, View } from "react-native"
-import { Layout } from "../components/ui/Layout"
-import { ShadowView } from "../components/ui/ShadowView"
-import { Button } from "../components/ui/Button"
+import { useContext, useState } from "react"
+import { Text, View } from "react-native"
 import { Divider } from "@rneui/themed"
+import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import { Column, Button, ShadowView, Layout } from "../components/ui"
 import { CustomAgendaItem } from "../components/agenda/CustomAgendaItem"
 import { getHumanDate } from "../utils/getHumanDate"
 
-import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
-import { Fetch } from "../services/fetch"
-import { AgendaContext } from "../contexts/AgendaService"
-import { Column } from "../components/ui"
+import { AgendaContext } from "../contexts"
+import { useRefresh } from "../hooks/useRefresh";
+import { useValidateSession } from "../hooks/useValidateSession";
 
 const Agenda = () => {
     const { agenda } = useContext(AgendaContext)
@@ -39,10 +37,15 @@ const Agenda = () => {
         showMode('time');
     };
 
+    const [ValidateSessionModal, setModalVisible] = useValidateSession()
+    const [Control] = useRefresh(() => setModalVisible(true))
+
 
     return (
         <>
-            <Layout>
+            <ValidateSessionModal />
+
+            <Layout refreshControl={<Control />}>
                 <ShadowView>
                     <View style={{
                         display: 'flex',

@@ -1,8 +1,8 @@
+import { useContext, useState } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient';
 import { globalColors } from '../../styles/globals';
-import { useContext, useState } from 'react';
-import { AuthContext } from '../../contexts/AuthProvider';
+import { AuthContext } from '../../contexts';
 
 const Login = () => {
     const { login } = useContext(AuthContext)

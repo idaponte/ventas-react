@@ -1,11 +1,10 @@
 import { useContext, useState } from "react";
-import { Icon } from "@rneui/themed";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { Icon } from "@rneui/themed";
 import { globalColors } from "../../styles/globals";
 import { SearchResultsModal } from "../modals/SearchResultsModal";
-import { DataContext } from "../../contexts/DataProvider";
+import { DataContext, PresupContext } from "../../contexts";
 import { showToast } from "../../utils/showToast";
-import { PresupContext } from "../../contexts/PresupProvider";
 import { Input } from "../ui";
 
 export const SearchInput = () => {

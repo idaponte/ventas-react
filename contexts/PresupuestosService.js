@@ -18,7 +18,7 @@ export const PresupuestoServiceContext = createContext({
 })
 
 
-const PresupuestosService = ({ children }) => {
+export const PresupuestosService = ({ children }) => {
     const { prevLogged, loading: authLoading } = useContext(AuthContext)
     const [loading, setLoading] = useState(true)
 
@@ -236,5 +236,3 @@ const PresupuestosService = ({ children }) => {
         </PresupuestoServiceContext.Provider>
     )
 }
-
-export default PresupuestosService

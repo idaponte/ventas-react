@@ -1,14 +1,14 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
-import { Alert, StyleSheet, Text, View } from 'react-native';
-import { Button } from './Button';
-import { Column } from './Column';
+import { Column } from '../ui/Column';
+import { Button } from '../ui/Button';
 import { globalColors } from '../../styles/globals';
-import { AuthContext } from '../../contexts/AuthProvider';
-import { PresupuestoServiceContext } from '../../contexts/PresupuestosService';
+import { PresupuestoServiceContext, AuthContext } from '../../contexts';
 import { showToast } from '../../utils/showToast';
 import { ValidateSessionModal } from '../presupuestos/ValidateSessionModal';
+import { useValidateSession } from '../../hooks/useValidateSession';
 
 export const Drawer = (props) => {
 
@@ -25,11 +25,11 @@ export const Drawer = (props) => {
         await logout()
     }
 
-    const [modalVisible, setModalVisible] = useState(false)
+    const [ValidateSessionModal, setModalVisible] = useValidateSession()
 
     return (
         <>
-            <ValidateSessionModal visible={modalVisible} setVisible={setModalVisible} />
+            <ValidateSessionModal setVisible={setModalVisible} />
 
             <DrawerContentScrollView {...props} >
 

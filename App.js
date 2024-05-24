@@ -2,9 +2,9 @@ import { useContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import AuthProvider, { AuthContext } from './contexts/AuthProvider';
-import AuthNavigator from './navigators/AuthNavigator';
-import MiAppState from './navigators/DrawerNavigator';
+
+import { AuthProvider, AuthContext } from './contexts';
+import { MiAppState, AuthNavigator } from './navigators';
 import LoadingScreen from './screens/LoadingScreen';
 
 const Stack = createNativeStackNavigator();

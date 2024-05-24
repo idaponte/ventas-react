@@ -1,5 +1,3 @@
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-
 import DatosPersonales from "./formulario/DatosPersonales";
 import Items from "./formulario/Items";
 import AbonoForm from "./formulario/Abono";

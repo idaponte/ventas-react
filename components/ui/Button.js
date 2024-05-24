@@ -1,5 +1,6 @@
 import { Text, TouchableHighlight } from 'react-native'
 import { globalColors } from '../../styles/globals'
+
 export const Button = ({
     onPress,
     title,

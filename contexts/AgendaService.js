@@ -1,66 +1,51 @@
 import { createContext, useEffect, useState } from "react"
 import { Fetch } from "../services/fetch"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 export const AgendaContext = createContext({
     agenda: []
 })
 
-const AgendaService = ({ children }) => {
+export const AgendaService = ({ children }) => {
     const [agenda, setAgenda] = useState([])
 
-
-    const getAgenda = async () => {
-
-        // interface AgendaItem {
-        //     name:        string;
-        //     ape:         string;
-        //     entre:       string;
-        //     nro:         string;
-        //     status:      string;
-        //     creado:      Date;
-        //     ciudad:      string;
-        //     closeobserv: string;
-        //     calle:       string;
-        //     tel:         string;
-        //     user_id:     number;
-        //     call_id:     number; No se usan los siguientes campos ↓
-        //     descr:       string;
-        //     llamar:      boolean;
-        //     my_comment:  string;
-        //     ref_cli:     null;
-        //     start:       Date;
-        //     tipo:        string;
-        //     update_at:   Date;
-        //     vend_id:     number;
-        //     zona_name:   string;
-        //     rs:          null;
-        // }
-
-
-
+    const getRemoteAgenda = async () => {
+        console.log('getRemoteAgenda')
         try {
-            const res = await Fetch.get('agenda')
-            res.data.forEach(item => {
-                setAgenda(oldAgenda => [...oldAgenda, item])
-            }
-            )
+            const { data } = await Fetch.get('agenda')
+
+            await AsyncStorage.setItem('agenda', JSON.stringify(data))
+            setAgenda({ agenda: data })
         } catch (error) {
             console.log(error)
         }
     }
 
+    const getLocalAgenda = async () => {
+        console.log('getLocalAgenda')
+        try {
+            const agenda = await AsyncStorage.getItem('agenda')
+
+            if (agenda) {
+                setAgenda(JSON.parse(agenda))
+                return
+            }
+
+            getRemoteAgenda()
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     useEffect(() => {
-        getAgenda()
+        getLocalAgenda()
     }, [])
 
     return (
-        <AgendaContext.Provider value={{
-            agenda,
-        }}>
+        <AgendaContext.Provider value={{ agenda }}>
             {children}
         </AgendaContext.Provider>
     )
 }
 
-export default AgendaService
+// export default AgendaService

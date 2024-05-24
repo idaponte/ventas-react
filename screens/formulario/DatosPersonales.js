@@ -1,8 +1,8 @@
+import { useContext } from "react";
 import { StyleSheet, View } from "react-native"
 
-import { useContext } from "react";
 import { Layout, Input } from "../../components/ui";
-import { PresupContext } from "../../contexts/PresupProvider";
+import { PresupContext } from "../../contexts";
 
 
 const InputGroup = ({ children }) => {

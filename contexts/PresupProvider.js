@@ -34,7 +34,7 @@ export const PresupContext = createContext({
     getPresupToPost: () => { }
 })
 
-const PresupProvider = ({ children }) => {
+export const PresupProvider = ({ children }) => {
     const dataCtx = useContext(DataContext)
     const {
         bonifs,
@@ -500,4 +500,4 @@ const PresupProvider = ({ children }) => {
     )
 }
 
-export default PresupProvider
+// export default PresupProvider

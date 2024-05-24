@@ -4,7 +4,7 @@ import { CustomListHeader } from "./CustomListHeader"
 import { CustomListItem } from "./CustomListItem"
 import { Divider } from "@rneui/base";
 import { ItemDetailsModal } from "../modals/ItemDetailsModal";
-import { PresupContext } from "../../contexts/PresupProvider";
+import { PresupContext } from "../../contexts";
 import { formatPrice } from "../../utils/currencyFormatter";
 
 

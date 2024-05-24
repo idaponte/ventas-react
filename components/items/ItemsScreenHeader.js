@@ -1,9 +1,8 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { View } from "react-native";
 import { SearchInput } from "./SearchInput";
 import { Dropdown } from "../ui";
-import { DataContext } from "../../contexts/DataProvider";
-import { PresupContext } from "../../contexts/PresupProvider";
+import { PresupContext, DataContext } from "../../contexts";
 
 export const ItemsScreenHeader = () => {
     const { rubros, getRubroById, getItemsById } = useContext(DataContext);

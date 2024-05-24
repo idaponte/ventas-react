@@ -1,10 +1,9 @@
 import { useContext, useState } from 'react'
-import CustomAlert from '../CustomAlert'
-import { PresupuestoServiceContext } from '../../contexts/PresupuestosService'
-import { DataContext } from '../../contexts/DataProvider'
 import { Text } from 'react-native'
+
+import CustomAlert from '../CustomAlert'
+import { PresupuestoServiceContext, AuthContext, DataContext } from '../../contexts'
 import { Column } from '../ui/Column'
-import { AuthContext } from '../../contexts/AuthProvider'
 
 export const ValidateSessionModal = ({
     visible = false,
@@ -22,7 +21,7 @@ export const ValidateSessionModal = ({
 
     const handleAccept = async () => {
         setIsSyncing(true)
-        const errorMsg = await validate(password)
+        const errorMsg = await validateSession(password)
 
         if (errorMsg.length) {
             setError(errorMsg)

@@ -1,19 +1,16 @@
+import { useContext } from 'react';
+import { Alert } from 'react-native';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+
 import Formulario from '../screens/Formulario';
 import Agenda from '../screens/Agenda';
 import Presupuestos from '../screens/Presupuestos';
 
 import { globalColors } from '../styles/globals';
 
-import { createDrawerNavigator } from '@react-navigation/drawer';
 
-import { Drawer as DrawerContent, Row, Button, IconButton } from '../components/ui';
-import { DataProvider } from '../contexts/DataProvider';
-import PresupProvider, { PresupContext } from '../contexts/PresupProvider';
-import Icon from 'react-native-vector-icons/FontAwesome5';
-import { useContext } from 'react';
-import PresupuestosService from '../contexts/PresupuestosService';
-import AgendaService from '../contexts/AgendaService';
-import { Alert } from 'react-native';
+import { Drawer as DrawerContent, Row, IconButton } from '../components/ui';
+import { DataProvider, AgendaService, PresupuestosService, PresupProvider, PresupContext } from '../contexts';
 
 const Drawer = createDrawerNavigator();
 
@@ -35,7 +32,7 @@ const MiAppState = () => {
 }
 
 const DrawerNavigator = () => {
-    const { presupuesto, createEmptyPresupuesto, hasPresupComunicador, setPresupuesto } = useContext(PresupContext);
+    const { presupuesto, createEmptyPresupuesto, setPresupuesto } = useContext(PresupContext);
 
     const showPresupuesto = () => {
         setPresupuesto(oldpresup => ({

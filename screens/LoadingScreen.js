@@ -1,4 +1,3 @@
-import { Text } from 'react-native'
 import { ModalLayout } from '../components/modals/ModalLayout'
 import { ActivityIndicator } from 'react-native'
 import { globalColors } from '../styles/globals'

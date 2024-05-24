@@ -7,7 +7,7 @@ import { globalStyles } from '../../styles/globals'
 import { Button, Input, IconButton } from '../ui'
 import { getHumanDate } from '../../utils/getHumanDate'
 import { getDom } from '../../utils/getDom'
-import { PresupContext } from '../../contexts/PresupProvider'
+import { PresupContext } from '../../contexts'
 
 const PersonaInfo = ({ title, info }) => {
     return (
