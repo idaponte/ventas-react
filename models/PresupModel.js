@@ -1,7 +1,6 @@
 
 
-import { getYYYYMMDD } from "../utils/getHumanDate";
-import { presupMockup } from "../utils/presupMockup";
+import { presupMockup, getYYYYMMDD } from "../utils";
 
 
 export class PresupuestoModel {

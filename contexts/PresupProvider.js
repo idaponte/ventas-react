@@ -1,10 +1,9 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
-import { presupMockup } from '../utils/presupMockup'
+import { useNavigation } from '@react-navigation/native'
+import { presupMockup, showToast } from '../utils'
 import { DataContext } from './DataProvider'
-import { showToast } from '../utils/showToast'
 import { PresupuestoModel } from '../models/PresupModel'
 import LoadingScreen from '../screens/LoadingScreen'
-import { useNavigation, useRoute } from '@react-navigation/native'
 import { AuthContext } from './AuthProvider'
 
 export const PresupContext = createContext({
@@ -31,7 +30,8 @@ export const PresupContext = createContext({
     resetPrecioComunicador: () => { },
     handleDeleteItem: () => { },
     createEmptyPresupuesto: () => { },
-    getPresupToPost: () => { }
+    getPresupToPost: () => { },
+    addRandomItem: () => { }
 })
 
 export const PresupProvider = ({ children }) => {
@@ -196,6 +196,17 @@ export const PresupProvider = ({ children }) => {
         }
 
         return newItem
+    }
+
+    const addRandomItem = (times = 1) => {
+        for (let i = 0; i < times; i++) {
+            const randomItem = getItemById(Math.floor(Math.random() * 100) + 1)
+            const item = createItem({
+                ...randomItem,
+                observ: 'comment'
+            })
+            addItem(item)
+        }
     }
 
     const addComunicador = () => {
@@ -471,7 +482,7 @@ export const PresupProvider = ({ children }) => {
         return true
     }
 
-    if (loadingPresupuesto) <LoadingScreen />
+    if (loadingPresupuesto) <LoadingScreen msg='Cargando presupuesto' />
 
     return (
         <PresupContext.Provider value={{
@@ -493,7 +504,8 @@ export const PresupProvider = ({ children }) => {
             resetPrecioComunicador,
             handleDeleteItem,
             createEmptyPresupuesto,
-            getPresupToPost
+            getPresupToPost,
+            addRandomItem
         }}>
             {children}
         </PresupContext.Provider>

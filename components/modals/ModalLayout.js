@@ -1,9 +1,11 @@
 import { Modal, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Icon } from "@rneui/themed";
 
 export const ModalLayout = ({
     children,
     isVisible,
     setIsVisible,
+    disabled = false
 }) => {
     return (
         <Modal
@@ -12,29 +14,32 @@ export const ModalLayout = ({
             visible={isVisible}
             onRequestClose={() => {
                 console.log('onRequestClose')
-                setIsVisible(!isVisible)
+                if (!disabled) setIsVisible(!isVisible)
             }}
         >
-            <TouchableOpacity
-                activeOpacity={1}
-                style={styles.modalOverlay}
-                onPressOut={() => setIsVisible(!isVisible)}
-            >
-                <View
-                    style={{
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        padding: 0,
-                        margin: 0,
-                        maxHeight: '70%',
-                        width: '85%'
+            <View style={styles.modalOverlay}>
+                {children}
+
+                <TouchableOpacity
+
+                    onPress={() => {
+                        if (!disabled) setIsVisible(!isVisible)
                     }}
-                    onStartShouldSetResponder={() => true}
-                    onPress={(e) => e.stopPropagation()}
+                    style={{
+                        display: disabled ? 'none' : 'flex',
+                        position: 'absolute',
+                        bottom: 35,
+                        left: '50%',
+                        transform: [{ translateX: -20 }],
+                        borderRadius: 20,
+                        backgroundColor: 'white',
+                        padding: 5,
+                    }}
                 >
-                    {children}
-                </View>
-            </TouchableOpacity >
+                    <Icon name="close" size={40} />
+                </TouchableOpacity>
+
+            </View >
         </Modal>
     )
 }
@@ -45,9 +50,10 @@ const ModalContent = ({ children }) => {
             style={{
                 backgroundColor: 'white',
                 maxHeight: '100%',
-                width: '100%',
+                width: '80%',
                 borderRadius: 20,
                 padding: 20,
+
             }}
         >
             <ScrollView showsVerticalScrollIndicator={false} >
@@ -64,6 +70,7 @@ ModalLayout.Content = ModalContent
 const styles = StyleSheet.create({
     modalOverlay: {
         flex: 1,
+        position: 'relative',
         justifyContent: 'center',
         width: '100%',
         height: '100%',

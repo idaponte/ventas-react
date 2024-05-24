@@ -3,7 +3,8 @@ import { Fetch } from "../services/fetch"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
 export const AgendaContext = createContext({
-    agenda: []
+    agenda: [],
+    getRemoteAgenda: async () => { }
 })
 
 export const AgendaService = ({ children }) => {
@@ -42,7 +43,7 @@ export const AgendaService = ({ children }) => {
     }, [])
 
     return (
-        <AgendaContext.Provider value={{ agenda }}>
+        <AgendaContext.Provider value={{ agenda, getRemoteAgenda }}>
             {children}
         </AgendaContext.Provider>
     )

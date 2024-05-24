@@ -1,4 +1,4 @@
-import { SecureStorage, saveToSecureStorage } from "../utils/secureStorage";
+import { SecureStorage } from "../utils";
 
 export class Fetch {
     devUrl = 'http://localhost:8000/api/';

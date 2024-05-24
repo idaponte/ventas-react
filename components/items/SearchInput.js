@@ -4,7 +4,7 @@ import { Icon } from "@rneui/themed";
 import { globalColors } from "../../styles/globals";
 import { SearchResultsModal } from "../modals/SearchResultsModal";
 import { DataContext, PresupContext } from "../../contexts";
-import { showToast } from "../../utils/showToast";
+import { showToast } from "../../utils";
 import { Input } from "../ui";
 
 export const SearchInput = () => {

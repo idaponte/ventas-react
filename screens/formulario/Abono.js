@@ -2,7 +2,7 @@ import { useContext } from 'react'
 import { View } from 'react-native'
 import { Dropdown, Input, Layout } from '../../components/ui'
 import { PresupContext, DataContext } from '../../contexts'
-import { showToast } from '../../utils/showToast'
+import { showToast } from '../../utils'
 
 const AbonoForm = () => {
 

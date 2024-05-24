@@ -4,10 +4,9 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { Column } from '../ui/Column';
 import { Button } from '../ui/Button';
-import { globalColors } from '../../styles/globals';
+import { globalColors as gc } from '../../styles/globals';
 import { PresupuestoServiceContext, AuthContext } from '../../contexts';
-import { showToast } from '../../utils/showToast';
-import { ValidateSessionModal } from '../presupuestos/ValidateSessionModal';
+import { showToast } from '../../utils';
 import { useValidateSession } from '../../hooks/useValidateSession';
 
 export const Drawer = (props) => {
@@ -67,8 +66,8 @@ export const Drawer = (props) => {
                         onPress={() => setModalVisible(true)}
                     />
                     <Button
-                        color={globalColors.danger[600]}
-                        underlayColor={globalColors.danger[800]}
+                        color={gc.danger[600]}
+                        underlayColor={gc.danger[800]}
                         style={{ marginHorizontal: 20 }}
                         title='Cerrar sesión' // TODO: si no sincronizó no puede cerrar sesión
                         onPress={() =>
@@ -95,7 +94,7 @@ export const Drawer = (props) => {
 
 const styles = StyleSheet.create({
     drawerHeader: {
-        backgroundColor: globalColors.primary[700],
+        backgroundColor: gc.primary[700],
         width: '100%',
         height: 150,
         display: 'flex',

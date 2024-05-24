@@ -1,7 +1,6 @@
 import { Text, TouchableOpacity } from "react-native"
-import { formatPrice } from "../../utils/currencyFormatter"
-import Icon from 'react-native-vector-icons/MaterialIcons'
 import { View } from "react-native"
+import { formatPrice } from "../../utils"
 
 
 export const CustomListItem = ({ item, onPress }) => {

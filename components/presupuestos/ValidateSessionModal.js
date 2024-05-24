@@ -2,7 +2,7 @@ import { useContext, useState } from 'react'
 import { Text } from 'react-native'
 
 import CustomAlert from '../CustomAlert'
-import { PresupuestoServiceContext, AuthContext, DataContext } from '../../contexts'
+import { PresupuestoServiceContext, AuthContext, DataContext, AgendaContext } from '../../contexts'
 import { Column } from '../ui/Column'
 
 export const ValidateSessionModal = ({
@@ -15,6 +15,7 @@ export const ValidateSessionModal = ({
 
     const { syncPresupuestos } = useContext(PresupuestoServiceContext)
     const { getRemoteData } = useContext(DataContext)
+    const { getRemoteAgenda } = useContext(AgendaContext)
     const { validateSession } = useContext(AuthContext)
 
 
@@ -36,6 +37,7 @@ export const ValidateSessionModal = ({
         console.log('syncing')
 
         await getRemoteData()
+        await getRemoteAgenda()
         await syncPresupuestos()
 
         setVisible(false)

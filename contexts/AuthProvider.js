@@ -1,7 +1,6 @@
 import { createContext, useEffect, useState } from "react"
 import { Fetch } from "../services/fetch"
-import { hashPsw } from "../utils/hashPsw"
-import { SecureStorage } from "../utils/secureStorage"
+import { hashPsw, SecureStorage } from "../utils"
 
 export const AuthContext = createContext({
     login: async () => { },
@@ -23,10 +22,13 @@ export const AuthProvider = ({ children }) => {
 
 
     const getUserFromStorage = async () => {
+        console.log('getUserFromStorage')
+
         try {
             const user = await SecureStorage.getData('user')
 
             if (user) {
+                console.log(user)
 
                 setAuthState(prev => ({
                     ...prev,
@@ -35,16 +37,18 @@ export const AuthProvider = ({ children }) => {
                     loading: false
                 }))
 
+                return
             }
-
-        } catch (error) {
-            console.error('error', error)
 
             setAuthState(prev => ({
                 ...prev,
                 user: null,
                 loading: false
             }))
+        } catch (error) {
+            console.error('error', error)
+
+
         }
     }
 

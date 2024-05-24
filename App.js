@@ -12,7 +12,7 @@ const Stack = createNativeStackNavigator();
 const Router = () => {
   const { isLogged, loading } = useContext(AuthContext);
 
-  if (loading) return <LoadingScreen />
+  if (loading) return <LoadingScreen msg='Autenticando' />
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>

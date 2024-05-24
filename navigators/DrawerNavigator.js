@@ -11,6 +11,7 @@ import { globalColors } from '../styles/globals';
 
 import { Drawer as DrawerContent, Row, IconButton } from '../components/ui';
 import { DataProvider, AgendaService, PresupuestosService, PresupProvider, PresupContext } from '../contexts';
+import { getRandomLastName, getRandomName } from '../utils/getRandomData';
 
 const Drawer = createDrawerNavigator();
 
@@ -32,15 +33,19 @@ const MiAppState = () => {
 }
 
 const DrawerNavigator = () => {
-    const { presupuesto, createEmptyPresupuesto, setPresupuesto } = useContext(PresupContext);
+    const { presupuesto, createEmptyPresupuesto, setPresupuesto, addRandomItem } = useContext(PresupContext);
 
     const showPresupuesto = () => {
+
+        addRandomItem(3)
+
+
         setPresupuesto(oldpresup => ({
             ...oldpresup,
             customer: {
                 ...oldpresup.customer,
-                name: 'Ignacio',
-                ape: 'Baguinho',
+                name: getRandomName(),
+                ape: getRandomLastName(),
                 domicilio: {
                     ...oldpresup.customer.domicilio,
                     calle: '123',
@@ -89,10 +94,9 @@ const DrawerNavigator = () => {
 
     return (
         <Drawer.Navigator
-            initialRouteName="Agenda"
+            initialRouteName="Formulario"
             screenOptions={screenOptions}
             drawerContent={(props) => <DrawerContent {...props} />}
-
         >
             <Drawer.Screen name="Formulario" component={Formulario} options={{ title: `ID: ${`${presupuesto.oper.presup_id}`.toUpperCase()}` }} />
             <Drawer.Screen name="Agenda" component={Agenda} />

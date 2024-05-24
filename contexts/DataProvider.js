@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getData as fetchData } from "../services/getData";
-import { quitarTildes } from "../utils/quitarTildes";
+import { quitarTildes } from "../utils";
 import LoadingScreen from "../screens/LoadingScreen";
 import { AuthContext } from "./AuthProvider";
 
@@ -195,7 +195,7 @@ export const DataProvider = ({ children }) => {
         !Object.keys(data.items).length ||
         !data.precioMateriales
     ) {
-        return <LoadingScreen />
+        return <LoadingScreen msg="Cargando datos" />
     }
 
     return (

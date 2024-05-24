@@ -5,8 +5,7 @@ import { Divider } from '@rneui/themed'
 import { ModalLayout } from '../modals/ModalLayout'
 import { globalStyles } from '../../styles/globals'
 import { Button, Input, IconButton } from '../ui'
-import { getHumanDate } from '../../utils/getHumanDate'
-import { getDom } from '../../utils/getDom'
+import { getDom, getHumanDate } from '../../utils'
 import { PresupContext } from '../../contexts'
 
 const PersonaInfo = ({ title, info }) => {

@@ -1,11 +1,12 @@
 import { ModalLayout } from '../components/modals/ModalLayout'
 import { ActivityIndicator } from 'react-native'
-import { globalColors } from '../styles/globals'
+import { Text } from 'react-native'
 
-const LoadingScreen = () => {
+const LoadingScreen = ({ msg = 'Cargando' }) => {
     return (
-        <ModalLayout>
-            <ActivityIndicator size='large' color={globalColors.primary[500]} />
+        <ModalLayout disabled>
+            <ActivityIndicator size='100' color='white' />
+            <Text style={{ color: 'white', fontWeight: '500', fontSize: 20 }}>{msg}</Text>
         </ModalLayout>
     )
 }

@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native"
 import { globalStyles } from "../styles/globals"
 import { Divider } from "@rneui/themed"
-import { formatPrice } from "../utils/currencyFormatter"
+import { formatPrice } from "../utils"
 
 export const ResumenPresupuestoCard = ({
     title,

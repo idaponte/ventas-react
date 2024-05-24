@@ -4,11 +4,10 @@ import { Button as RNButton, Divider } from "@rneui/themed";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { globalColors } from "../../styles/globals";
 import { ModalLayout } from "./ModalLayout";
-import { Input, Button } from "../ui/Button";
+import { Input, Button } from "../ui";
 import { DataContext, PresupContext } from "../../contexts";
 
-import { formatPrice } from "../../utils/currencyFormatter";
-import { showToast } from "../../utils/showToast";
+import { formatPrice, showToast } from "../../utils";
 
 const Counter = ({ title, cant, setCant, base = 0, disabled = false }) => {
 
@@ -69,75 +68,72 @@ export const ItemDetailsModal = ({ isVisible, setIsVisible, itemId }) => {
 
     return (
         <ModalLayout isVisible={isVisible} setIsVisible={setIsVisible}>
-            <View style={styles.modalContent}>
-                <ScrollView>
+            <ModalLayout.Content>
+                <View style={{ marginBottom: 20, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Text style={{ fontSize: 18 }}>{item?.name} ({item?.generic_id})</Text>
+                </View>
 
-                    <View style={{ marginBottom: 20, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Text style={{ fontSize: 18 }}>{item?.name} ({item?.generic_id})</Text>
-                    </View>
-
-                    <View style={{ display: 'flex', flexDirection: 'column' }}>
-                        <Counter
-                            disabled={!isPresupEditable}
-                            title='Sugerido'
-                            cant={item?.sqty}
-                            setCant={(cant) => handleItemCant(cant, 'sqty')}
-                        />
-
-                        <Counter
-                            disabled={!isPresupEditable}
-                            title='Aceptado'
-                            cant={item?.qty}
-                            setCant={(cant) => handleItemCant(cant, 'qty')}
-                        />
-                    </View>
-
-                    <View style={{ display: 'flex', }}>
-                        <Text style={{ fontSize: 18, marginBottom: 5 }}>Comentarios (*)</Text>
-                        <Input editable={isPresupEditable} multiline={true} numberOfLines={4} value={item?.observ} onChange={handleComentarios} />
-                    </View>
-
-                    <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 }}>
-                        <Text style={{ fontSize: 18 }}>Precio</Text>
-                        <Text style={styles.price}>${item?.precio}</Text>
-                    </View>
-
-                    <Divider style={{ marginVertical: 20 }} />
-
-                    <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', }}>
-                        <Text style={{ fontSize: 18 }}>Sub. sugerido</Text>
-                        <Text style={styles.price}>{formatPrice(item?.precio * item?.sqty)}</Text>
-                    </View>
-
-                    <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
-                        <Text style={{ fontSize: 12 }} >Sub. Materiales</Text>
-                        <Text style={styles.price}>{formatPrice(precioMateriales * item?.sqty)}</Text>
-                    </View>
-
-
-                    <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <Text style={{ fontSize: 18 }}>Sub. aceptado</Text>
-                        <Text style={styles.price}>{formatPrice(item?.precio * item?.qty)}</Text>
-                    </View>
-
-                    <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', }}>
-                        <Text style={{ fontSize: 12 }} >Sub. Materiales</Text>
-                        <Text style={styles.price}>{formatPrice(precioMateriales * item?.qty)}</Text>
-                    </View>
-
-                    <Button
-                        disabled={isPresupEditable}
-                        title="Eliminar"
-                        onPress={() => {
-                            const deleted = handleDeleteItem(item.generic_id)
-                            if (deleted) setIsVisible(false)
-                        }}
-                        color={globalColors.danger[600]}
-                        underlayColor={globalColors.danger[800]}
-                        style={{ marginTop: 40 }}
+                <View style={{ display: 'flex', flexDirection: 'column' }}>
+                    <Counter
+                        disabled={!isPresupEditable}
+                        title='Sugerido'
+                        cant={item?.sqty}
+                        setCant={(cant) => handleItemCant(cant, 'sqty')}
                     />
-                </ScrollView>
-            </View>
+
+                    <Counter
+                        disabled={!isPresupEditable}
+                        title='Aceptado'
+                        cant={item?.qty}
+                        setCant={(cant) => handleItemCant(cant, 'qty')}
+                    />
+                </View>
+
+                <View style={{ display: 'flex', }}>
+                    <Text style={{ fontSize: 18, marginBottom: 5 }}>Comentarios (*)</Text>
+                    <Input editable={isPresupEditable} multiline={true} numberOfLines={4} value={item?.observ} onChange={handleComentarios} />
+                </View>
+
+                <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 }}>
+                    <Text style={{ fontSize: 18 }}>Precio</Text>
+                    <Text style={styles.price}>${item?.precio}</Text>
+                </View>
+
+                <Divider style={{ marginVertical: 20 }} />
+
+                <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', }}>
+                    <Text style={{ fontSize: 18 }}>Sub. sugerido</Text>
+                    <Text style={styles.price}>{formatPrice(item?.precio * item?.sqty)}</Text>
+                </View>
+
+                <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
+                    <Text style={{ fontSize: 12 }} >Sub. Materiales</Text>
+                    <Text style={styles.price}>{formatPrice(precioMateriales * item?.sqty)}</Text>
+                </View>
+
+
+                <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text style={{ fontSize: 18 }}>Sub. aceptado</Text>
+                    <Text style={styles.price}>{formatPrice(item?.precio * item?.qty)}</Text>
+                </View>
+
+                <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', }}>
+                    <Text style={{ fontSize: 12 }} >Sub. Materiales</Text>
+                    <Text style={styles.price}>{formatPrice(precioMateriales * item?.qty)}</Text>
+                </View>
+
+                <Button
+                    disabled={isPresupEditable}
+                    title="Eliminar"
+                    onPress={() => {
+                        const deleted = handleDeleteItem(item.generic_id)
+                        if (deleted) setIsVisible(false)
+                    }}
+                    color={globalColors.danger[600]}
+                    underlayColor={globalColors.danger[800]}
+                    style={{ marginTop: 40 }}
+                />
+            </ModalLayout.Content>
 
         </ModalLayout>
     )

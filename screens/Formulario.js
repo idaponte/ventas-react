@@ -1,37 +1,23 @@
-import DatosPersonales from "./formulario/DatosPersonales";
-import Items from "./formulario/Items";
-import AbonoForm from "./formulario/Abono";
-import ResumenPresupuesto from "./formulario/ResumenPresupuesto";
+import { DatosPersonales, Items, Abono, ResumenPresupuesto } from "./formulario";
 
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { globalColors } from "../styles/globals";
+import { globalColors as gc } from "../styles/globals";
 const Tab = createMaterialTopTabNavigator();
 
 
 const Formulario = () => {
     const screenOptions = {
-        tabBarStyle: {
-            backgroundColor: globalColors.primary[700],
-
-        },
-
+        tabBarStyle: { backgroundColor: gc.primary[700] },
         tabBarActiveTintColor: 'white',
-        tabBarIndicatorStyle: {
-            backgroundColor: 'white',
-            height: 4,
-        },
-        tabBarLabelStyle: {
-            fontWeight: 'bold',
-            fontSize: 11,
-        },
-
+        tabBarIndicatorStyle: { backgroundColor: 'white', height: 4 },
+        tabBarLabelStyle: { fontWeight: 'bold', fontSize: 11 },
     }
 
     return (
         <Tab.Navigator screenOptions={screenOptions} initialRouteName="Contacto">
             <Tab.Screen name="Contacto" component={DatosPersonales} />
             <Tab.Screen name="Items" component={Items} />
-            <Tab.Screen name="Abono" component={AbonoForm} />
+            <Tab.Screen name="Abono" component={Abono} />
             <Tab.Screen name="Valores" component={ResumenPresupuesto} />
         </Tab.Navigator>
     )

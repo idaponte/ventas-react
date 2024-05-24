@@ -2,9 +2,8 @@ import { createContext, useContext, useEffect, useState } from "react"
 import { Fetch } from "../services/fetch"
 import LoadingScreen from "../screens/LoadingScreen"
 import { AuthContext } from "./AuthProvider"
-import { PresupuestoModel } from "../models/PresupModel"
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import { showToast } from "../utils/showToast"
+import { showToast } from "../utils"
 import { MonssaPresupModel } from "../models/MonssaPresupModel"
 
 export const PresupuestoServiceContext = createContext({
@@ -173,20 +172,20 @@ export const PresupuestosService = ({ children }) => {
         const toUpdate = Object.values(state.presupuestosToUpdate)
 
         if (toCreate.length === 0 && toUpdate.length === 0) {
-            showToast('No hay presupuestos para sincronizar')
             console.log('no hay presupuestos para sincronizar')
             return
         }
 
         try {
-            Fetch.postJson('presupuestos/create', {
+
+            await Fetch.postJson('presupuestos/create', {
                 presupuestos: [
                     ...toCreate,
                     ...toUpdate.filter(presup => isNaN(presup.presup.presup_id))
                 ]
             })
 
-            Fetch.postJson('presupuestos/update', {
+            await Fetch.postJson('presupuestos/update', {
                 presupuestos: [
                     ...toUpdate.filter(presup => !isNaN(presup.presup.presup_id))
                 ]
@@ -220,7 +219,7 @@ export const PresupuestosService = ({ children }) => {
         await AsyncStorage.setItem(key, JSON.stringify(value))
     }
 
-    if (loading) return <LoadingScreen />
+    if (loading) return <LoadingScreen msg="Cargando presupuestos" />
 
     return (
         <PresupuestoServiceContext.Provider value={{
